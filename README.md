@@ -1,2 +1,3 @@
 # django-djsapo
-Early Alerts application for the Center for Student Success
+Early Alert application for community members to voice their concern about
+another member of the community.

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}
+    Early Alerts &mdash;
+    Center for Student Success &mdash; Carthage College
+{% endblock %}
+{% block extra_javascript %}
+<script>
+$(function() {
+  $("body").toggleClass("sidenav-toggled");
+});
+</script>
+{% endblock %}
+{% block body_tag %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block navbar-header %}
+<a href="{% url 'home' %}" class="mr-sm-3 mr-lg-3">
+  <i class="fa fa-home fa-2x"></i></a>
+<a class="navbar-brand" href="{{root_url}}">Human Resources</a>
+{% endblock %}
+{% block navbar-top-links %}
+  <ul class="navbar-nav ml-auto">
+    <li class="dropdown user-dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-user"></i> {{user.first_name|default:"Dashboard"}}
+            <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="divider"></li>
+            <li>
+                {% if user.is_anonymous %}
+                <a href="{% url 'auth_login' %}">
+                    <i class="fa fa-sign-in"></i> Sign In
+                </a>
+                {% else %}
+                <a href="{% url 'auth_logout' %}">
+                    <i class="fa fa-sign-out"></i> Sign Out
+                </a>
+                {% endif %}
+            </li>
+        </ul>
+    </li>
+  </ul>
+{% endblock navbar-top-links %}
+{% block navbar-sidenav %}
+<ul class="navbar-nav navbar-sidenav">
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+    <a class="nav-link" href="{% url 'home' %}">
+      <i class="fa fa-fw fa fa-dashboard" aria-hidden="true"></i>
+      <span class="nav-link-text">Dashboard</span>
+    </a>
+  </li>
+  {% if user.is_superuser %}
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Administration">
+    <a class="nav-link" href="{% url 'admin:index' %}">
+      <i class="fa fa-fw fa fa-cog" aria-hidden="true"></i>
+      <span class="nav-link-text">Administration</span>
+    </a>
+  </li>
+  {% endif %}
+  {% if hr %}
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Manage Approvers">
+    <a class="nav-link" href="{% url 'approver_manager' %}">
+      <i class="fa fa-fw fa fa-gavel" aria-hidden="true"></i>
+      <span class="nav-link-text">Manage Approvers</span>
+    </a>
+  </li>
+  {% endif %}
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Early Alert Form">
+    <a class="nav-link" href="{% url 'alert_form' %}">
+      <i class="fa fa-fw fa fa-user-plus" aria-hidden="true"></i>
+      <span class="nav-link-text">PRF</span>
+    </a>
+  </li>
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Carthage Home">
+    <a class="nav-link" href="https://www.carthage.edu/">
+      <i class="fa fa-fw fa fa-home" aria-hidden="true"></i>
+      <span class="nav-link-text">Carthage Home</span>
+    </a>
+  </li>
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My.Carthage">
+    <a class="nav-link" href="https://my.carthage.edu/">
+      <i class="fa fa-fw fa fa-lemon-o" aria-hidden="true"></i>
+      <span class="nav-link-text">My.Carthage</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-center" data-toggle="tooltip" data-placement="right" title="Expand Menu" id="sidenavToggler">
+      <i class="fa fa-fw fa-angle-double-left" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+<ul class="navbar-nav sidenav-toggler">
+  <li class="nav-item">
+    <a class="nav-link text-center">
+      <i class="fa fa-fw"></i>
+    </a>
+  </li>
+</ul>
+{% endblock navbar-sidenav %}
+{% block content %}
+<div class="row">
+  {% if messages %}
+    {% for message in messages %}
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+      <div class=" alert {{message.tags}}">
+        <strong>{{ message }}</strong>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+      <h4>
+        <a href="{% url 'dashboard_list' %}">
+          <i class="fa fa-list-alt blue-tooltip" aria-hidden="true"
+            data-toggle="tooltip" data-placement="top"
+            title="View All Early Alert Submissions"></i></a>
+          All Early Alert Submissions
+        <i class="fa fa-leaf green blue-tooltip" aria-hidden="true"
+          data-toggle="tooltip" data-placement="top" aria-hidden="true"
+          title="The 10 most recent Alert submissions are list below"></i>
+        |
+        <a href="{% url 'openxml' %}">
+          <i class="fa fa-file-excel-o blue-tooltip" aria-hidden="true"
+            data-toggle="tooltip" data-placement="top"
+            title="Download Alert data as a Spreadsheet"></i></a>
+      </h4>
+      {% if data %}
+        {% include "dashboard/data.inc.html" %}
+      {% else %}
+        <h5>No submissions</h5>
+      {% endif %}
+    </div>
+</div>
+<!-- /.row -->
+{% endblock content %}
+{% block footer %}
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+          <button type="button" class="close" data-dismiss="modal"
+            aria-hidden="true">&times;</button>
+        </div>
+      <div class="modal-body">
+        <p>
+          You are about to delete the <strong class="object-title"></strong>.
+        </p>
+        <p>Would you like to proceed?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Cancel
+        </button>
+        <a class="btn btn-danger btn-ok">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "djbootmin/base.html" %}
+{% block meta %}
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+{% endblock %}
+{% block extra_style %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://www.carthage.edu/themes/shared/css/tables.css" rel="stylesheet" type="text/css">
+<link href="/static/djsani/css/dashboard.css" rel="stylesheet" type="text/css">
+<link href="/static/djsani/css/main.css" rel="stylesheet" type="text/css">
+<style>
+.table thead {
+    background-color: #efefef;
+    color: #000;
+    font-size: 1em;
+}
+.table > tbody > tr > th,
+.table > tbody > tr > td {
+    padding: 2px 4px 0 4px;
+}
+.card-header { margin-bottom: 12px; }
+.card-title { margin: 4px 0 2px 0;; }
+h6 {font-weight:600;}
+</style>
+{% endblock %}
+{% block extra_javascript %}
+<script>
+$(function() {
+  $("body").toggleClass("sidenav-toggled");
+});
+</script>
+{% endblock %}
+{% block body_tag %}{% endblock %}
+{% block navbar-header %}{% endblock %}
+{% block navbar-top-links %}{% endblock %}
+{% block navbar-sidenav %}{% endblock %}
+{% block content-wrapper %} id="wrapper" class="content-wrapper"{% endblock %}
+{% block content %}{% endblock %}
+{% block breadcrumb %}{% endblock %}
+{% block footer %}{% endblock %}
+{% block logout %}{% endblock %}
