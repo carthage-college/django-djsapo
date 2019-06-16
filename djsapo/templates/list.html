@@ -1,0 +1,25 @@
+{% extends "home.html" %}
+{% block content %}
+<div class="row">
+  {% if messages %}
+    {% for message in messages %}
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+      <div class=" alert {{message.tags}}">
+        <strong>{{ message }}</strong>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+    <h4>
+      Early Alert Submissions
+    </h4>
+    {% if alerts %}
+      {% include "data.inc.html" %}
+    {% else %}
+      <h5>No submissions</h5>
+    {% endif %}
+  </div>
+</div>
+<!-- /.row -->
+{% endblock content %}

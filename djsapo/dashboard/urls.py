@@ -7,8 +7,16 @@ urlpatterns = [
     re_path(
         '^alert/(?P<pid>\d+)/detail/$', views.detail, name='detail'
     ),
+    # complete lising
+    path(
+        'list/', views.list, name='dashboard_list'
+    ),
     path(
         'search/', views.search, name='search'
     ),
     path('', views.home, name='home'),
+    # export to openxml
+    path(
+        'openxml/', views.openxml, name='openxml'
+    ),
 ]

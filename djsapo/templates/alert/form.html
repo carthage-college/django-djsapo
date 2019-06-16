@@ -1,4 +1,5 @@
 {% extends "home.html" %}
+{% load bootstrap4 %}
 {% block title %}
     Early Alert Submission Form &mdash; Center for Student Success &mdash;
     Carthage College
@@ -11,25 +12,47 @@
     </h1>
 {% endblock %}
 {% block content %}
-<div class="forms-container large-8 medium-10 small-12">
-    {% include "includes/required_text.html" %}
-    {% include "includes/errors_text.html" %}
-    <form method="post" action="." class="form" id="profile">
+<div class="container mb-4">
+  <div class="col-md-12 card">
+    <div class="card-title">
+        <h3>Early Alert Submission Form</h3>
+    </div>
+    <div class="card-header bg-light text-black">
+      <strong>Instructions:</strong>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+      velit esse cillum dolore eu fugiat nulla pariatur.
+    </div>
+    <div class="card-body bg-light">
+      {% include "includes/required_text.html" %}
+
+      <form method="post" action="." class="form" id="profile" style="margin-bottom:20px;">
         {% csrf_token %}
-        {% for field in form.hidden_fields %}
-            {% include "form_field.inc.html" %}
-        {% endfor %}
-        <fieldset class="blockLabels">
-            <ol>
-                {% for field in form.visible_fields %}
-                    {% include "form_field.inc.html" %}
-                {% endfor %}
-            </ol>
-        </fieldset>
-        {% include "form_submit.inc.html" %}
-    </form>
+        {% if form.errors %}
+        <div class="alert alert-danger mt-4">
+          Please correct the errors below.
+        </div>
+        {% include "includes/errors_text.html" %}
+        {% endif %}
+        {% bootstrap_form form %}
+        <!-- Section I .form-row -->
+        <div class="form-row mt-4">
+
+          <div class="col-12 pb-2 text-center">
+            <button class="btn btn-primary" style="width:200px;" type="submit">
+            Submit
+            </button>
+          </div>
+        </div>
+        <!-- end form row -->
+      </form>
+      <!-- end form -->
+    </div>
+    <!-- end card body -->
+  </div>
+  <!-- end card -->
 </div>
-<div class="column2 large-4 medium-6 small-12">
-    {% include "alert/help_text.html" %}
-</div>
+<!-- end container -->
 {% endblock %}

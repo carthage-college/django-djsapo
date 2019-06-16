@@ -15,7 +15,7 @@ $(function() {
 {% block navbar-header %}
 <a href="{% url 'home' %}" class="mr-sm-3 mr-lg-3">
   <i class="fa fa-home fa-2x"></i></a>
-<a class="navbar-brand" href="{{root_url}}">Human Resources</a>
+<a class="navbar-brand" href="{{root_url}}">Center for Student Success</a>
 {% endblock %}
 {% block navbar-top-links %}
   <ul class="navbar-nav ml-auto">
@@ -124,8 +124,8 @@ $(function() {
             data-toggle="tooltip" data-placement="top"
             title="Download Alert data as a Spreadsheet"></i></a>
       </h4>
-      {% if data %}
-        {% include "dashboard/data.inc.html" %}
+      {% if alerts %}
+        {% include "data.inc.html" %}
       {% else %}
         <h5>No submissions</h5>
       {% endif %}

@@ -9,6 +9,5 @@ class AlertForm(forms.ModelForm):
 
     class Meta:
         model = Alert
-        # either fields or exclude is required
-        fields = '__all__'
+        exclude = ('parent',)
 

@@ -23,7 +23,7 @@ logger = logging.getLogger('debug_logfile')
 )
 def home(request):
     return render(
-        request, 'dashboard/home.html', {}
+        request, 'home.html', {}
     )
 
 
@@ -83,7 +83,7 @@ def list(request):
     user = request.user
 
     return render(
-        request, 'dashboard/list.html', {
+        request, 'list.html', {
             'objects': None,
         }
     )
