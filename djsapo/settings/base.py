@@ -192,6 +192,7 @@ SERVER_MAIL=''
 # app settings
 CSS_GROUP='CenterForStudentSuccess'
 CSS_EMAIL=''
+REQUIRED_ATTRIBUTE = False
 # logging
 LOG_FILEPATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'logs/')
 DEBUG_LOG_FILENAME = LOG_FILEPATH + 'debug.log'
