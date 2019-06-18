@@ -30,7 +30,7 @@ LIVEWHALE_API_URL = 'https://{}'.format(SERVER_URL)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(__file__)
 ADMIN_MEDIA_PREFIX = '/static/admin/'
-ROOT_URL = '/apps/djsapo/'
+ROOT_URL = '/apps/student-success/early-alert/'
 MEDIA_ROOT = '{}/assets/'.format(ROOT_DIR)
 MEDIA_URL = '/media/djsapo/'.format(ROOT_URL)
 STATIC_ROOT = '{}/static/'.format(ROOT_DIR)
@@ -191,6 +191,7 @@ SERVER_EMAIL = ''
 SERVER_MAIL=''
 # app settings
 CSS_GROUP='CenterForStudentSuccess'
+CSS_EMAIL=''
 # logging
 LOG_FILEPATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'logs/')
 DEBUG_LOG_FILENAME = LOG_FILEPATH + 'debug.log'

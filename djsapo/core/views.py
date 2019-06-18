@@ -3,24 +3,26 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.shortcuts import render, get_object_or_404
 
-from djsapo.core.forms import AlertForm
+from djsapo.core.forms import AlertForm, CommentForm, DocumentForm
 from djtools.utils.mail import send_mail
 
-REQ_ATTR = settings.TEMPLATES[0]['OPTIONS']['debug']
+REQ_ATTR = settings.REQUIRED_ATTRIBUTE
 
 
 def alert_form(request, pid=None):
     if settings.DEBUG:
         TO_LIST = [settings.SERVER_EMAIL,]
     else:
-        TO_LIST = [settings.MY_APP_EMAIL,]
+        TO_LIST = [settings.CSS_EMAIL,]
     BCC = settings.MANAGERS
 
     if request.method=='POST':
-        form = AlertForm(
+        form = AlertForm(request.POST, use_required_attribute=REQ_ATTR)
+        form_com = CommentForm(request.POST, use_required_attribute=REQ_ATTR)
+        form_doc = DocumentForm(
             request.POST, request.FILES, use_required_attribute=REQ_ATTR
         )
-        if form.is_valid():
+        if form.is_valid() and form_com.is_valid() and form_doc.is_valid():
             data = form.save()
             email = settings.DEFAULT_FROM_EMAIL
             if data.email:
@@ -33,8 +35,10 @@ def alert_form(request, pid=None):
                 reverse_lazy('alert_success')
             )
     else:
-        form = AlertForm()
+        form = AlertForm(use_required_attribute=REQ_ATTR)
+        form_com = CommentForm(use_required_attribute=REQ_ATTR)
+        form_doc = DocumentForm(use_required_attribute=REQ_ATTR)
     return render(
         request, 'alert/form.html',
-        {'form': form,}
+        {'form': form,'form_doc':form_doc,'form_com':form_com}
     )

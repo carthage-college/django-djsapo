@@ -20,14 +20,13 @@ FILE_VALIDATORS = [
 RELATIONSHIP_CHOICES = (
     ("Academic Support Services", "Academic Support Services"),
     ("Admissions", "Admissions"),
-    ("Advisor", "Advisor"),
+    ("Aspire", "Aspire"),
     ("Athletics", "Athletics"),
-    ("Dean of Students", "Dean of Students"),
     ("Faculty", "Faculty"),
-    ("Fellow Student", "Fellow Student"),
     ("Health and Counseling", "Health and Counseling"),
     ("Residential Life", "Residential Life"),
     ("Staff", "Staff"),
+    ("Student", "Student"),
     ("Student Financial Planning", "Student Financial Planning"),
     ("Student Involvement", "Student Involvement"),
     ("Student Success", "Student Success"),
@@ -48,44 +47,43 @@ OUTCOME_CHOICES = (
     ("Duplicate concern", "Duplicate concern"),
     ("Unresponsive", "Unresponsive"),
 )
-
+# the name/value pairs have to be on one long line otherwise the django
+# forms validation does not recognize them as valid choices
 INTERACTION_CHOICES = (
     (
         "I have reached out to the student and am awaiting a response.",
         "I have reached out to the student and am awaiting a response."
     ),
     (
-        """
-        I have reached out to the student several times,
-        but was unsuccessful and/or did not get a response.
-        """,
-        """
-        I have reached out to the student several times,
-        but was unsuccessful and/or did not get a response.
-        """
+        "I have reached out to the student several times, but was unsuccessful and/or did not get a response.",
+        "I have reached out to the student several times, but was unsuccessful and/or did not get a response."
     ),
     (
-        """
-        The student has acknowledged the issue,
-        and next steps have been discussed.
-        """,
-        """
-        The student has acknowledged the issue,
-        and next steps have been discussed.
-        """
+        "The student has acknowledged the issue, and next steps have been discussed.",
+        "The student has acknowledged the issue, and next steps have been discussed."
     ),
     (
-        """
-        I have communicated my concern to the student,
-        but they did not agree it was an issue.
-        """,
-        """
-        I have communicated my concern to the student,
-        but they did not agree it was an issue.
-        """
+        "I have communicated my concern to the student, but they did not agree it was an issue.",
+        "I have communicated my concern to the student, but they did not agree it was an issue."
     ),
     ("Other", "Other")
 )
+
+def limit_category():
+    ids = [
+        g.id for g in GenericChoice.objects.filter(
+            tags__name__in=['Category']
+        ).order_by('name')
+    ]
+    return {'id__in':ids}
+
+def limit_action():
+    ids = [
+        g.id for g in GenericChoice.objects.filter(
+            tags__name__in=['Action Taken']
+        ).order_by('name')
+    ]
+    return {'id__in':ids}
 
 
 class GenericChoice(models.Model):
@@ -112,15 +110,21 @@ class GenericChoice(models.Model):
         verbose_name="Is active?", default=True
     )
     admin = models.BooleanField(
-        verbose_name="Administrative only", default=True
+        verbose_name="Administrative only", default=False
     )
-    group = models.ManyToManyField(Group)
+    group = models.ManyToManyField(Group, null=True, blank=True)
     tags = TaggableManager()
 
     class Meta:
         ordering = ['rank']
 
     def __unicode__(self):
+        """
+        Default data for display
+        """
+        return self.name
+
+    def __str__(self):
         """
         Default data for display
         """
@@ -133,7 +137,7 @@ class Profile(models.Model):
     )
     category = models.ManyToManyField(
         GenericChoice, verbose_name="Type of Concern",
-        #related_name="concern_type",
+        limit_choices_to=limit_category,
         help_text = "Check all that apply"
     )
 
@@ -169,24 +173,31 @@ class Alert(models.Model):
     )
     student = models.ForeignKey(
         User, verbose_name="Student", related_name='student',
-        on_delete=models.PROTECT, editable=False
+        on_delete=models.PROTECT
     )
-    category = models.ManyToManyField(
-        GenericChoice, verbose_name="Type of Concern",
-        help_text="Check all that apply"
+    # we will store something like 2019_RA_CSC_1100_01
+    course = models.CharField(
+        "Course number", max_length=64,
+        help_text = """
+        If this concern is related to a specific course please include
+        the course number
+        """
     )
-    # e.g. academic, attendance, low grades, financial, athletics, mental health
-    # other categories (types) will be available to administrators
-    # after the submission)
     relationship = models.CharField(
         "Relationship to student", max_length=24, choices=RELATIONSHIP_CHOICES,
     )
+    category = models.ManyToManyField(
+        GenericChoice, verbose_name="Type of Concern",
+        related_name="concern_type",
+        limit_choices_to=limit_category,
+        help_text="Check all that apply"
+    )
+    # category:
+    # e.g. academic, attendance, low grades, financial, athletics, mental health
+    # other categories (types) will be available to administrators
+    # after the submission)
     severity = models.CharField(
         "Severity", max_length=24, choices=SEVERITY_CHOICES,
-    )
-    action_taken = models.ManyToManyField(
-        GenericChoice,
-        related_name='action_taken', help_text="Check all that apply"
     )
     description = models.TextField(
         "Details about this concern", null=True,blank=True,
@@ -196,20 +207,32 @@ class Alert(models.Model):
             resolve their issue.
         """,
     )
-    # we will store something like 2019_RA_CSC_1100_01
-    course = models.CharField(
-        """
-        If this concern is related to a specific course please include
-        the course number
-        """, max_length=64
+    action_taken = models.ManyToManyField(
+        GenericChoice, verbose_name="Action taken",
+        limit_choices_to=limit_action,
+        help_text="Check all that apply"
     )
     interaction = models.CharField(
         "Have you interacted with the student regarding this concern?",
         max_length=4, choices=BINARY_CHOICES
     )
-    interaction = models.CharField(
-        "Have you interacted with the student regarding this concern?",
-        max_length=4, choices=INTERACTION_CHOICES
+    interaction_date = models.DateTimeField(
+        "Date and time of the interaction",
+        null=True,blank=True,
+        help_text="mm/dd/yyyy HH:MM:am/pm"
+    )
+    interaction_type = models.CharField(
+        "How did you interact with this student?",
+        max_length=64, choices=INTERACTION_CHOICES,
+        null=True,blank=True,
+    )
+    interaction_details = models.TextField(
+        "Interaction datails",
+        help_text = """
+            Please share any additional information about your interaction
+            with the student.
+        """,
+        null=True,blank=True,
     )
     outcome = models.CharField(
         "Outcome", max_length=128, choices=OUTCOME_CHOICES,
