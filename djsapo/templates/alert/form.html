@@ -99,11 +99,13 @@ $(function() {
                 <h5>{{form.student.label}}</h5>
                 </label>
                 <input type="text" name="{{form.student.name}}"
-                  placeholder="{{form.student.help_text}}"
                   class="form-control{% if form.student.errors %} is-invalid{% endif %}"
                   id="{{form.student.id_for_label}}"
                   value="{{form.student.value|default_if_none:''}}"
                   {% if not templates_debug %}required{% endif %}>
+                <small>
+                  {{form.student.help_text}}
+                </small>
                 <small class="text-danger">
                   {{form.student.errors|join:", "}}
                 </small>
