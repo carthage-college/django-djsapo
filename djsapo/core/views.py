@@ -1,7 +1,8 @@
 from django.conf import settings
-from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 
 from djsapo.core.forms import AlertForm, CommentForm, DocumentForm
 from djtools.utils.mail import send_mail
@@ -9,6 +10,7 @@ from djtools.utils.mail import send_mail
 REQ_ATTR = settings.REQUIRED_ATTRIBUTE
 
 
+@login_required
 def alert_form(request, pid=None):
     if settings.DEBUG:
         TO_LIST = [settings.SERVER_EMAIL,]
