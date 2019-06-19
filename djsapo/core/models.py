@@ -179,8 +179,8 @@ class Alert(models.Model):
     course = models.CharField(
         "Course number", max_length=64, null=True,blank=True,
         help_text = """
-        If this concern is related to a specific course please include
-        the course number
+        If this is related to a specific course please include
+        the course number.
         """
     )
     relationship = models.CharField(
