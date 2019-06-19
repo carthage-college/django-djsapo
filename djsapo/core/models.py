@@ -177,7 +177,7 @@ class Alert(models.Model):
     )
     # we will store something like 2019_RA_CSC_1100_01
     course = models.CharField(
-        "Course number", max_length=64,
+        "Course number", max_length=64, null=True,blank=True,
         help_text = """
         If this concern is related to a specific course please include
         the course number

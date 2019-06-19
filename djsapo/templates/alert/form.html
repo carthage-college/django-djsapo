@@ -10,6 +10,18 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/js/bootstrap-select.min.js"
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
+/**
+   * simple function to show/hide an element based on the value
+   * of another dom object
+*/
+function toggle(dis, val, dom) {
+  if (dis == val) {
+    $(dom).show();
+  } else {
+    $(dom).hide();
+  }
+}
+
 $(function() {
   $('textarea').trumbowyg({
     btns: [
@@ -21,6 +33,13 @@ $(function() {
     removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
   });
   $('#id_category').selectpicker();
+  /* interaction: fields that depend on whethor not there was an interaction */
+  {% if form.interaction.value == 'Yes' %}
+    $('#interactionFields').show();
+  {% endif %}
+  $('input[name="interaction"]').click(function() {
+    toggle(this.value, 'Yes', '#interactionFields');
+  });
   $('form#profile').submit(function(){
     /* check textarea for just br tag */
     $("textarea").each(function(){
@@ -40,6 +59,9 @@ $(function() {
   rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/css/bootstrap-select.min.css"
   rel="stylesheet" type="text/css">
+<style>
+#interactionFields {display:none;}
+</style>
 {% endblock %}
 {% block content_head %}
   <h1 id="page_title">
@@ -60,7 +82,7 @@ $(function() {
       commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
       velit esse cillum dolore eu fugiat nulla pariatur.
     </div>
-    <div class="card-body bg-light">
+    <div class="card-body">
       <form method="post" enctype="multipart/form-data" action="."
         class="form" id="profile" style="margin-bottom:20px;">
         {% csrf_token %}
@@ -71,7 +93,6 @@ $(function() {
         {% endif %}
         <div class="form-row mt-4">
           <div class="col-md-6 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.student.id_for_label}}"
                 {% if form.student.errors %}class="text-danger"{% endif %}>
@@ -87,10 +108,8 @@ $(function() {
                   {{form.student.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-6 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.course.id_for_label}}"
                 {% if form.course.errors %}class="text-danger"{% endif %}>
@@ -107,10 +126,8 @@ $(function() {
                   {{form.course.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-6 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.relationship.id_for_label}}"
                 {% if form.relationship.errors %}class="text-danger"{% endif %}>
@@ -118,7 +135,7 @@ $(function() {
                 </label>
                 <select name="{{form.relationship.name}}" id="{{form.relationship.id_for_label}}"
                   class="form-control selectpicker {% if form.relationship.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-secondary">
+                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
                   {% for value, text in form.fields.relationship.choices %}
                     <option value="{{value}}"{% if form.relationship.value == value %} selected{% endif %}>
                       {{text}}
@@ -129,10 +146,8 @@ $(function() {
                   {{form.relationship.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-6 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.category.id_for_label}}"
                 {% if form.category.errors %}class="text-danger"{% endif %}>
@@ -142,7 +157,7 @@ $(function() {
                   class="form-control selectpicker {% if form.category.errors %} is-invalid{% endif %}"
                   {% if not templates_debug %}required{% endif %} multiple>
                   {% for value, text in form.fields.category.choices %}
-                    <option {% if not value %} disabled {% else %} value="{{value}}"{% endif %} {% for val in form.category.value %}{% if val == value %} selected{% endif %}{% endfor %}>
+                    <option {% if not value %} disabled {% else %} value="{{value}}"{% endif %}{% if value|safe in form.category.value %} selected{% endif %}>
                       {{text}}
                     </option>
                   {% endfor %}
@@ -151,10 +166,8 @@ $(function() {
                   {{form.category.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-6 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.severity.id_for_label}}"
                 {% if form.severity.errors %}class="text-danger"{% endif %}> 
@@ -162,7 +175,7 @@ $(function() {
                 </label>
                 <select name="{{form.severity.name}}" id="{{form.severity.id_for_label}}"
                   class="form-control selectpicker {% if form.severity.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-secondary">
+                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
                   {% for value, text in form.fields.severity.choices %}
                     <option value="{{value}}"{% if form.severity.value == value %} selected{% endif %}>
                       {{text}}
@@ -173,10 +186,8 @@ $(function() {
                   {{form.severity.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-6 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.action_taken.id_for_label}}"
                 {% if form.action_taken.errors %}class="text-danger"{% endif %}>
@@ -184,7 +195,7 @@ $(function() {
                 </label>
                 <select name="{{form.action_taken.name}}" id="{{form.action_taken.id_for_label}}"
                   class="form-control selectpicker {% if form.action_taken.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} multiple data-style="btn-secondary">
+                  {% if not templates_debug %}required{% endif %} multiple data-style="btn-light">
                   {% for value, text in form.fields.action_taken.choices %}
                     <option value="{{value}}"{% if form.action_taken.value == value %} selected{% endif %}>
                       {{text}}
@@ -195,10 +206,8 @@ $(function() {
                   {{form.action_taken.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-9 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.description.id_for_label}}"
                 {% if form.description.errors %}class="text-danger"{% endif %}>
@@ -213,7 +222,6 @@ $(function() {
                   {{form.description.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-12 pb-3">
             <div class="form-group">
@@ -254,8 +262,7 @@ $(function() {
             </div>
           </div>
           <!-- https://hygiea.carthage.edu/forms/catering/event/ -->
-          <div class="col-md-5 pb-3">
-            <div class="container-fluid">
+          <div class="col-md-12 pb-3" id="interactionFields">
               <div class="form-group">
                 <label for="{{form.interaction_date.id_for_label}}"
                 {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
@@ -274,11 +281,6 @@ $(function() {
                   {{form.interaction_date.errors|join:", "}}
                 </small>
               </div>
-            </div>
-          </div>
-
-          <div class="col-md-8 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.interaction_type.id_for_label}}"
                 {% if form.interaction_type.errors %}class="text-danger"{% endif %}> 
@@ -286,7 +288,7 @@ $(function() {
                 </label>
                 <select name="{{form.interaction_type.name}}" id="{{form.interaction_type.id_for_label}}"
                   class="form-control selectpicker {% if form.interaction_type.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-secondary">
+                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
                   {% for value, text in form.fields.interaction_type.choices %}
                     <option value="{{value}}"{% if form.interaction_type.value == value %} selected{% endif %}>
                       {{text}}
@@ -297,10 +299,6 @@ $(function() {
                   {{form.interaction_type.errors|join:", "}}
                 </small>
               </div>
-            </div>
-          </div>
-          <div class="col-md-9 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.interaction_details.id_for_label}}"
                 {% if form.interaction_details.errors %}class="text-danger"{% endif %}>
@@ -315,10 +313,8 @@ $(function() {
                   {{form.interaction_details.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-6 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.outcome.id_for_label}}"
                 {% if form.outcome.errors %}class="text-danger"{% endif %}>
@@ -326,7 +322,7 @@ $(function() {
                 </label>
                 <select name="{{form.outcome.name}}" id="{{form.outcome.id_for_label}}"
                   class="form-control selectpicker {% if form.outcome.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-secondary">
+                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
                   {% for value, text in form.fields.outcome.choices %}
                     <option value="{{value}}"{% if form.outcome.value == value %} selected{% endif %}>
                       {{text}}
@@ -337,10 +333,8 @@ $(function() {
                   {{form.outcome.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <div class="col-md-8 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form_doc.phile.id_for_label}}"
                 {% if form_doc.phile.errors %}class="text-danger"{% endif %}>
@@ -368,11 +362,9 @@ $(function() {
                   {{form_doc.name.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           <!-- 
           <div class="col-md-12 pb-3">
-            <div class="container-fluid">
               <div class="form-group">
                 <label for="{{form.xxx.id_for_label}}"
                 {% if form.xxx.errors %}class="text-danger"{% endif %}>
@@ -388,7 +380,6 @@ $(function() {
                   {{form.xxx.errors|join:", "}}
                 </small>
               </div>
-            </div>
           </div>
           -->
         </div>
