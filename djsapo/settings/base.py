@@ -171,7 +171,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 LOGIN_URL = '{}accounts/login/'.format(ROOT_URL)
-LOGOUT_URL = '{}accounts/logout/'.format(ROOT_URL)
+LOGOUT_REDIRECT_URL = '{}accounts/loggedout/'.format(ROOT_URL)
 LOGIN_REDIRECT_URL = ROOT_URL
 USE_X_FORWARDED_HOST = True
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
