@@ -3,8 +3,10 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
-from djsapo.core.forms import AlertForm, CommentForm, DocumentForm
+from djsapo.core.models import Member
+from djsapo.core.forms import AlertForm, DocumentForm
 from djtools.utils.mail import send_mail
 
 REQ_ATTR = settings.REQUIRED_ATTRIBUTE
@@ -12,35 +14,51 @@ REQ_ATTR = settings.REQUIRED_ATTRIBUTE
 
 @login_required
 def alert_form(request, pid=None):
-    if settings.DEBUG:
-        TO_LIST = [settings.SERVER_EMAIL,]
-    else:
-        TO_LIST = [settings.CSS_EMAIL,]
-    BCC = settings.MANAGERS
 
     if request.method=='POST':
+        user = request.user
         form = AlertForm(request.POST, use_required_attribute=REQ_ATTR)
-        form_com = CommentForm(request.POST, use_required_attribute=REQ_ATTR)
         form_doc = DocumentForm(
             request.POST, request.FILES, use_required_attribute=REQ_ATTR
         )
-        if form.is_valid() and form_com.is_valid() and form_doc.is_valid():
-            data = form.save()
-            email = settings.DEFAULT_FROM_EMAIL
-            if data.email:
-                email = data.email
-            subject = "[Submit] {} {}".format(data.first_name,data.last_name)
+        if form.is_valid() and form_doc.is_valid():
+            alert = form.save(commit=False)
+            #user = User.objects.get(pk=alert.student)
+            student = User.objects.get(pk=request.POST.get('student'))
+            alert.student = student
+            alert.created_by = user
+            alert.updated_by = user
+            alert.save()
+            # m2m save for GenericChoice relationships
+            form.save_m2m()
+            # member of the team
+            member = Member(user=user,alert=alert)
+            member.save()
+            doc = form_doc.save(commit=False)
+            doc.alert = alert
+            doc.created_by = member
+            doc.save()
+
+            to_list = [settings.SERVER_EMAIL,]
+            bcc = [settings.MANAGERS,]
+            frum = settings.CSS_EMAIL
+
+            if not settings.DEBUG:
+                bcc.append(settings.CSS_EMAIL)
+                to_list = [user.email,]
+            subject = "[Early Alert] {} {}".format(
+                alert.student.first_name, alert.student.last_name
+            )
             send_mail(
-                request,TO_LIST, subject, email,'alert/email.html', data, BCC
+                request, to_list, subject, frum, 'alert/email.html', alert, bcc
             )
             return HttpResponseRedirect(
                 reverse_lazy('alert_success')
             )
     else:
         form = AlertForm(use_required_attribute=REQ_ATTR)
-        form_com = CommentForm(use_required_attribute=REQ_ATTR)
         form_doc = DocumentForm(use_required_attribute=REQ_ATTR)
     return render(
         request, 'alert/form.html',
-        {'form': form,'form_doc':form_doc,'form_com':form_com}
+        {'form': form,'form_doc':form_doc,}
     )

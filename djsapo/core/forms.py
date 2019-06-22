@@ -13,10 +13,6 @@ CONCERN_CHOICES = GenericChoice.objects.filter(
 
 class AlertForm(forms.ModelForm):
 
-    student = forms.CharField(
-        label="Student", required=True,
-        help_text="Start typing the student's name and matching names will appear.",
-    )
     category = forms.ModelMultipleChoiceField(
         label="Type of Concern",
         queryset=CONCERN_CHOICES, widget=forms.CheckboxSelectMultiple(),
@@ -38,7 +34,7 @@ class AlertForm(forms.ModelForm):
 
     class Meta:
         model = Alert
-        exclude = ('parent',)
+        exclude = ('parent','student')
         widgets = {
             'interaction_date': DateTimeInput(attrs={'type': 'datetime-local'}),
         }

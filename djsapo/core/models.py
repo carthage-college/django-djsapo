@@ -263,7 +263,7 @@ class Member(models.Model):
         Alert, related_name='team', on_delete=models.PROTECT
     )
     status = models.BooleanField(default=False, verbose_name="Active?")
-    case_manager = models.BooleanField()
+    case_manager = models.BooleanField(default=False)
 
     class Meta:
         # the team should not contain a member more than once for an alert
@@ -322,7 +322,7 @@ class Document(models.Model):
         get_latest_by = 'created_at'
 
     def get_slug(self):
-        return 'alert-document/'
+        return 'alert-document'
 
     def __unicode__(self):
         """

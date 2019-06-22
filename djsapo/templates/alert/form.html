@@ -86,7 +86,8 @@ $(function() {
       <form method="post" enctype="multipart/form-data" action="."
         class="form" id="profile" style="margin-bottom:20px;">
         {% csrf_token %}
-        {% if form.errors %}
+        {% if form.errors or form_doc.errors %}
+        {{form_doc.errors}}
           <div class="alert alert-danger">
             <p>Please correct the error{{ form.errors|pluralize }} below.</p>
           </div>
