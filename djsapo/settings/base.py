@@ -82,6 +82,9 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Add the automatic auth middleware just after the default
+    # AuthenticationMiddleware that manages sessions and cookies
+    #'djauth.middleware.AutomaticUserLoginMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # the following should be uncommented unless you are
     # embedding your apps in iframes
