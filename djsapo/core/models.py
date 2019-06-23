@@ -165,11 +165,11 @@ class Alert(models.Model):
     )
     created_by = models.ForeignKey(
         User, verbose_name="Created by",
-        on_delete=models.PROTECT, editable=False
+        on_delete=models.CASCADE, editable=False
     )
     updated_by = models.ForeignKey(
         User, verbose_name="Updated by", related_name='updated_by',
-        on_delete=models.PROTECT, editable=False, null=True, blank=True
+        on_delete=models.CASCADE, editable=False, null=True, blank=True
     )
     student = models.ForeignKey(
         User, verbose_name="Student", related_name='student',
@@ -216,14 +216,19 @@ class Alert(models.Model):
         "Have you interacted with the student regarding this concern?",
         max_length=4, choices=BINARY_CHOICES
     )
-    interaction_date = models.DateTimeField(
-        "Date and time of the interaction",
+    interaction_date = models.DateField(
+        "Date of the interaction",
         null=True,blank=True,
-        help_text="mm/dd/yyyy HH:MM:am/pm"
+        help_text="mm/dd/yyyy"
+    )
+    interaction_time = models.TimeField(
+        "Time of interaction",
+        null=True,blank=True,
+        help_text="(Format HH:MM am/pm)"
     )
     interaction_type = models.CharField(
         "How did you interact with this student?",
-        max_length=64, choices=INTERACTION_CHOICES,
+        max_length=128, choices=INTERACTION_CHOICES,
         null=True,blank=True,
     )
     interaction_details = models.TextField(
@@ -257,10 +262,10 @@ class Member(models.Model):
     Intervention team member
     """
     user = models.ForeignKey(
-        User, verbose_name="Team member", on_delete=models.PROTECT
+        User, verbose_name="Team member", on_delete=models.CASCADE
     )
     alert = models.ForeignKey(
-        Alert, related_name='team', on_delete=models.PROTECT
+        Alert, related_name='team', on_delete=models.CASCADE
     )
     status = models.BooleanField(default=False, verbose_name="Active?")
     case_manager = models.BooleanField(default=False)
@@ -295,14 +300,14 @@ class Document(models.Model):
     created_by = models.ForeignKey(
         Member, verbose_name="Created by",
         related_name='doc_creator',
-        on_delete=models.PROTECT, editable=False
+        on_delete=models.CASCADE, editable=False
     )
     created_at = models.DateTimeField(
         "Date Created", auto_now_add=True
     )
     alert = models.ForeignKey(
         Alert, editable=False,
-        related_name='documents', on_delete=models.PROTECT
+        related_name='documents', on_delete=models.CASCADE
     )
     name = models.CharField(
         "Name or short description of the file",

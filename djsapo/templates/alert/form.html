@@ -5,6 +5,7 @@
 {% endblock %}
 {% block extra_javascript %}
 {{block.super}}
+{{ form.media }}
 <script src="//www.carthage.edu/static/vendor/jquery/plugins/trumbowyg/trumbowyg.min.js"
   type="text/javascript" language="javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/js/bootstrap-select.min.js"
@@ -269,13 +270,10 @@ $(function() {
               <div class="form-group">
                 <label for="{{form.interaction_date.id_for_label}}"
                 {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.interaction_date.label}}</h5>
+                <h5>Date and time of the interaction</h5>
                 </label>
-                <input type="datetime-local" name="{{form.interaction_date.name}}"
-                  class="form-control{% if form.interaction_date.errors %} is-invalid{% endif %}"
-                  id="{{form.interaction_date.id_for_label}}"
-                  value="{{form.interaction_date.value|default_if_none:''}}"
-                  {% if not templates_debug %}required{% endif %}>
+                {{form.interaction_date}}
+                {{form.interaction_time}}
                 <small>
                   {{form.interaction_date.help_text}}
                   <br>
@@ -293,7 +291,7 @@ $(function() {
                   class="form-control selectpicker {% if form.interaction_type.errors %} is-invalid{% endif %}"
                   {% if not templates_debug %}required{% endif %} data-style="btn-light">
                   {% for value, text in form.fields.interaction_type.choices %}
-                    <option value="{{value}}"{% if form.interaction_type.value == value %} selected{% endif %}>
+                    <option value="{{value}}"{% if value|safe in form.interaction_type.value %} selected{% endif %}>
                       {{text}}
                     </option>
                   {% endfor %}
