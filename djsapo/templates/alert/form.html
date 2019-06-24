@@ -10,6 +10,10 @@
   type="text/javascript" language="javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/js/bootstrap-select.min.js"
   type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/jquery/ui/datepicker/js/jquery-ui-1.10.4.custom.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/jquery/plugins/ptTimeSelect/src/jquery.ptTimeSelect.js"
+  type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
 /**
    * simple function to show/hide an element based on the value
@@ -24,6 +28,15 @@ function toggle(dis, val, dom) {
 }
 
 $(function() {
+  $("#id_interaction_date").datepicker({
+    firstDay:1,
+    changeFirstDay:false,
+    dateFormat:'yy-mm-dd',
+    buttonImage:'//www.carthage.edu/themes/shared/img/ico/calendar.gif',
+    showOn:'both',
+    buttonImageOnly:true
+  });
+  $('#id_interaction_time').ptTimeSelect();
   $('textarea').trumbowyg({
     btns: [
       ['formatting'], ['strong', 'em', 'del'], ['link'],
@@ -60,7 +73,14 @@ $(function() {
   rel="stylesheet" type="text/css">
 <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/css/bootstrap-select.min.css"
   rel="stylesheet" type="text/css">
+<link href="//www.carthage.edu/static/vendor/jquery/ui/datepicker/css/smoothness/jquery-ui-1.10.4.custom.min.css"
+  rel="stylesheet" type="text/css" />
+<link href="//www.carthage.edu/static/vendor/jquery/plugins/ptTimeSelect/src/jquery.ptTimeSelect.css"
+  rel="stylesheet" type="text/css" />
 <style>
+#ptTimeSelectCntr {color: #303030;background: #ebebeb;
+font: .74em Arial, Verdana, sans-serif;text-align: center;
+line-height: 1.6em;margin: 2.5em 0;}
 #interactionFields {display:none;}
 </style>
 {% endblock %}
@@ -88,7 +108,6 @@ $(function() {
         class="form" id="profile" style="margin-bottom:20px;">
         {% csrf_token %}
         {% if form.errors or form_doc.errors %}
-        {{form_doc.errors}}
           <div class="alert alert-danger">
             <p>Please correct the error{{ form.errors|pluralize }} below.</p>
           </div>
@@ -201,7 +220,7 @@ $(function() {
                   class="form-control selectpicker {% if form.action_taken.errors %} is-invalid{% endif %}"
                   {% if not templates_debug %}required{% endif %} multiple data-style="btn-light">
                   {% for value, text in form.fields.action_taken.choices %}
-                    <option value="{{value}}"{% if form.action_taken.value == value %} selected{% endif %}>
+                    <option value="{{value}}"{% if value|safe in form.action_taken.value %} selected{% endif %}>
                       {{text}}
                     </option>
                   {% endfor %}
@@ -265,26 +284,10 @@ $(function() {
               </div>
             </div>
           </div>
-          <!-- https://hygiea.carthage.edu/forms/catering/event/ -->
           <div class="col-md-12 pb-3" id="interactionFields">
               <div class="form-group">
-                <label for="{{form.interaction_date.id_for_label}}"
-                {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
-                <h5>Date and time of the interaction</h5>
-                </label>
-                {{form.interaction_date}}
-                {{form.interaction_time}}
-                <small>
-                  {{form.interaction_date.help_text}}
-                  <br>
-                </small>
-                <small class="text-danger">
-                  {{form.interaction_date.errors|join:", "}}
-                </small>
-              </div>
-              <div class="form-group">
                 <label for="{{form.interaction_type.id_for_label}}"
-                {% if form.interaction_type.errors %}class="text-danger"{% endif %}> 
+                {% if form.interaction_type.errors %}class="text-danger"{% endif %}>
                 <h5>{{form.interaction_type.label}}</h5>
                 </label>
                 <select name="{{form.interaction_type.name}}" id="{{form.interaction_type.id_for_label}}"
@@ -315,7 +318,40 @@ $(function() {
                 </small>
               </div>
           </div>
-          <div class="col-md-6 pb-3">
+          <div class="col-md-4">
+              <div class="form-group">
+                <label for="{{form.interaction_date.id_for_label}}"
+                {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
+                <h5>{{form.interaction_date.label}}</h5>
+                </label>
+                <input type="text" name="{{form.interaction_date.name}}"
+                  class="form-control{% if form.interaction_date.errors %} is-invalid{% endif %}"
+                  id="{{form.interaction_date.id_for_label}}"
+                  style="width:95%;display:inline;margin-right:4px;"
+                  value="{{form.interaction_date.value|default_if_none:''}}">
+                {% if form.interaction_date.errors %}
+                <small class="text-danger">
+                  {{form.interaction_date.errors|join:", "}}
+                </small>
+                {% endif %}
+              </div>
+          </div>
+          <div class="col-md-4">
+              <div class="form-group">
+                <label for="{{form.interaction_time.id_for_label}}"
+                {% if form.interaction_time.errors %}class="text-danger"{% endif %}>
+                <h5>{{form.interaction_time.label}}</h5>
+                </label>
+                <input type="text" name="{{form.interaction_time.name}}"
+                  class="form-control{% if form.interaction_time.errors %} is-invalid{% endif %}"
+                  id="{{form.interaction_time.id_for_label}}"
+                  value="{{form.interaction_time.value|default_if_none:''}}">
+                <small class="text-danger">
+                  {{form.interaction_time.errors|join:", "}}
+                </small>
+              </div>
+          </div>
+          <div class="col-md-6 pb-3 clearfix">
               <div class="form-group">
                 <label for="{{form.outcome.id_for_label}}"
                 {% if form.outcome.errors %}class="text-danger"{% endif %}>
@@ -345,9 +381,15 @@ $(function() {
                   class="form-control{% if form_doc.phile.errors %} is-invalid{% endif %}"
                   id="{{form_doc.phile.id_for_label}}"
                   value="{{form_doc.phile.value|default_if_none:''}}">
+                {% if form_doc.phile.errors %}
+                <small class="text-danger">
+                  {{form_doc.phile.errors|join:", "}}
+                </small>
+                {% else %}
                 <small>
                 {{form_doc.phile.help_text}}
                 </small>
+                {% endif %}
                 <br>
                 <label for="{{form_doc.name.id_for_label}}"
                 {% if form_doc.name.errors %}class="text-danger"{% endif %}>

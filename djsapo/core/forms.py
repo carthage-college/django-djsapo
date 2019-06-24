@@ -8,6 +8,7 @@ from django.contrib.admin.widgets import AdminDateWidget
 from djsapo.core.models import Alert, Annotation, Document, GenericChoice
 
 from djauth.LDAPManager import LDAPManager
+from djtools.fields.time import KungfuTimeField
 
 CONCERN_CHOICES = GenericChoice.objects.filter(
     tags__name__in=['Category']
@@ -36,14 +37,14 @@ class AlertForm(forms.ModelForm):
     interaction_date = forms.DateField(
         label="Date of interaction",
         required=False,
-        widget=forms.widgets.DateInput(attrs={'type':'date'})
+        #widget=forms.widgets.DateInput(attrs={'type':'date'})
     )
-    interaction_time = forms.DateField(
+    interaction_time = KungfuTimeField(
         label="Time of interaction",
         required=False,
-        widget=forms.widgets.DateInput(
-            attrs={'type':'time', 'placeholder':'hh:mm:am/pm'}
-        )
+        #widget=forms.widgets.DateInput(
+            #attrs={'type':'time', 'placeholder':'hh:mm:am/pm'}
+        #)
     )
 
     def __init__(self, *args, **kwargs):

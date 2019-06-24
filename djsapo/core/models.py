@@ -10,7 +10,7 @@ from djtools.fields.helpers import upload_to_path
 from taggit.managers import TaggableManager
 
 ALLOWED_EXTENSIONS = [
-    'xls','xlsx','doc','docx','pdf','txt'
+    'xls','xlsx','doc','docx','pdf','txt','png','jpg','jpeg'
 ]
 
 FILE_VALIDATORS = [
