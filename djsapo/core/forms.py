@@ -71,15 +71,13 @@ class AlertForm(forms.ModelForm):
                 user = User.objects.get(pk=sid)
                 cd['student'] = user
             except:
-                #try:
-                if True:
+                try:
                     # initialise the LDAP manager
                     l = LDAPManager()
                     luser = l.search(sid)
                     user = l.dj_create(luser)
                     cd['student'] = user
-                #except:
-                else:
+                except:
                     self.add_error('student', "That is not a valid college ID")
 
         return cd
