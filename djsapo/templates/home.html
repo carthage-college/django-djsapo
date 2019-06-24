@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}
-    Early Alerts &mdash;
-    Center for Student Success &mdash; Carthage College
+  Early Alerts &mdash;
+  Center for Student Success &mdash; Carthage College
 {% endblock %}
 {% block extra_javascript %}
 <script>
@@ -20,24 +20,24 @@ $(function() {
 {% block navbar-top-links %}
   <ul class="navbar-nav ml-auto">
     <li class="dropdown user-dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-user"></i> {{user.first_name|default:"Dashboard"}}
-            <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu">
-            <li class="divider"></li>
-            <li>
-                {% if user.is_anonymous %}
-                <a href="{% url 'auth_login' %}">
-                    <i class="fa fa-sign-in"></i> Sign In
-                </a>
-                {% else %}
-                <a href="{% url 'auth_logout' %}">
-                    <i class="fa fa-sign-out"></i> Sign Out
-                </a>
-                {% endif %}
-            </li>
-        </ul>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        <i class="fa fa-user"></i> {{user.first_name|default:"Dashboard"}}
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        <li class="divider"></li>
+        <li>
+          {% if user.is_anonymous %}
+          <a href="{% url 'auth_login' %}">
+            <i class="fa fa-sign-in"></i> Sign In
+          </a>
+          {% else %}
+          <a href="{% url 'auth_logout' %}">
+            <i class="fa fa-sign-out"></i> Sign Out
+          </a>
+          {% endif %}
+        </li>
+      </ul>
     </li>
   </ul>
 {% endblock navbar-top-links %}
@@ -110,11 +110,11 @@ $(function() {
   {% endif %}
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
       <h4>
-        <a href="{% url 'dashboard_list' %}">
+        <a href="{% url 'list' %}">
           <i class="fa fa-list-alt blue-tooltip" aria-hidden="true"
             data-toggle="tooltip" data-placement="top"
             title="View All Early Alert Submissions"></i></a>
-          All Early Alert Submissions
+          Latest Early Alert Submissions
         <i class="fa fa-leaf green blue-tooltip" aria-hidden="true"
           data-toggle="tooltip" data-placement="top" aria-hidden="true"
           title="The 10 most recent Alert submissions are list below"></i>

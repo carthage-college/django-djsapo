@@ -61,6 +61,7 @@ wsgi.py
 migrations
 user.json
 profile.json
+alert.json
 uwsgi.*.ini
 
 # Scrapy stuff:

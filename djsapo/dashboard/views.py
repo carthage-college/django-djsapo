@@ -13,17 +13,15 @@ from djzbar.decorators.auth import portal_auth_required
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
 
-import logging
-logger = logging.getLogger('debug_logfile')
-
 
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
 def home(request):
+    alerts = Alert.objects.all()
     return render(
-        request, 'home.html', {}
+        request, 'home.html', {'alerts':alerts,}
     )
 
 
@@ -31,16 +29,15 @@ def home(request):
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
-def detail(request, oid):
-    data = get_object_or_404(Alert, id=oid)
+def detail(request, aid):
+    data = get_object_or_404(Alert, id=aid)
     user = request.user
     perms = data.permissions(user)
     if not perms['view']:
         raise Http404
 
-    css = in_group(user, settings.CSS_GROUP)
     return render(
-        request, 'alert/detail.html', {'hr':hr,'data':data,'perms':perms}
+        request, 'alert/detail.html', {'data':data,'perms':perms}
     )
 
 
@@ -89,6 +86,10 @@ def list(request):
     )
 
 
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
 def openxml(request):
 
     wb = Workbook()

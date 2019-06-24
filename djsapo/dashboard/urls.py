@@ -5,11 +5,11 @@ from djsapo.dashboard import views
 
 urlpatterns = [
     re_path(
-        '^alert/(?P<pid>\d+)/detail/$', views.detail, name='detail'
+        '^alert/(?P<aid>\d+)/detail/$', views.detail, name='detail'
     ),
     # complete lising
     path(
-        'list/', views.list, name='dashboard_list'
+        'list/', views.list, name='list'
     ),
     path(
         'search/', views.search, name='search'

@@ -4,6 +4,7 @@ from django.db import models, connection
 from django.contrib.auth.models import Group, User
 from django.core.validators import FileExtensionValidator
 
+from djtools.utils.users import in_group
 from djtools.fields import BINARY_CHOICES
 from djtools.fields.helpers import upload_to_path
 
@@ -118,12 +119,6 @@ class GenericChoice(models.Model):
     class Meta:
         ordering = ['rank']
 
-    def __unicode__(self):
-        """
-        Default data for display
-        """
-        return self.name
-
     def __str__(self):
         """
         Default data for display
@@ -141,7 +136,7 @@ class Profile(models.Model):
         help_text = "Check all that apply"
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return "{}, {}".format(
             self.user.last_name, self.user.first_name
         )
@@ -247,19 +242,34 @@ class Alert(models.Model):
         ordering  = ['-created_at']
         get_latest_by = 'created_at'
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Default data for display
         """
-        return u"{} ({})".format(self.title, self.id)
+        return "{}, {}".format(
+            self.student.last_name, self.student.first_name
+        )
 
     def get_absolute_url(self):
         return ('alert_detail', [str(self.id)])
 
+    def permissions(self, user):
+        # we can move this to core.utils if we use it else where
+        if user.is_superuser:
+            perms = {'view':True,'update':True,'delete':True}
+        else:
+            perms = {'view':False,'update':False,'delete':False}
+            group = in_group(user, settings.CSS_GROUP)
+            if self.created_by == user or group:
+                perms['view'] = True
+                perms['update'] = True
+
+        return perms
+
 
 class Member(models.Model):
     """
-    Intervention team member
+    Alert team member
     """
     user = models.ForeignKey(
         User, verbose_name="Team member", on_delete=models.CASCADE
@@ -274,6 +284,14 @@ class Member(models.Model):
         # the team should not contain a member more than once for an alert
         unique_together = ['user', 'alert']
 
+    def __str__(self):
+        """
+        Default data for display
+        """
+        return "{}, {}".format(
+            self.user.last_name, self.user.first_name
+        )
+
 
 class Annotation(models.Model):
 
@@ -281,7 +299,7 @@ class Annotation(models.Model):
         Alert, related_name='notes', on_delete=models.PROTECT
     )
     created_by = models.ForeignKey(
-        Member, verbose_name="Created by",
+        User, verbose_name="Created by",
         related_name='note_creator',
         on_delete=models.PROTECT, editable=False
     )
@@ -292,13 +310,21 @@ class Annotation(models.Model):
     status = models.BooleanField(default=False, verbose_name="Active?")
     tags = TaggableManager()
 
+    def __str__(self):
+        """
+        Default data for display
+        """
+        return "{}, {}".format(
+            self.created_by.last_name, self.created_by.first_name
+        )
+
 
 class Document(models.Model):
     """
     supporting documents
     """
     created_by = models.ForeignKey(
-        Member, verbose_name="Created by",
+        User, verbose_name="Created by",
         related_name='doc_creator',
         on_delete=models.CASCADE, editable=False
     )
@@ -329,11 +355,11 @@ class Document(models.Model):
     def get_slug(self):
         return 'alert-document'
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Default data for display
         """
-        return u"{}: {}".format(self.name, self.alert.title)
+        return "{}: {}".format(self.name, self.alert)
 
 
 class Message(models.Model):
@@ -350,6 +376,7 @@ class Message(models.Model):
     body = models.TextField(
         help_text="Message content in text/html"
     )
+    status = models.BooleanField(default=False, verbose_name="Active?")
 
 
 """

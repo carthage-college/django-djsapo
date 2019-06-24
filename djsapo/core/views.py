@@ -2,17 +2,21 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from djsapo.core.models import Member
 from djsapo.core.forms import AlertForm, DocumentForm
+
+from djzbar.decorators.auth import portal_auth_required
 from djtools.utils.mail import send_mail
 
 REQ_ATTR = settings.REQUIRED_ATTRIBUTE
 
 
-@login_required
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
 def alert_form(request, pid=None):
 
     if request.method=='POST':

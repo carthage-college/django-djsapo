@@ -114,137 +114,137 @@ line-height: 1.6em;margin: 2.5em 0;}
         {% endif %}
         <div class="form-row mt-4">
           <div class="col-md-6 pb-3">
-              <div class="form-group">
-                <label for="{{form.student.id_for_label}}"
-                {% if form.student.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.student.label}}</h5>
-                </label>
-                <input type="text" name="{{form.student.name}}"
-                  class="form-control{% if form.student.errors %} is-invalid{% endif %}"
-                  id="{{form.student.id_for_label}}"
-                  value="{{form.student.value|default_if_none:''}}"
-                  {% if not templates_debug %}required{% endif %}>
-                <small>
-                  {{form.student.help_text}}
-                </small>
-                <small class="text-danger">
-                  {{form.student.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.student.id_for_label}}"
+              {% if form.student.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.student.label}}</h5>
+              </label>
+              <input type="text" name="{{form.student.name}}"
+                class="form-control{% if form.student.errors %} is-invalid{% endif %}"
+                id="{{form.student.id_for_label}}"
+                value="{{form.student.value|default_if_none:''}}"
+                {% if not templates_debug %}required{% endif %}>
+              <small>
+                {{form.student.help_text}}
+              </small>
+              <small class="text-danger">
+                {{form.student.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-6 pb-3">
-              <div class="form-group">
-                <label for="{{form.course.id_for_label}}"
-                {% if form.course.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.course.label}}</h5>
-                </label>
-                <input type="text" name="{{form.course.name}}"
-                  class="form-control{% if form.course.errors %} is-invalid{% endif %}"
-                  id="{{form.course.id_for_label}}"
-                  value="{{form.course.value|default_if_none:''}}">
-                <small>
-                  {{form.course.help_text}}<br>
-                </small>
-                <small class="text-danger">
-                  {{form.course.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.course.id_for_label}}"
+              {% if form.course.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.course.label}}</h5>
+              </label>
+              <input type="text" name="{{form.course.name}}"
+                class="form-control{% if form.course.errors %} is-invalid{% endif %}"
+                id="{{form.course.id_for_label}}"
+                value="{{form.course.value|default_if_none:''}}">
+              <small>
+                {{form.course.help_text}}<br>
+              </small>
+              <small class="text-danger">
+                {{form.course.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-6 pb-3">
-              <div class="form-group">
-                <label for="{{form.relationship.id_for_label}}"
-                {% if form.relationship.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.relationship.label}}</h5>
-                </label>
-                <select name="{{form.relationship.name}}" id="{{form.relationship.id_for_label}}"
-                  class="form-control selectpicker {% if form.relationship.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
-                  {% for value, text in form.fields.relationship.choices %}
-                    <option value="{{value}}"{% if form.relationship.value == value %} selected{% endif %}>
-                      {{text}}
-                    </option>
-                  {% endfor %}
-                </select>
-                <small class="text-danger">
-                  {{form.relationship.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.relationship.id_for_label}}"
+              {% if form.relationship.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.relationship.label}}</h5>
+              </label>
+              <select name="{{form.relationship.name}}" id="{{form.relationship.id_for_label}}"
+                class="form-control selectpicker {% if form.relationship.errors %} is-invalid{% endif %}"
+                {% if not templates_debug %}required{% endif %} data-style="btn-light">
+                {% for value, text in form.fields.relationship.choices %}
+                  <option value="{{value}}"{% if form.relationship.value == value %} selected{% endif %}>
+                    {{text}}
+                  </option>
+                {% endfor %}
+              </select>
+              <small class="text-danger">
+                {{form.relationship.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-6 pb-3">
-              <div class="form-group">
-                <label for="{{form.category.id_for_label}}"
-                {% if form.category.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.category.label}}</h5>
-                </label>
-                <select name="{{form.category.name}}" id="{{form.category.id_for_label}}"
-                  class="form-control selectpicker {% if form.category.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} multiple>
-                  {% for value, text in form.fields.category.choices %}
-                    <option {% if not value %} disabled {% else %} value="{{value}}"{% endif %}{% if value|safe in form.category.value %} selected{% endif %}>
-                      {{text}}
-                    </option>
-                  {% endfor %}
-                </select>
-                <small class="text-danger">
-                  {{form.category.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.category.id_for_label}}"
+              {% if form.category.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.category.label}}</h5>
+              </label>
+              <select name="{{form.category.name}}" id="{{form.category.id_for_label}}"
+                class="form-control selectpicker {% if form.category.errors %} is-invalid{% endif %}"
+                {% if not templates_debug %}required{% endif %} multiple>
+                {% for value, text in form.fields.category.choices %}
+                  <option {% if not value %} disabled {% else %} value="{{value}}"{% endif %}{% if value|safe in form.category.value %} selected{% endif %}>
+                    {{text}}
+                  </option>
+                {% endfor %}
+              </select>
+              <small class="text-danger">
+                {{form.category.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-6 pb-3">
-              <div class="form-group">
-                <label for="{{form.severity.id_for_label}}"
-                {% if form.severity.errors %}class="text-danger"{% endif %}> 
-                <h5>{{form.severity.label}}</h5>
-                </label>
-                <select name="{{form.severity.name}}" id="{{form.severity.id_for_label}}"
-                  class="form-control selectpicker {% if form.severity.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
-                  {% for value, text in form.fields.severity.choices %}
-                    <option value="{{value}}"{% if form.severity.value == value %} selected{% endif %}>
-                      {{text}}
-                    </option>
-                  {% endfor %}
-                </select>
-                <small class="text-danger">
-                  {{form.severity.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.severity.id_for_label}}"
+              {% if form.severity.errors %}class="text-danger"{% endif %}> 
+              <h5>{{form.severity.label}}</h5>
+              </label>
+              <select name="{{form.severity.name}}" id="{{form.severity.id_for_label}}"
+                class="form-control selectpicker {% if form.severity.errors %} is-invalid{% endif %}"
+                {% if not templates_debug %}required{% endif %} data-style="btn-light">
+                {% for value, text in form.fields.severity.choices %}
+                  <option value="{{value}}"{% if form.severity.value == value %} selected{% endif %}>
+                    {{text}}
+                  </option>
+                {% endfor %}
+              </select>
+              <small class="text-danger">
+                {{form.severity.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-6 pb-3">
-              <div class="form-group">
-                <label for="{{form.action_taken.id_for_label}}"
-                {% if form.action_taken.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.action_taken.label}}</h5>
-                </label>
-                <select name="{{form.action_taken.name}}" id="{{form.action_taken.id_for_label}}"
-                  class="form-control selectpicker {% if form.action_taken.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} multiple data-style="btn-light">
-                  {% for value, text in form.fields.action_taken.choices %}
-                    <option value="{{value}}"{% if value|safe in form.action_taken.value %} selected{% endif %}>
-                      {{text}}
-                    </option>
-                  {% endfor %}
-                </select>
-                <small class="text-danger">
-                  {{form.action_taken.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.action_taken.id_for_label}}"
+              {% if form.action_taken.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.action_taken.label}}</h5>
+              </label>
+              <select name="{{form.action_taken.name}}" id="{{form.action_taken.id_for_label}}"
+                class="form-control selectpicker {% if form.action_taken.errors %} is-invalid{% endif %}"
+                {% if not templates_debug %}required{% endif %} multiple data-style="btn-light">
+                {% for value, text in form.fields.action_taken.choices %}
+                  <option value="{{value}}"{% if value|safe in form.action_taken.value %} selected{% endif %}>
+                    {{text}}
+                  </option>
+                {% endfor %}
+              </select>
+              <small class="text-danger">
+                {{form.action_taken.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-9 pb-3">
-              <div class="form-group">
-                <label for="{{form.description.id_for_label}}"
-                {% if form.description.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.description.label}}</h5>
-                </label>
-                <textarea rows="2" cols="150"
-                class="form-control{% if form.description.errors %} is-invalid{% endif %}"
-                id="{{form.description.id_for_label}}" name="{{form.description.name}}"
-                placeholder="{{form.description.help_text}}"
-                >{{form.description.value|default_if_none:''}}</textarea>
-                <small class="text-danger">
-                  {{form.description.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.description.id_for_label}}"
+              {% if form.description.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.description.label}}</h5>
+              </label>
+              <textarea rows="2" cols="150"
+              class="form-control{% if form.description.errors %} is-invalid{% endif %}"
+              id="{{form.description.id_for_label}}" name="{{form.description.name}}"
+              placeholder="{{form.description.help_text}}"
+              >{{form.description.value|default_if_none:''}}</textarea>
+              <small class="text-danger">
+                {{form.description.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-12 pb-3">
             <div class="form-group">
@@ -285,144 +285,144 @@ line-height: 1.6em;margin: 2.5em 0;}
             </div>
           </div>
           <div class="col-md-12 pb-3" id="interactionFields">
-              <div class="form-group">
-                <label for="{{form.interaction_type.id_for_label}}"
-                {% if form.interaction_type.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.interaction_type.label}}</h5>
-                </label>
-                <select name="{{form.interaction_type.name}}" id="{{form.interaction_type.id_for_label}}"
-                  class="form-control selectpicker {% if form.interaction_type.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
-                  {% for value, text in form.fields.interaction_type.choices %}
-                    <option value="{{value}}"{% if value|safe in form.interaction_type.value %} selected{% endif %}>
-                      {{text}}
-                    </option>
-                  {% endfor %}
-                </select>
-                <small class="text-danger">
-                  {{form.interaction_type.errors|join:", "}}
-                </small>
-              </div>
-              <div class="form-group">
-                <label for="{{form.interaction_details.id_for_label}}"
-                {% if form.interaction_details.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.interaction_details.label}}</h5>
-                </label>
-                <textarea rows="2" cols="150"
-                class="form-control{% if form.interaction_details.errors %} is-invalid{% endif %}"
-                id="{{form.interaction_details.id_for_label}}" name="{{form.interaction_details.name}}"
-                placeholder="{{form.interaction_details.help_text}}"
-                >{{form.interaction_details.value|default_if_none:''}}</textarea>
-                <small class="text-danger">
-                  {{form.interaction_details.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.interaction_type.id_for_label}}"
+              {% if form.interaction_type.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.interaction_type.label}}</h5>
+              </label>
+              <select name="{{form.interaction_type.name}}" id="{{form.interaction_type.id_for_label}}"
+                class="form-control selectpicker {% if form.interaction_type.errors %} is-invalid{% endif %}"
+                {% if not templates_debug %}required{% endif %} data-style="btn-light">
+                {% for value, text in form.fields.interaction_type.choices %}
+                  <option value="{{value}}"{% if value|safe in form.interaction_type.value %} selected{% endif %}>
+                    {{text}}
+                  </option>
+                {% endfor %}
+              </select>
+              <small class="text-danger">
+                {{form.interaction_type.errors|join:", "}}
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="{{form.interaction_details.id_for_label}}"
+              {% if form.interaction_details.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.interaction_details.label}}</h5>
+              </label>
+              <textarea rows="2" cols="150"
+              class="form-control{% if form.interaction_details.errors %} is-invalid{% endif %}"
+              id="{{form.interaction_details.id_for_label}}" name="{{form.interaction_details.name}}"
+              placeholder="{{form.interaction_details.help_text}}"
+              >{{form.interaction_details.value|default_if_none:''}}</textarea>
+              <small class="text-danger">
+                {{form.interaction_details.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-4">
-              <div class="form-group">
-                <label for="{{form.interaction_date.id_for_label}}"
-                {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.interaction_date.label}}</h5>
-                </label>
-                <input type="text" name="{{form.interaction_date.name}}"
-                  class="form-control{% if form.interaction_date.errors %} is-invalid{% endif %}"
-                  id="{{form.interaction_date.id_for_label}}"
-                  style="width:95%;display:inline;margin-right:4px;"
-                  value="{{form.interaction_date.value|default_if_none:''}}">
-                {% if form.interaction_date.errors %}
-                <small class="text-danger">
-                  {{form.interaction_date.errors|join:", "}}
-                </small>
-                {% endif %}
-              </div>
+            <div class="form-group">
+              <label for="{{form.interaction_date.id_for_label}}"
+              {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.interaction_date.label}}</h5>
+              </label>
+              <input type="text" name="{{form.interaction_date.name}}"
+                class="form-control{% if form.interaction_date.errors %} is-invalid{% endif %}"
+                id="{{form.interaction_date.id_for_label}}"
+                style="width:95%;display:inline;margin-right:4px;"
+                value="{{form.interaction_date.value|default_if_none:''}}">
+              {% if form.interaction_date.errors %}
+              <small class="text-danger">
+                {{form.interaction_date.errors|join:", "}}
+              </small>
+              {% endif %}
+            </div>
           </div>
           <div class="col-md-4">
-              <div class="form-group">
-                <label for="{{form.interaction_time.id_for_label}}"
-                {% if form.interaction_time.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.interaction_time.label}}</h5>
-                </label>
-                <input type="text" name="{{form.interaction_time.name}}"
-                  class="form-control{% if form.interaction_time.errors %} is-invalid{% endif %}"
-                  id="{{form.interaction_time.id_for_label}}"
-                  value="{{form.interaction_time.value|default_if_none:''}}">
-                <small class="text-danger">
-                  {{form.interaction_time.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.interaction_time.id_for_label}}"
+              {% if form.interaction_time.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.interaction_time.label}}</h5>
+              </label>
+              <input type="text" name="{{form.interaction_time.name}}"
+                class="form-control{% if form.interaction_time.errors %} is-invalid{% endif %}"
+                id="{{form.interaction_time.id_for_label}}"
+                value="{{form.interaction_time.value|default_if_none:''}}">
+              <small class="text-danger">
+                {{form.interaction_time.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-6 pb-3 clearfix">
-              <div class="form-group">
-                <label for="{{form.outcome.id_for_label}}"
-                {% if form.outcome.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.outcome.label}}</h5>
-                </label>
-                <select name="{{form.outcome.name}}" id="{{form.outcome.id_for_label}}"
-                  class="form-control selectpicker {% if form.outcome.errors %} is-invalid{% endif %}"
-                  {% if not templates_debug %}required{% endif %} data-style="btn-light">
-                  {% for value, text in form.fields.outcome.choices %}
-                    <option value="{{value}}"{% if form.outcome.value == value %} selected{% endif %}>
-                      {{text}}
-                    </option>
-                  {% endfor %}
-                </select>
-                <small class="text-danger">
-                  {{form.outcome.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.outcome.id_for_label}}"
+              {% if form.outcome.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.outcome.label}}</h5>
+              </label>
+              <select name="{{form.outcome.name}}" id="{{form.outcome.id_for_label}}"
+                class="form-control selectpicker {% if form.outcome.errors %} is-invalid{% endif %}"
+                {% if not templates_debug %}required{% endif %} data-style="btn-light">
+                {% for value, text in form.fields.outcome.choices %}
+                  <option value="{{value}}"{% if form.outcome.value == value %} selected{% endif %}>
+                    {{text}}
+                  </option>
+                {% endfor %}
+              </select>
+              <small class="text-danger">
+                {{form.outcome.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <div class="col-md-8 pb-3">
-              <div class="form-group">
-                <label for="{{form_doc.phile.id_for_label}}"
-                {% if form_doc.phile.errors %}class="text-danger"{% endif %}>
-                <h5>{{form_doc.phile.label}}</h5>
-                </label>
-                <input type="file" name="{{form_doc.phile.name}}"
-                  class="form-control{% if form_doc.phile.errors %} is-invalid{% endif %}"
-                  id="{{form_doc.phile.id_for_label}}"
-                  value="{{form_doc.phile.value|default_if_none:''}}">
-                {% if form_doc.phile.errors %}
-                <small class="text-danger">
-                  {{form_doc.phile.errors|join:", "}}
-                </small>
-                {% else %}
-                <small>
-                {{form_doc.phile.help_text}}
-                </small>
-                {% endif %}
-                <br>
-                <label for="{{form_doc.name.id_for_label}}"
-                {% if form_doc.name.errors %}class="text-danger"{% endif %}>
-                <h5>{{form_doc.name.label}}</h5>
-                </label>
-                <input type="text" name="{{form_doc.name.name}}"
-                  placeholder="{{form_doc.name.help_text}}"
-                  class="form-control{% if form_doc.name.errors %} is-invalid{% endif %}"
-                  id="{{form_doc.name.id_for_label}}"
-                  value="{{form_doc.name.value|default_if_none:''}}"
-                  {% if not templates_debug %}required{% endif %}>
-                <small class="text-danger">
-                  {{form_doc.name.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form_doc.phile.id_for_label}}"
+              {% if form_doc.phile.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc.phile.label}}</h5>
+              </label>
+              <input type="file" name="{{form_doc.phile.name}}"
+                class="form-control{% if form_doc.phile.errors %} is-invalid{% endif %}"
+                id="{{form_doc.phile.id_for_label}}"
+                value="{{form_doc.phile.value|default_if_none:''}}">
+              {% if form_doc.phile.errors %}
+              <small class="text-danger">
+                {{form_doc.phile.errors|join:", "}}
+              </small>
+              {% else %}
+              <small>
+              {{form_doc.phile.help_text}}
+              </small>
+              {% endif %}
+              <br>
+              <label for="{{form_doc.name.id_for_label}}"
+              {% if form_doc.name.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc.name.label}}</h5>
+              </label>
+              <input type="text" name="{{form_doc.name.name}}"
+                placeholder="{{form_doc.name.help_text}}"
+                class="form-control{% if form_doc.name.errors %} is-invalid{% endif %}"
+                id="{{form_doc.name.id_for_label}}"
+                value="{{form_doc.name.value|default_if_none:''}}"
+                {% if not templates_debug %}required{% endif %}>
+              <small class="text-danger">
+                {{form_doc.name.errors|join:", "}}
+              </small>
+            </div>
           </div>
           <!-- 
           <div class="col-md-12 pb-3">
-              <div class="form-group">
-                <label for="{{form.xxx.id_for_label}}"
-                {% if form.xxx.errors %}class="text-danger"{% endif %}>
-                <h5>{{form.xxx.label}}</h5>
-                </label>
-                <input type="text" name="{{form.xxx.name}}"
-                  placeholder="{{form.xxx.help_text}}"
-                  class="form-control{% if form.xxx.errors %} is-invalid{% endif %}"
-                  id="{{form.xxx.id_for_label}}"
-                  value="{{form.xxx.value|default_if_none:''}}"
-                  {% if not templates_debug %}required{% endif %}>
-                <small class="text-danger">
-                  {{form.xxx.errors|join:", "}}
-                </small>
-              </div>
+            <div class="form-group">
+              <label for="{{form.xxx.id_for_label}}"
+              {% if form.xxx.errors %}class="text-danger"{% endif %}>
+              <h5>{{form.xxx.label}}</h5>
+              </label>
+              <input type="text" name="{{form.xxx.name}}"
+                placeholder="{{form.xxx.help_text}}"
+                class="form-control{% if form.xxx.errors %} is-invalid{% endif %}"
+                id="{{form.xxx.id_for_label}}"
+                value="{{form.xxx.value|default_if_none:''}}"
+                {% if not templates_debug %}required{% endif %}>
+              <small class="text-danger">
+                {{form.xxx.errors|join:", "}}
+              </small>
+            </div>
           </div>
           -->
         </div>
