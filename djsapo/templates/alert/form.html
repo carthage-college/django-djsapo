@@ -327,7 +327,7 @@ line-height: 1.6em;margin: 2.5em 0;}
               <input type="text" name="{{form.interaction_date.name}}"
                 class="form-control{% if form.interaction_date.errors %} is-invalid{% endif %}"
                 id="{{form.interaction_date.id_for_label}}"
-                style="width:95%;display:inline;margin-right:4px;"
+                style="width:90%;display:inline;margin-right:4px;"
                 value="{{form.interaction_date.value|default_if_none:''}}">
               {% if form.interaction_date.errors %}
               <small class="text-danger">
@@ -344,7 +344,7 @@ line-height: 1.6em;margin: 2.5em 0;}
               </label>
               <input type="text" name="{{form.interaction_time.name}}"
                 class="form-control{% if form.interaction_time.errors %} is-invalid{% endif %}"
-                id="{{form.interaction_time.id_for_label}}"
+                id="{{form.interaction_time.id_for_label}}" style="width:90%;"
                 value="{{form.interaction_time.value|default_if_none:''}}">
               <small class="text-danger">
                 {{form.interaction_time.errors|join:", "}}

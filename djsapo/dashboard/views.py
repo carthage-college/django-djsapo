@@ -21,7 +21,7 @@ from openpyxl.writer.excel import save_virtual_workbook
 def home(request):
     alerts = Alert.objects.all()
     return render(
-        request, 'home.html', {'alerts':alerts,}
+        request, 'list.html', {'alerts':alerts,}
     )
 
 

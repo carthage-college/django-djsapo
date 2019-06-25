@@ -1,5 +1,5 @@
 <div class="table-responsive">
-  <table class="table table-striped table-bordered table-hover display">
+  <table class="table table-striped table-bordered table-hover display" id="data-table">
     <thead>
       <tr>
         <th>
@@ -9,7 +9,7 @@
             title="View Alert"></i>
         </th>
         <th>Course</th>
-        <th>
+        <th nowrap>
           Creator
           <i class="fa fa-envelope-o green blue-tooltip" data-toggle="tooltip"
             data-placement="top" aria-hidden="true"
@@ -19,7 +19,7 @@
         <th>Relationship</th>
         <th>Category</th>
         <th>Severity</th>
-        <th>Action taken</th>
+        <th nowrap>Action taken</th>
         <th>Interaction</th>
         <th>Outcome</th>
         {% if user.is_superuser %}
@@ -62,7 +62,7 @@
         <td>{{a.outcome}}</td>
         {% if user.is_superuser %}
         <td class="text-center">
-          <a href="#" data-href="{% url 'alert_delete' a.id %}"
+          <a href="#" data-href="{# url 'alert_delete' a.id #}"
             data-title="Alert: {{a.subject}}" data-toggle="modal"
             data-target="#confirm-delete">
             <i class="fa fa-trash-o red blue-tooltip"  data-toggle="tooltip"
@@ -83,7 +83,7 @@
             title="View Alert"></i>
         </th>
         <th>Course</th>
-        <th>
+        <th nowrap>
           Creator
           <i class="fa fa-envelope-o green blue-tooltip" data-toggle="tooltip"
             data-placement="top" aria-hidden="true"
@@ -93,7 +93,7 @@
         <th>Relationship</th>
         <th>Category</th>
         <th>Severity</th>
-        <th>Action taken</th>
+        <th nowrap>Action taken</th>
         <th>Interaction</th>
         <th>Outcome</th>
         {% if user.is_superuser %}

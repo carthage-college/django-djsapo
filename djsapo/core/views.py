@@ -63,6 +63,5 @@ def alert_form(request, pid=None):
         form = AlertForm(use_required_attribute=REQ_ATTR)
         form_doc = DocumentForm(use_required_attribute=REQ_ATTR)
     return render(
-        request, 'alert/form.html',
-        {'form': form,'form_doc':form_doc,}
+        request, 'alert/form.html', {'form': form,'form_doc':form_doc,}
     )
