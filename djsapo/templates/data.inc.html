@@ -17,6 +17,7 @@
         </th>
         <th>Created</th>
         <th>Relationship</th>
+        <th>Team</th>
         <th>Category</th>
         <th>Severity</th>
         <th nowrap>Action taken</th>
@@ -36,8 +37,8 @@
       <tr>
         <td nowrap>
           <a href="{% url 'detail' a.id %}" data-toggle="tooltip"
-          data-placement="top" class="blue-tooltip"
-          title="View Alert Submission">{{a}}</a>
+            data-placement="top" class="blue-tooltip"
+            title="View Alert Submission: {{a.student.id}}">{{a}}</a>
         </td>
         <td>{{a.course}}</td>
         <td nowrap title="Created at: {{a.created_at}}">
@@ -47,6 +48,7 @@
         </td>
         <td class="text-center">{{a.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">{{a.relationship}}</td>
+        <td class="text-center">{{a.team.all}}</td>
         <td>
           {% for c in a.category.all %}
             {{c}}{% if not forloop.last %}, {% endif %}
@@ -91,6 +93,7 @@
         </th>
         <th>Created</th>
         <th>Relationship</th>
+        <th>Team</th>
         <th>Category</th>
         <th>Severity</th>
         <th nowrap>Action taken</th>
