@@ -48,7 +48,7 @@
         </td>
         <td class="text-center">{{a.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">{{a.relationship}}</td>
-        <td class="text-center">{{a.team.all}}</td>
+        <td class="text-center">{% for m in a.team.all %}{{m}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         <td>
           {% for c in a.category.all %}
             {{c}}{% if not forloop.last %}, {% endif %}
