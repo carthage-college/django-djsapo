@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404
 
 from djsapo.core.models import Alert
 
+from djtools.utils.users import in_group
 from djzbar.decorators.auth import portal_auth_required
 
 from openpyxl import Workbook
@@ -19,7 +20,13 @@ from openpyxl.writer.excel import save_virtual_workbook
     redirect_url=reverse_lazy('access_denied')
 )
 def home(request):
-    alerts = Alert.objects.all()
+    user = request.user
+    css = in_group(user, settings.CSS_GROUP)
+    # CSS or superuser can access all objects
+    if css:
+        alerts = Alert.objects.all().order_by('-created_at')[:10]
+    else:
+        alerts = Alert.objects.filter(created_by=user)
     return render(
         request, 'list.html', {'alerts':alerts,}
     )
