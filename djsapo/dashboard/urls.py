@@ -14,9 +14,9 @@ urlpatterns = [
     path(
         'search/', views.search, name='search'
     ),
-    path('', views.home, name='home'),
     # export to openxml
     path(
         'openxml/', views.openxml, name='openxml'
     ),
+    path('', views.home, name='home'),
 ]

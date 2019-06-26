@@ -280,10 +280,11 @@ LOGGING = {
         }
     },
     'loggers': {
-        'provisioning_logger': {
-            'handlers': ['error_logfile'],
-            'level': 'ERROR'
-         },
+        'djsapo': {
+            'handlers':['debug_logfile'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
         'error_logger': {
             'handlers': ['error_logfile'],
             'level': 'ERROR'
