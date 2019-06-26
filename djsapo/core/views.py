@@ -35,12 +35,9 @@ def alert_form(request, pid=None):
             alert.save()
             # m2m save for GenericChoice relationships
             form.save_m2m()
-            # member of the team
-            member = Member(user=user,alert=alert)
-            member.save()
             doc = form_doc.save(commit=False)
             doc.alert = alert
-            doc.created_by = member
+            doc.created_by = user
             doc.save()
 
             to_list = [settings.SERVER_EMAIL,]
