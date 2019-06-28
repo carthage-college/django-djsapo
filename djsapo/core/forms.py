@@ -14,24 +14,15 @@ CONCERN_CHOICES = GenericChoice.objects.filter(
     tags__name__in=['Category']
 ).filter(active=True).order_by('name')
 
-ACTION_CHOICES = GenericChoice.objects.filter(
-    tags__name__in=['Action Taken']
-).filter(active=True).order_by('name')
-
 
 class AlertForm(forms.ModelForm):
 
     student = forms.CharField(
-        label = "Student ID",
+        label = "Student",
     )
     category = forms.ModelMultipleChoiceField(
         label="Type of Concern",
         queryset=CONCERN_CHOICES, widget=forms.CheckboxSelectMultiple(),
-        required=True
-    )
-    action_taken = forms.ModelMultipleChoiceField(
-        label="Action Taken",
-        queryset=ACTION_CHOICES, widget=forms.CheckboxSelectMultiple(),
         required=True
     )
     interaction_date = forms.DateField(
@@ -54,11 +45,6 @@ class AlertForm(forms.ModelForm):
         for c in CONCERN_CHOICES:
             choices.append((c.id, c.name))
         self.fields['category'].choices = choices
-
-        choices = [('','---Select all that apply---')]
-        for c in ACTION_CHOICES:
-            choices.append((c.id, c.name))
-        self.fields['action_taken'].choices = choices
 
     class Meta:
         model = Alert

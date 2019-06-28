@@ -20,7 +20,6 @@
         <th>Team</th>
         <th>Category</th>
         <th>Severity</th>
-        <th nowrap>Action taken</th>
         <th>Interaction</th>
         <th>Outcome</th>
         {% if user.is_superuser %}
@@ -55,11 +54,6 @@
           {% endfor %}
         </td>
         <td>{{a.severity}}</td>
-        <td>
-          {% for t in a.action_taken.all %}
-            {{t}}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </td>
         <td class="text-center">{{a.interaction}}</td>
         <td>{{a.outcome}}</td>
         {% if user.is_superuser %}
@@ -96,7 +90,6 @@
         <th>Team</th>
         <th>Category</th>
         <th>Severity</th>
-        <th nowrap>Action taken</th>
         <th>Interaction</th>
         <th>Outcome</th>
         {% if user.is_superuser %}

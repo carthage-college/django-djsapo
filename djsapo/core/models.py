@@ -202,11 +202,6 @@ class Alert(models.Model):
             resolve their issue.
         """,
     )
-    action_taken = models.ManyToManyField(
-        GenericChoice, verbose_name="Action taken",
-        limit_choices_to=limit_action,
-        help_text="Check all that apply"
-    )
     interaction = models.CharField(
         "Have you interacted with the student regarding this concern?",
         max_length=4, choices=BINARY_CHOICES
@@ -305,6 +300,9 @@ class Annotation(models.Model):
     )
     created_at = models.DateTimeField(
         "Date Created", auto_now_add=True
+    )
+    recipients = models.ManyToManyField(
+        User, null=True, blank=True
     )
     body = models.TextField()
     status = models.BooleanField(default=False, verbose_name="Active?")
