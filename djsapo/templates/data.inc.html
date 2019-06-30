@@ -17,11 +17,9 @@
         </th>
         <th>Created</th>
         <th>Relationship</th>
-        <th>Team</th>
         <th>Category</th>
         <th>Severity</th>
-        <th>Interaction</th>
-        <th>Outcome</th>
+        <th>Status</th>
         {% if user.is_superuser %}
         <th class="text-center">
           <i class="fa fa-trash green blue-tooltip"  data-toggle="tooltip"
@@ -29,6 +27,7 @@
             title="Delete this Alert"></i>
         </th>
         {% endif %}
+        <th>Team</th>
       </tr>
     </thead>
     <tbody>
@@ -47,15 +46,13 @@
         </td>
         <td class="text-center">{{a.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">{{a.relationship}}</td>
-        <td class="text-center">{% for m in a.team.all %}{{m}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         <td>
           {% for c in a.category.all %}
             {{c}}{% if not forloop.last %}, {% endif %}
           {% endfor %}
         </td>
         <td>{{a.severity}}</td>
-        <td class="text-center">{{a.interaction}}</td>
-        <td>{{a.outcome}}</td>
+        <td>{{a.status}}</td>
         {% if user.is_superuser %}
         <td class="text-center">
           <a href="#" data-href="{# url 'alert_delete' a.id #}"
@@ -66,6 +63,7 @@
               title="Delete Alert: {{a.subject}}"></i>
           </a>
         </td>
+        <td class="text-center">{% for m in a.team.all %}{{m}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         {% endif %}
       </tr>
       {% endfor %}
@@ -87,11 +85,8 @@
         </th>
         <th>Created</th>
         <th>Relationship</th>
-        <th>Team</th>
         <th>Category</th>
         <th>Severity</th>
-        <th>Interaction</th>
-        <th>Outcome</th>
         {% if user.is_superuser %}
         <th class="text-center">
           <i class="fa fa-trash green blue-tooltip"  data-toggle="tooltip"
@@ -99,6 +94,7 @@
             title="Delete this Alert"></i>
         </th>
         {% endif %}
+        <th>Team</th>
       </tr>
     </tfoot>
   </table>

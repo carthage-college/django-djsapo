@@ -48,7 +48,7 @@ class AlertForm(forms.ModelForm):
 
     class Meta:
         model = Alert
-        exclude = ('parent',)
+        exclude = ('parent','status',)
 
     def clean(self):
         cd = self.cleaned_data

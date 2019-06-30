@@ -19,55 +19,62 @@ FILE_VALIDATORS = [
 ]
 
 RELATIONSHIP_CHOICES = (
-    ("Academic Support Services", "Academic Support Services"),
-    ("Admissions", "Admissions"),
-    ("Aspire", "Aspire"),
-    ("Athletics", "Athletics"),
-    ("Faculty", "Faculty"),
-    ("Health and Counseling", "Health and Counseling"),
-    ("Residential Life", "Residential Life"),
-    ("Staff", "Staff"),
-    ("Student", "Student"),
-    ("Student Financial Planning", "Student Financial Planning"),
-    ("Student Involvement", "Student Involvement"),
-    ("Student Success", "Student Success"),
-    ("Other", "Other"),
+    ('Academic Support Services', "Academic Support Services"),
+    ('Admissions', "Admissions"),
+    ('Aspire', "Aspire"),
+    ('Athletics', "Athletics"),
+    ('Faculty', "Faculty"),
+    ('Health and Counseling', "Health and Counseling"),
+    ('Residential Life', "Residential Life"),
+    ('Staff', "Staff"),
+    ('Student', "Student"),
+    ('Student Financial Planning', "Student Financial Planning"),
+    ('Student Involvement', "Student Involvement"),
+    ('Student Success', "Student Success"),
+    ('Other', "Other"),
 )
 
 SEVERITY_CHOICES = (
-    ("High", "High"),
-    ("Moderate", "Moderate"),
-    ("Low", "Low"),
-    ("Uncertain", "Uncertain"),
+    ('High', "High"),
+    ('Moderate', "Moderate"),
+    ('Low', "Low"),
+    ('Uncertain', "Uncertain"),
+)
+
+STATUS_CHOICES = (
+    ('New', "New"),
+    ('Assigned', "Assigned"),
+    ('In progress', "In progress"),
+    ('Closed', "Closed"),
 )
 
 OUTCOME_CHOICES = (
-    ("No resolution required", "No resolution required"),
-    ("Next steps discussed", "Next steps discussed"),
-    ("Resolved", "Resolved"),
-    ("Duplicate concern", "Duplicate concern"),
-    ("Unresponsive", "Unresponsive"),
+    ('No resolution required', "No resolution required"),
+    ('Next steps discussed', "Next steps discussed"),
+    ('Resolved', "Resolved"),
+    ('Duplicate concern', "Duplicate concern"),
+    ('Unresponsive', "Unresponsive"),
 )
 # the name/value pairs have to be on one long line otherwise the django
 # forms validation does not recognize them as valid choices
 INTERACTION_CHOICES = (
     (
-        "I have reached out to the student and am awaiting a response.",
+        'I have reached out to the student and am awaiting a response.',
         "I have reached out to the student and am awaiting a response."
     ),
     (
-        "I have reached out to the student several times, but was unsuccessful and/or did not get a response.",
+        'I have reached out to the student several times, but was unsuccessful and/or did not get a response.',
         "I have reached out to the student several times, but was unsuccessful and/or did not get a response."
     ),
     (
-        "The student has acknowledged the issue, and next steps have been discussed.",
+        'The student has acknowledged the issue, and next steps have been discussed.',
         "The student has acknowledged the issue, and next steps have been discussed."
     ),
     (
-        "I have communicated my concern to the student, but they did not agree it was an issue.",
+        'I have communicated my concern to the student, but they did not agree it was an issue.',
         "I have communicated my concern to the student, but they did not agree it was an issue."
     ),
-    ("Other", "Other")
+    ('Other', "Other")
 )
 
 def limit_category():
@@ -211,15 +218,10 @@ class Alert(models.Model):
         null=True,blank=True,
         help_text="mm/dd/yyyy"
     )
-    interaction_time = models.TimeField(
-        "Time of interaction",
-        null=True,blank=True,
-        help_text="(Format HH:MM am/pm)"
-    )
     interaction_type = models.CharField(
         "How did you interact with this student?",
         max_length=128, choices=INTERACTION_CHOICES,
-        null=True,blank=True,
+        null=True,blank=True
     )
     interaction_details = models.TextField(
         "Interaction datails",
@@ -227,10 +229,13 @@ class Alert(models.Model):
             Please share any additional information about your interaction
             with the student.
         """,
-        null=True,blank=True,
+        null=True,blank=True
     )
     outcome = models.CharField(
-        "Outcome", max_length=128, choices=OUTCOME_CHOICES,
+        "Outcome", max_length=128, choices=OUTCOME_CHOICES
+    )
+    status = models.CharField(
+        max_length=128, choices=STATUS_CHOICES, default='New'
     )
 
     class Meta:
