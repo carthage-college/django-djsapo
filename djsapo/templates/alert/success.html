@@ -1,6 +1,17 @@
 {% extends "home.html" %}
 {% load livewhale_api %}
 {% block content %}
+<div class="container mb-4">
+  <div class="col-md-8 card">
   {% get_lw_content as instructions blurbs 2810 %}
   {{instructions.body|safe}}
+  {% if user.is_staff %}
+  <p>
+  <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2810"
+    target="_blank">
+    <i class="fa fa-pencil green" aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
+  </p>
+  {% endif %}
+  </div>
+</div>
 {% endblock %}

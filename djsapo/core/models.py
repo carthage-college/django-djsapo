@@ -202,7 +202,7 @@ class Alert(models.Model):
         "Severity", max_length=24, choices=SEVERITY_CHOICES,
     )
     description = models.TextField(
-        "Details about this concern", null=True,blank=True,
+        "Details about this concern",
         help_text = """
             Please share any additional information you have about this concern
             that can help us in our efforts to connect with the student and

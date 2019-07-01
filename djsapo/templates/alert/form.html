@@ -1,4 +1,5 @@
 {% extends "home.html" %}
+{% load livewhale_api %}
 {% block title %}
   Early Alert Submission Form &mdash; Center for Student Success &mdash;
   Carthage College
@@ -11,8 +12,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/js/bootstrap-select.min.js"
   type="text/javascript" language="javascript"></script>
 <script src="//www.carthage.edu/static/vendor/jquery/ui/datepicker/js/jquery-ui-1.10.4.custom.min.js"
-  type="text/javascript" language="javascript"></script>
-<script src="//www.carthage.edu/static/vendor/jquery/plugins/ptTimeSelect/src/jquery.ptTimeSelect.js"
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
 /**
@@ -36,7 +35,6 @@ $(function() {
     showOn:'both',
     buttonImageOnly:true
   });
-  $('#id_interaction_time').ptTimeSelect();
   $('textarea').trumbowyg({
     btns: [
       ['formatting'], ['strong', 'em', 'del'], ['link'],
@@ -75,13 +73,20 @@ $(function() {
   rel="stylesheet" type="text/css">
 <link href="//www.carthage.edu/static/vendor/jquery/ui/datepicker/css/smoothness/jquery-ui-1.10.4.custom.min.css"
   rel="stylesheet" type="text/css" />
-<link href="//www.carthage.edu/static/vendor/jquery/plugins/ptTimeSelect/src/jquery.ptTimeSelect.css"
-  rel="stylesheet" type="text/css" />
 <style>
-#ptTimeSelectCntr {color: #303030;background: #ebebeb;
-font: .74em Arial, Verdana, sans-serif;text-align: center;
-line-height: 1.6em;margin: 2.5em 0;}
 #interactionFields {display:none;}
+/* .required {border-left: 4px solid; border-left-color: red;} */
+.required:after {content:" *";color:#dc3545;}
+{% if form.description.errors %}
+#descriptionField .trumbowyg-box {
+    border: 1px solid #dc3545;
+}
+{% endif %}
+{% if form.interaction_details.errors %}
+#interactionFields .trumbowyg-box {
+    border: 1px solid #dc3545;
+}
+{% endif %}
 </style>
 {% endblock %}
 {% block content_head %}
@@ -96,12 +101,16 @@ line-height: 1.6em;margin: 2.5em 0;}
       <h3>Early Alert Submission Form</h3>
     </div>
     <div class="card-header bg-light text-black">
-      <strong>Instructions:</strong>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-      commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-      velit esse cillum dolore eu fugiat nulla pariatur.
+      {% get_lw_content as instructions blurbs 2811 %}
+      {{instructions.body|safe}}
+      {% if user.is_staff %}
+      <p>
+      <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2811"
+        target="_blank">
+        <i class="fa fa-pencil green" aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
+      </p>
+      {% endif %}
+      {% include "includes/required_text.html" %}
     </div>
     <div class="card-body">
       <form method="post" enctype="multipart/form-data" action="."
@@ -117,7 +126,7 @@ line-height: 1.6em;margin: 2.5em 0;}
             <div class="form-group">
               <label for="{{form.student.id_for_label}}"
               {% if form.student.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.student.label}}</h5>
+              <h5 class="required">{{form.student.label}}</h5>
               </label>
               <input type="text" name="{{form.student.name}}"
                 class="form-control{% if form.student.errors %} is-invalid{% endif %}"
@@ -154,7 +163,7 @@ line-height: 1.6em;margin: 2.5em 0;}
             <div class="form-group">
               <label for="{{form.relationship.id_for_label}}"
               {% if form.relationship.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.relationship.label}}</h5>
+              <h5 class="required">{{form.relationship.label}}</h5>
               </label>
               <select name="{{form.relationship.name}}" id="{{form.relationship.id_for_label}}"
                 class="form-control selectpicker {% if form.relationship.errors %} is-invalid{% endif %}"
@@ -174,7 +183,7 @@ line-height: 1.6em;margin: 2.5em 0;}
             <div class="form-group">
               <label for="{{form.category.id_for_label}}"
               {% if form.category.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.category.label}}</h5>
+              <h5 class="required">{{form.category.label}}</h5>
               </label>
               <select name="{{form.category.name}}" id="{{form.category.id_for_label}}"
                 class="form-control selectpicker {% if form.category.errors %} is-invalid{% endif %}"
@@ -185,6 +194,9 @@ line-height: 1.6em;margin: 2.5em 0;}
                   </option>
                 {% endfor %}
               </select>
+              <small>
+                Click on as many types as you need<br>
+              </small>
               <small class="text-danger">
                 {{form.category.errors|join:", "}}
               </small>
@@ -194,7 +206,7 @@ line-height: 1.6em;margin: 2.5em 0;}
             <div class="form-group">
               <label for="{{form.severity.id_for_label}}"
               {% if form.severity.errors %}class="text-danger"{% endif %}> 
-              <h5>{{form.severity.label}}</h5>
+              <h5 class="required">{{form.severity.label}}</h5>
               </label>
               <select name="{{form.severity.name}}" id="{{form.severity.id_for_label}}"
                 class="form-control selectpicker {% if form.severity.errors %} is-invalid{% endif %}"
@@ -212,14 +224,14 @@ line-height: 1.6em;margin: 2.5em 0;}
           </div>
           <div class="col-md-6 pb-3">
             <div class="form-group">
-                <h3>Place holder</h3>
+                <h3></h3>
             </div>
           </div>
           <div class="col-md-9 pb-3">
-            <div class="form-group">
+            <div class="form-group" id="descriptionField">
               <label for="{{form.description.id_for_label}}"
               {% if form.description.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.description.label}}</h5>
+              <h5 class="required">{{form.description.label}}</h5>
               </label>
               <textarea rows="2" cols="150"
               class="form-control{% if form.description.errors %} is-invalid{% endif %}"
@@ -240,7 +252,7 @@ line-height: 1.6em;margin: 2.5em 0;}
                   class="d-block"
                 {% endif %}
                 >
-                <h5>{{form.interaction.label}}</h5>
+                <h5 class="required">{{form.interaction.label}}</h5>
               </label>
               <div class="form-check form-check-inline">
                 <label for="id_{{form.interaction.name}}_0"
@@ -273,7 +285,7 @@ line-height: 1.6em;margin: 2.5em 0;}
             <div class="form-group">
               <label for="{{form.interaction_type.id_for_label}}"
               {% if form.interaction_type.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.interaction_type.label}}</h5>
+              <h5{% if form.interaction.value == 'Yes' %} class="required"{% endif %}>{{form.interaction_type.label}}</h5>
               </label>
               <select name="{{form.interaction_type.name}}" id="{{form.interaction_type.id_for_label}}"
                 class="form-control selectpicker {% if form.interaction_type.errors %} is-invalid{% endif %}"
@@ -291,7 +303,7 @@ line-height: 1.6em;margin: 2.5em 0;}
             <div class="form-group">
               <label for="{{form.interaction_details.id_for_label}}"
               {% if form.interaction_details.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.interaction_details.label}}</h5>
+              <h5{% if form.interaction.value == 'Yes' %} class="required"{% endif %}>{{form.interaction_details.label}}</h5>
               </label>
               <textarea rows="2" cols="150"
               class="form-control{% if form.interaction_details.errors %} is-invalid{% endif %}"
@@ -302,12 +314,11 @@ line-height: 1.6em;margin: 2.5em 0;}
                 {{form.interaction_details.errors|join:", "}}
               </small>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
+            <div class="col-md-4">
+              <div class="form-group">
               <label for="{{form.interaction_date.id_for_label}}"
               {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.interaction_date.label}}</h5>
+              <h5{% if form.interaction.value == 'Yes' %} class="required"{% endif %}>{{form.interaction_date.label}}</h5>
               </label>
               <input type="text" name="{{form.interaction_date.name}}"
                 class="form-control{% if form.interaction_date.errors %} is-invalid{% endif %}"
@@ -319,21 +330,7 @@ line-height: 1.6em;margin: 2.5em 0;}
                 {{form.interaction_date.errors|join:", "}}
               </small>
               {% endif %}
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="form-group">
-              <label for="{{form.interaction_time.id_for_label}}"
-              {% if form.interaction_time.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.interaction_time.label}}</h5>
-              </label>
-              <input type="text" name="{{form.interaction_time.name}}"
-                class="form-control{% if form.interaction_time.errors %} is-invalid{% endif %}"
-                id="{{form.interaction_time.id_for_label}}" style="width:90%;"
-                value="{{form.interaction_time.value|default_if_none:''}}">
-              <small class="text-danger">
-                {{form.interaction_time.errors|join:", "}}
-              </small>
+              </div>
             </div>
           </div>
           <div class="col-md-6 pb-3 clearfix">
@@ -413,13 +410,9 @@ line-height: 1.6em;margin: 2.5em 0;}
         </div>
         <!-- /.form-row -->
         <div class="form-row mt-4">
-          <div class="col-6 pb-2">
-            <p>
-              If you have questions about this process, or want to follow up
-              on a previous message, please
-              <a href="mailto:studentsuccess@carthage.edu">
-                contact the Center for Student Success</a>.
-            </p>
+          <div class="col-8 pb-2">
+            {% get_lw_content as contact blurbs 2812 %}
+            {{contact.body|safe}}
           </div>
           <div class="col-12 pb-2 text-center">
             <button class="btn btn-primary" style="width:200px;" type="submit">
