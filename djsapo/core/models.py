@@ -335,8 +335,7 @@ class Document(models.Model):
         "Date Created", auto_now_add=True
     )
     alert = models.ForeignKey(
-        Alert, editable=False,
-        related_name='documents', on_delete=models.CASCADE
+        Alert, related_name='documents', on_delete=models.CASCADE
     )
     name = models.CharField(
         "Name or short description of the file",
