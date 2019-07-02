@@ -113,11 +113,11 @@ $(function() {
         <h3 class="detail">
           Comments
         </h3>
-        <ul>
+        <ol>
         {% for n in data.notes.all %}
-          <li>{{n.body}}</li>
+          <li>{{n.body|safe}}</li>
         {% endfor %}
-        </ul>
+        </ol>
         <h3 class="detail">
           Documents
         </h3>

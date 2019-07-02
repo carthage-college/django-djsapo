@@ -301,7 +301,7 @@ class Annotation(models.Model):
     created_by = models.ForeignKey(
         User, verbose_name="Created by",
         related_name='note_creator',
-        on_delete=models.PROTECT, editable=False
+        on_delete=models.PROTECT
     )
     created_at = models.DateTimeField(
         "Date Created", auto_now_add=True
@@ -310,7 +310,7 @@ class Annotation(models.Model):
         User, null=True, blank=True
     )
     body = models.TextField()
-    status = models.BooleanField(default=False, verbose_name="Active?")
+    status = models.BooleanField(default=True, verbose_name="Active?")
     tags = TaggableManager()
 
     def __str__(self):
