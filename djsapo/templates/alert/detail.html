@@ -67,39 +67,43 @@ $(function() {
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h4>Student</h4>
-        <h5>
+        <dl class="dl-horizontal">
+          <dt>Student</dt>
+          <dd>
           {{data.student.last_name}}, {{data.student.first_name}}
           [{{data.student.id}}]
-        </h5>
+          </dd>
         {% if data.course %}
-        <h4>Course</h4>
-        <h5>{{data.course}}</h5>
+          <dt>Course</dt>
+          <dd>{{data.course}}</dd>
         {% endif %}
-        <h4>Relationship with student</h4>
-        <h5>{{data.relationship}}</h5>
-        <h4>Type of concern</h4>
-        <ol>
-        {% for c in data.category.all %}
-        <li>{{c}}</li>
-        {% endfor %}
-        </ol>
-        <h4>Severity</h4>
-        <h5>{{data.severity}}</h5>
-        <h4>Details about this concern</h4>
-        <div>{{data.description|safe}}</div>
-        <h4>Have you interacted with the student regarding this concern?</h4>
-        <h5>{{data.interaction}}</h5>
-        {% if data.interaction == 'Yes' %}
-        <h4>How did you interact with this student?</h4>
-        <h5>{{data.interaction_type}}</h5>
-        <h4>Date of interaction</h4>
-        <h5>{{data.interaction_date}}</h5>
-        <h4>Interaction details</h4>
-        <div>{{data.interaction_details|safe}}</div>
-        {% endif %}
-        <h4>Outcome</h4>
-        <h5>{{data.outcome}}</h5>
+          <dt>Relationship with student</dt>
+          <dd>{{data.relationship}}</dd>
+          <dt>Type of concern</dt>
+          <dd>
+            {% for c in data.category.all %}
+            {{c}}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+          </dd>
+          <dt>Severity</dt>
+          <dd>{{data.severity}}</dd>
+          <dt>Details about this concern</dt>
+          <dd>{{data.description|safe}}</dd>
+          <dt>Have you interacted with the student regarding this concern?</dt>
+          <dd>
+            {{data.interaction}}
+          </dd>
+          {% if data.interaction == 'Yes' %}
+            <dt>How did you interact with this student?</dt>
+            <dd>{{data.interaction_type}}</dd>
+            <dt>Date of interaction</dt>
+            <dd>{{data.interaction_date}}</dd>
+            <dt>Interaction details</dt>
+            <dd>{{data.interaction_details|safe}}</dd>
+          {% endif %}
+          <dt>Outcome</dt>
+          <dd>{{data.outcome}}</dd>
+        </dl>
         <!-- fin -->
       </div>
       <!-- /.panel-body -->
@@ -110,17 +114,9 @@ $(function() {
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-body">
-        <h3 class="detail">
-          Comments
-        </h3>
-        <ol>
-        {% for n in data.notes.all %}
-          <li>{{n.body|safe}}</li>
-        {% endfor %}
-        </ol>
-        <h3 class="detail">
+        <h4>
           Documents
-        </h3>
+        </h4>
         <ul>
         {% for d in data.documents.all %}
           {% if d.phile %}
@@ -132,6 +128,14 @@ $(function() {
           {% endif %}
         {% endfor %}
         </ul>
+        <h4>
+          Comments
+        </h4>
+        <ol>
+        {% for n in data.notes.all %}
+          <li>{{n.body|safe}}</li>
+        {% endfor %}
+        </ol>
         <!-- fin -->
       </div>
       <!-- /.panel-body -->
