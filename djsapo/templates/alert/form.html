@@ -13,6 +13,10 @@
   type="text/javascript" language="javascript"></script>
 <script src="//www.carthage.edu/static/vendor/jquery/ui/datepicker/js/jquery-ui-1.10.4.custom.min.js"
   type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/autoComplete.js/dist/js/autoComplete.js"
+  type="text/javascript" language="javascript"></script>
+<script src="/static/djsapo/js/autocomplete.js"
+  type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
 /**
    * simple function to show/hide an element based on the value
@@ -72,7 +76,9 @@ $(function() {
 <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/css/bootstrap-select.min.css"
   rel="stylesheet" type="text/css">
 <link href="//www.carthage.edu/static/vendor/jquery/ui/datepicker/css/smoothness/jquery-ui-1.10.4.custom.min.css"
-  rel="stylesheet" type="text/css" />
+  rel="stylesheet" type="text/css">
+<link href="//www.carthage.edu/static/vendor/autoComplete.js/dist/css/autoComplete.css"
+  rel="stylesheet" type="text/css">
 <style>
 #interactionFields {display:none;}
 /* .required {border-left: 4px solid; border-left-color: red;} */
@@ -87,12 +93,17 @@ $(function() {
     border: 1px solid #dc3545;
 }
 {% endif %}
+#autoComplete_results_list{
+    position: absolute;
+    width: auto;
+}
+.autoComplete_result{max-width:inherit;}
+/* autocomplete styles */
+.selection {color:green;}
 </style>
 {% endblock %}
 {% block content_head %}
-  <h1 id="page_title">
-    Early Alert Form
-  </h1>
+  <h1 id="page_title">Early Alert Form</h1>
 {% endblock %}
 {% block content %}
 <div class="container mb-4">
@@ -126,11 +137,14 @@ $(function() {
             <div class="form-group">
               <label for="{{form.student.id_for_label}}"
               {% if form.student.errors %}class="text-danger"{% endif %}>
-              <h5 class="required">{{form.student.label}}</h5>
+              <h5 class="required">{{form.student.label}}:
+                <span class="selection"></span>
+              </h5>
               </label>
+              <!-- id="{{form.student.id_for_label}}" -->
               <input type="text" name="{{form.student.name}}"
                 class="form-control{% if form.student.errors %} is-invalid{% endif %}"
-                id="{{form.student.id_for_label}}"
+                id="autoComplete" data-cid="{{obj.id}}"
                 value="{{form.student.value|default_if_none:''}}"
                 {% if not templates_debug %}required{% endif %}>
               <small>
@@ -233,7 +247,7 @@ $(function() {
               {% if form.description.errors %}class="text-danger"{% endif %}>
               <h5 class="required">{{form.description.label}}</h5>
               </label>
-              <textarea rows="2" cols="150"
+              <textarea rows="2" cols="150" maxlength="1500"
               class="form-control{% if form.description.errors %} is-invalid{% endif %}"
               id="{{form.description.id_for_label}}" name="{{form.description.name}}"
               placeholder="{{form.description.help_text}}"
@@ -305,7 +319,7 @@ $(function() {
               {% if form.interaction_details.errors %}class="text-danger"{% endif %}>
               <h5{% if form.interaction.value == 'Yes' %} class="required"{% endif %}>{{form.interaction_details.label}}</h5>
               </label>
-              <textarea rows="2" cols="150"
+              <textarea rows="2" cols="150" maxlength="1500"
               class="form-control{% if form.interaction_details.errors %} is-invalid{% endif %}"
               id="{{form.interaction_details.id_for_label}}" name="{{form.interaction_details.name}}"
               placeholder="{{form.interaction_details.help_text}}"
