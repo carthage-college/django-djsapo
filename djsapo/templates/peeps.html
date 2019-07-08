@@ -1,0 +1,1 @@
+[{% for p in peeps %}{% templatetag openbrace %}{% for n,v in p.items %}"{{n}}":"{{v}}"{% if not forloop.last %},{% endif %}{% endfor %}{% templatetag closebrace %}{% if not forloop.last %},{% endif %}{% endfor %}]
