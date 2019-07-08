@@ -9,6 +9,7 @@ import django
 django.setup()
 
 from django.conf import settings
+from djsapo.core.utils import get_connection
 
 import pyodbc
 import argparse
@@ -47,7 +48,7 @@ def main():
 
     sql = """
         SELECT
-            *
+            lastname, firstname, username
         FROM
             provisioning_vw
         WHERE
@@ -67,17 +68,31 @@ def main():
         connection.setencoding(encoding='utf-8', ctype=pyodbc.SQL_CHAR)
         cursor = connection.cursor()
         objects = cursor.execute(sql)
-        for o in objects:
-            print(o[2],o[1])
+        peeps = []
+        for obj in objects:
+            gn = obj[1]
+            sn = obj[0]
+            un = obj[2]
+            row = {
+                'lastname': sn, 'firstname': gn,
+                'email': '{}@carthage.edu'.format(un)
+            }
+            #row = {
+                #'lastname': obj[0], 'firstname': obj[1],
+                #'email': '{}@carthage.edu'.format(obj[2])
+            #}
+            peeps.append(row)
+            #print(row['lastname'])
+            #print(obj[2],obj[1],obj[d])
+            #print(gn,sn,un)
+        for p in  peeps:
+            for n,v in p.items():
+                print(n,v)
 
-
-######################
-# shell command line
-######################
 
 if __name__ == '__main__':
     args = parser.parse_args()
-    equis = args.equis
+    who = args.who
     test = args.test
 
     if test:

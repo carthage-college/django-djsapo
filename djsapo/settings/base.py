@@ -8,7 +8,8 @@ import os
 
 # sqlserver connection string
 MSSQL_EARL = ''
-
+# informix connection string
+INFORMIX_ODBC = ''
 # Debug
 DEBUG = False
 INFORMIX_DEBUG = 'debug'
@@ -80,9 +81,9 @@ INSTALLED_APPS = [
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
+    #'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    #'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -126,15 +127,12 @@ TEMPLATES = [
 # caching
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        #'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        #'LOCATION': '127.0.0.1:11211',
-        #'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        #'LOCATION': '/var/tmp/django_djsapo_cache',
-        #'TIMEOUT': 60*20,
-        #'KEY_PREFIX': 'djsapo_',
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+        'TIMEOUT': 60*20,
+        'KEY_PREFIX': 'djsapo_',
         #'OPTIONS': {
-        #    'MAX_ENTRIES': 80000,
+            #'MAX_ENTRIES': 80000,
         #}
     }
 }

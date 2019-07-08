@@ -120,7 +120,7 @@ class GenericChoice(models.Model):
     admin = models.BooleanField(
         verbose_name="Administrative only", default=False
     )
-    group = models.ManyToManyField(Group, null=True, blank=True)
+    group = models.ManyToManyField(Group, blank=True)
     tags = TaggableManager()
 
     class Meta:
@@ -307,7 +307,7 @@ class Annotation(models.Model):
         "Date Created", auto_now_add=True
     )
     recipients = models.ManyToManyField(
-        User, null=True, blank=True
+        User, blank=True
     )
     body = models.TextField()
     status = models.BooleanField(default=True, verbose_name="Active?")

@@ -48,7 +48,7 @@ $(function() {
     tagsToRemove: ['script', 'link'],
     removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
   });
-  $('#id_category').selectpicker();
+  $('select').selectpicker();
   /* interaction: fields that depend on whethor not there was an interaction */
   {% if form.interaction.value == 'Yes' %}
     $('#interactionFields').show();
@@ -56,7 +56,18 @@ $(function() {
   $('input[name="interaction"]').click(function() {
     toggle(this.value, 'Yes', '#interactionFields');
   });
+  {% if form.student.value %}
+    $('#autoComplete').val('');
+    $('#autoComplete').attr('data-email','{{form.student.value}}');
+    $('.selection').val('{{form.student.lastname}}');
+
+  {% endif %}
   $('form#profile').submit(function(){
+
+    // set the value of the student field to email address selected
+    // via autocomplete
+    $('#autoComplete').val($('#autoComplete').attr('data-email'));
+
     /* check textarea for just br tag */
     $("textarea").each(function(){
       if (this.value == "<br>") {
@@ -83,6 +94,9 @@ $(function() {
 #interactionFields {display:none;}
 /* .required {border-left: 4px solid; border-left-color: red;} */
 .required:after {content:" *";color:#dc3545;}
+#descriptionField .trumbowyg-box {
+    z-index:1;
+}
 {% if form.description.errors %}
 #descriptionField .trumbowyg-box {
     border: 1px solid #dc3545;
@@ -93,13 +107,80 @@ $(function() {
     border: 1px solid #dc3545;
 }
 {% endif %}
-#autoComplete_results_list{
-    position: absolute;
-    width: auto;
-}
-.autoComplete_result{max-width:inherit;}
 /* autocomplete styles */
+#autoComplete {
+  border: 0.05rem solid green;
+  caret-color: green;
+  color: green;
+  background-position: left .95rem top 0.5rem;
+  width:50%;
+}
+#autoComplete:hover {
+  color: green;
+}
+#autoComplete:focus {
+  color: green;
+  border: 0.05rem solid green;
+  background-position: left 1.05rem top 0.8rem;
+}
+
+#autoComplete::placeholder {
+  color: #8fa98f;
+}
+
+#autoComplete:hover::placeholder {
+  color: #8fa98f;
+}
+
+#autoComplete:focus::placeholder {
+  color: #8fa98f;
+}
+
+
+
+
+#autoComplete_results_list{
+  position: absolute;
+  width: auto;
+  display: none;
+  z-index:9999;
+}
+.autoComplete_result {
+  max-width:inherit;
+  margin: 0;
+  color: #000;
+  background-color: #efefef;
+  border-left: 2px solid #e3e3e3;
+  border-right: 2px solid #e3e3e3;
+}
+.autoComplete_result::selection {
+  color: rgba(#ffffff, 0);
+  background-color: rgba(#ffffff, 0);
+}
+.autoComplete_result:last-child {
+  border-radius: 0 0 1rem 1rem;
+}
+.autoComplete_result:hover {
+  cursor: pointer;
+  background-color: rgba(255, 248, 248, 0.9);
+  border-left: 2px solid rgba(255, 122, 122, 1);
+  border-right: 2px solid rgba(255, 122, 122, 1);
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.autoComplete_result:focus {
+  outline: none;
+  background-color: rgba(255, 248, 248, 0.9);
+  border-left: 2px solid rgba(255, 122, 122, 1);
+  border-right: 2px solid rgba(255, 122, 122, 1);
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
 .selection {color:green;}
+form#profile select {
+  width: 80%;
+}
 </style>
 {% endblock %}
 {% block content_head %}
@@ -138,13 +219,18 @@ $(function() {
               <label for="{{form.student.id_for_label}}"
               {% if form.student.errors %}class="text-danger"{% endif %}>
               <h5 class="required">{{form.student.label}}:
-                <span class="selection"></span>
+                <span class="selection">
+                {% if form.instance.student %}
+                {{form.instance.student.last_name}},
+                {{form.instance.student.first_name}}
+                {% endif %}
+                </span>
               </h5>
               </label>
               <!-- id="{{form.student.id_for_label}}" -->
               <input type="text" name="{{form.student.name}}"
                 class="form-control{% if form.student.errors %} is-invalid{% endif %}"
-                id="autoComplete" data-cid="{{obj.id}}"
+                id="autoComplete" data-email=""
                 value="{{form.student.value|default_if_none:''}}"
                 {% if not templates_debug %}required{% endif %}>
               <small>
@@ -180,7 +266,7 @@ $(function() {
               <h5 class="required">{{form.relationship.label}}</h5>
               </label>
               <select name="{{form.relationship.name}}" id="{{form.relationship.id_for_label}}"
-                class="form-control selectpicker {% if form.relationship.errors %} is-invalid{% endif %}"
+                class="form-control selectpicker{% if form.relationship.errors %} is-invalid{% endif %}"
                 {% if not templates_debug %}required{% endif %} data-style="btn-light">
                 {% for value, text in form.fields.relationship.choices %}
                   <option value="{{value}}"{% if form.relationship.value == value %} selected{% endif %}>
@@ -200,7 +286,7 @@ $(function() {
               <h5 class="required">{{form.category.label}}</h5>
               </label>
               <select name="{{form.category.name}}" id="{{form.category.id_for_label}}"
-                class="form-control selectpicker {% if form.category.errors %} is-invalid{% endif %}"
+                class="form-control selectpicker{% if form.category.errors %} is-invalid{% endif %}"
                 {% if not templates_debug %}required{% endif %} multiple>
                 {% for value, text in form.fields.category.choices %}
                   <option {% if not value %} disabled {% else %} value="{{value}}"{% endif %}{% if value|safe in form.category.value %} selected{% endif %}>
@@ -223,7 +309,7 @@ $(function() {
               <h5 class="required">{{form.severity.label}}</h5>
               </label>
               <select name="{{form.severity.name}}" id="{{form.severity.id_for_label}}"
-                class="form-control selectpicker {% if form.severity.errors %} is-invalid{% endif %}"
+                class="form-control selectpicker{% if form.severity.errors %} is-invalid{% endif %}"
                 {% if not templates_debug %}required{% endif %} data-style="btn-light">
                 {% for value, text in form.fields.severity.choices %}
                   <option value="{{value}}"{% if form.severity.value == value %} selected{% endif %}>

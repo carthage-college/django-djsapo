@@ -1,11 +1,13 @@
 from django.conf import settings
+from django.core.cache import cache
 from django.urls import reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 
 from djsapo.core.models import Member
 from djsapo.core.forms import AlertForm, DocumentForm
+from djsapo.core.utils import get_connection
 
 from djzbar.decorators.auth import portal_auth_required
 from djtools.utils.mail import send_mail
@@ -62,3 +64,59 @@ def alert_form(request, pid=None):
     return render(
         request, 'alert/form.html', {'form': form,'form_doc':form_doc,}
     )
+
+
+#@portal_auth_required(
+    #session_var='DJSAPO_AUTH',
+    #redirect_url=reverse_lazy('access_denied')
+#)
+def people(request, who):
+    '''
+    Accepts: GET request where "who" = faculty/staff/student
+    Returns: all current faculty, staff, or student types
+    '''
+
+    #if request.is_ajax() and request.method == 'GET':
+    if request.method == 'GET':
+        sql = """
+            SELECT
+                lastname, firstname, username
+            FROM
+                provisioning_vw
+            WHERE
+                {} is not null
+            ORDER BY
+                lastname, firstname
+        """.format(who)
+
+        key = 'provisioning_vw_{}_api'.format(who)
+        peeps = cache.get(key)
+        if peeps is None:
+            connection = get_connection()
+            cursor = connection.cursor()
+            objects = cursor.execute(sql)
+            peeps = []
+            if objects:
+                for obj in objects:
+                    gn = obj[1]
+                    sn = obj[0]
+                    un = obj[2]
+                    row = {
+                        'lastname': sn, 'firstname': gn,
+                        'email': '{}@carthage.edu'.format(un)
+                    }
+                    #row = {
+                        #'lastname': obj[0], 'firstname': obj[1],
+                        #'email': '{}@carthage.edu'.format(obj[2])
+                    #}
+                    #dict(zip(obj.keys(), obj))
+                    peeps.append(row)
+                cache.set(key, peeps)
+        response = render(
+            request, 'peeps.html', {'peeps':peeps,},
+            content_type='text/plain; charset=utf-8'
+        )
+    else:
+        response =  HttpResponse('None', content_type='text/plain; charset=utf-8')
+
+    return response

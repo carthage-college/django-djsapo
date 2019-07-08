@@ -72,24 +72,24 @@ class AlertForm(forms.ModelForm):
 
         return cd['interaction_date']
 
-    def clean(self):
+    def clean_student(self):
         cd = self.cleaned_data
-        sid = cd.get('student')
-        if sid:
+        email = cd.get('student')
+        if email:
             try:
-                user = User.objects.get(pk=sid)
+                user = User.objects.get(email=email)
                 cd['student'] = user
             except:
                 try:
                     # initialise the LDAP manager
                     l = LDAPManager()
-                    luser = l.search(sid)
+                    luser = l.search(email, field='mail')
                     user = l.dj_create(luser)
                     cd['student'] = user
                 except:
                     self.add_error('student', "That is not a valid college ID")
 
-        return cd
+        return cd['student']
 
 
 class DocumentForm(forms.ModelForm):

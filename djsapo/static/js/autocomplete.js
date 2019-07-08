@@ -12,7 +12,7 @@ const autoCompletejs = new autoComplete({
                 .setAttribute("placeholder", "Loading...");
             // Fetch External Data Source
             const source = await fetch(
-                "https://www.carthage.edu/jenzabar/api/people/student/"
+                "https://hygiea.carthage.edu/apps/student-success/early-alert/api/student/"
             );
             const data = await source.json();
             // Post loading placeholder text
@@ -50,7 +50,7 @@ const autoCompletejs = new autoComplete({
     },
     resultItem: {
         content: (data, source) => {
-          source.innerHTML = data.match + ", " + data.value.firstname + ": " + data.value.username + "@carthage.edu";
+          source.innerHTML = data.match + ", " + data.value.firstname + ": " + data.value.email;
         },
         element: "li"
     },
@@ -67,7 +67,7 @@ const autoCompletejs = new autoComplete({
         document.querySelector(".selection").innerHTML = selection;
         //document.querySelector("#autoComplete").value = feedback.selection.value.id;
         document.querySelector("#autoComplete").value = "";
-        document.querySelector("#autoComplete").setAttribute('data-cid', feedback.selection.value.id);
+        document.querySelector("#autoComplete").setAttribute('data-email', feedback.selection.value.email);
         // Change placeholder with the selected value
         document
             .querySelector("#autoComplete")
@@ -79,16 +79,6 @@ const autoCompletejs = new autoComplete({
 ["focus", "blur", "mousedown", "keydown"].forEach(function(eventType) {
   const input = document.querySelector("#autoComplete");
   const resultsList = document.querySelector("#autoComplete_results_list");
-
-  document.querySelector("#autoComplete").addEventListener(eventType, function(event) {
-    // Hide results list & show other elemennts
-    if (eventType === "blur") {
-      action("dim");
-    } else if (eventType === "focus") {
-      // Show results list & hide other elemennts
-      action("light");
-    }
-  });
 
   // Hide Results list when not used
   document.addEventListener(eventType, function(event) {
@@ -110,12 +100,10 @@ const autoCompletejs = new autoComplete({
   document.querySelector("#autoComplete_results_list").addEventListener(eventType, function(event) {
     if (eventType === "focusin") {
       if (event.target && event.target.nodeName === "LI") {
-        action("light");
         document.querySelector("#autoComplete").classList.remove("out");
         document.querySelector("#autoComplete").classList.add("in");
       }
     } else if (eventType === "focusout" || event.keyCode === 13) {
-      action("dim");
       document.querySelector("#autoComplete").classList.remove("in");
       document.querySelector("#autoComplete").classList.add("out");
     }

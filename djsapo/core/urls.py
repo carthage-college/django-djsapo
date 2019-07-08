@@ -1,4 +1,4 @@
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView, TemplateView
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
@@ -51,6 +51,9 @@ urlpatterns = [
         'success/', TemplateView.as_view(
             template_name='alert/success.html'
         ), name='alert_success'
+    ),
+    re_path(
+        '^api/(?P<who>[-\w]+)/$', views.people, name='people'
     ),
     path(
         '', views.alert_form, name='alert_form'
