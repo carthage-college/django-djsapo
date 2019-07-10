@@ -125,13 +125,16 @@ def kat_matrix(request):
     if request.is_ajax() and request.method == 'POST':
         cids = request.POST.getlist('cids[]')
         matrix = "<ol>"
+        peeps = []
         for c in cids:
             cat = GenericChoice.objects.get(pk=c)
             for m in cat.matrix.all():
-                matrix += "<li>{}, {}</li>".format(m.user.last_name, m.user.first_name)
+                if m.user.id not in peeps:
+                    matrix += "<li>{}, {}</li>".format(m.user.last_name, m.user.first_name)
+                peeps.append(m.user.id)
         matrix += "</ol>"
         response = render(
-            request, 'matrix.html', {'matrix': mark_safe(matrix),},
+            request, 'matrix.html', {'matrix': mark_safe(matrix),'peeps':peeps}
         )
     else:
         response = HttpResponse(
