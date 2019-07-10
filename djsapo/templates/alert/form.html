@@ -17,38 +17,36 @@
   type="text/javascript" language="javascript"></script>
 <script src="/static/djsapo/js/autocomplete.js"
   type="text/javascript" language="javascript"></script>
+<script src="https://malsup.github.io/min/jquery.blockUI.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="//www.carthage.edu/static/vendor/js/spin.min.js"
+  type="text/javascript" language="javascript"></script>
+<script src="/static/djsapo/js/main.js"
+  type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
-/**
-   * simple function to show/hide an element based on the value
-   * of another dom object
-*/
-function toggle(dis, val, dom) {
-  if (dis == val) {
-    $(dom).show();
-  } else {
-    $(dom).hide();
-  }
-}
-
 $(function() {
-  $("#id_interaction_date").datepicker({
-    firstDay:1,
-    changeFirstDay:false,
-    dateFormat:'yy-mm-dd',
-    buttonImage:'//www.carthage.edu/themes/shared/img/ico/calendar.gif',
-    showOn:'both',
-    buttonImageOnly:true
-  });
-  $('textarea').trumbowyg({
-    btns: [
-      ['formatting'], ['strong', 'em', 'del'], ['link'],
-      ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-      ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
-    ],
-    tagsToRemove: ['script', 'link'],
-    removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
-  });
-  $('select').selectpicker();
+  /* spinner: instantiate */
+  var opts = {
+    lines: 13, // The number of lines to draw
+    length: 20, // The length of each line
+    width: 10, // The line thickness
+    radius: 30, // The radius of the inner circle
+    corners: 1, // Corner roundness (0..1)
+    rotate: 0, // The rotation offset
+    direction: 1, // 1: clockwise, -1: counterclockwise
+    color: '#000', // #rgb or #rrggbb or array of colors
+    speed: 1, // Rounds per second
+    trail: 60, // Afterglow percentage
+    shadow: false, // Whether to render a shadow
+    hwaccel: false, // Whether to use hardware acceleration
+    className: 'search-results', // The CSS class to assign to spinner
+    zIndex: 2e9, // The z-index (defaults to 2000000000)
+    top: '50px', // Top position relative to parent in px
+    left: 'auto' // Left position relative to parent in px
+  };
+  var target = document.getElementById("alert-container");
+  var spinner = new Spinner(opts).spin(target);
+  spinner.stop(target);
   /* interaction: fields that depend on whethor not there was an interaction */
   {% if form.interaction.value == 'Yes' %}
     $('#interactionFields').show();
@@ -59,23 +57,29 @@ $(function() {
   {% if form.student.value %}
     $('#autoComplete').val('');
     $('#autoComplete').attr('data-email','{{form.student.value}}');
-    $('.selection').val('{{form.student.lastname}}');
-
   {% endif %}
-  $('form#profile').submit(function(){
-
-    // set the value of the student field to email address selected
-    // via autocomplete
-    $('#autoComplete').val($('#autoComplete').attr('data-email'));
-
-    /* check textarea for just br tag */
-    $("textarea").each(function(){
-      if (this.value == "<br>") {
-          this.value = "";
+  $('#id_category').on('change', function() {
+    var $dis = $(this);
+    $.ajax({
+      type: "POST",
+      url: "{% url 'kat_matrix' %}",
+        data: {'cids': $dis.val()},
+      cache: false,
+      beforeSend: function(){
+        spinner.spin(target);
+      },
+      success: function(data) {
+        spinner.stop(target);
+        //$.growlUI('Success', "Data saved.");
+        //$('#support_matrix').html(data.form);
+        //$('#support_matrix').html('<p><b>what what!</b></p>');
+        $('#support_matrix').html(data);
+      },
+      error: function(data) {
+        spinner.stop(target);
+        $.growlUI('Error', data);
       }
     });
-    // disable submit button after users clicks it
-    $(this).children('input[type=submit]').attr('disabled', 'disabled');
   });
 });
 </script>
@@ -113,35 +117,46 @@ $(function() {
   caret-color: green;
   color: green;
   background-position: left .95rem top 0.5rem;
-  width:50%;
+  width:64%;
+  transition: none;
+  -webkit-transition: none;
 }
 #autoComplete:hover {
   color: green;
+  width:64%;
+  height: 2.1rem;
+  transition: none;
+  -webkit-transition: none;
+  background-position: left 1.05rem top 0.3rem;
+  background-size: 1.5rem;
 }
 #autoComplete:focus {
   color: green;
   border: 0.05rem solid green;
-  background-position: left 1.05rem top 0.8rem;
+  background-position: left 1.05rem top 0.4rem;
+  background-size: 1.3rem;
+  width:64%;
+  height: 2.1rem;
 }
-
 #autoComplete::placeholder {
   color: #8fa98f;
+  transition: none;
 }
-
 #autoComplete:hover::placeholder {
   color: #8fa98f;
+  transition: none;
+  -webkit-transition: none;
 }
-
 #autoComplete:focus::placeholder {
   color: #8fa98f;
+  transition: none;
+  -webkit-transition: none;
 }
-
-
-
-
 #autoComplete_results_list{
   position: absolute;
+  left: 100px;
   width: auto;
+  height:auto;
   display: none;
   z-index:9999;
 }
@@ -168,8 +183,7 @@ $(function() {
   border-top: 1px solid transparent;
   border-bottom: 1px solid transparent;
 }
-
-.autoComplete_result:focus {
+.autoComplete_result:focus, .no_result {
   outline: none;
   background-color: rgba(255, 248, 248, 0.9);
   border-left: 2px solid rgba(255, 122, 122, 1);
@@ -181,13 +195,38 @@ $(function() {
 form#profile select {
   width: 80%;
 }
+.no_result {
+    padding: 0.6rem;
+    width:80%;
+    border: 0.05rem solid #e3e3e3;
+    list-style: none;
+    text-align: left;
+    font-size: 1.1rem;
+    color: rgb(123, 123, 123);
+    transition: all 0.1s ease-in-out;
+    background-color: #fff;
+    border-radius: 0 0 1rem 1rem;
+    outline: none;
+  }
+
+.no_result:hover {
+    cursor: default;
+    background-color: #fff;
+    border: 0.05rem solid #e3e3e3;
+}
+
+.no_result:focus {
+    cursor: default;
+    background-color: #fff;
+    border: 0.05rem solid #e3e3e3;
+}
 </style>
 {% endblock %}
 {% block content_head %}
   <h1 id="page_title">Early Alert Form</h1>
 {% endblock %}
 {% block content %}
-<div class="container mb-4">
+<div class="container mb-4" id="alert-container">
   <div class="col-md-12 card">
     <div class="card-title">
       <h3>Early Alert Submission Form</h3>
@@ -231,6 +270,7 @@ form#profile select {
               <input type="text" name="{{form.student.name}}"
                 class="form-control{% if form.student.errors %} is-invalid{% endif %}"
                 id="autoComplete" data-email=""
+                {% if form.instance.student %}placeholder="{{form.instance.student.last_name}}, {{form.instance.student.first_name}}"{% endif %}
                 value="{{form.student.value|default_if_none:''}}"
                 {% if not templates_debug %}required{% endif %}>
               <small>
@@ -285,7 +325,7 @@ form#profile select {
               {% if form.category.errors %}class="text-danger"{% endif %}>
               <h5 class="required">{{form.category.label}}</h5>
               </label>
-              <select name="{{form.category.name}}" id="{{form.category.id_for_label}}"
+              <select name="{{form.category.name}}" id="id_category"
                 class="form-control selectpicker{% if form.category.errors %} is-invalid{% endif %}"
                 {% if not templates_debug %}required{% endif %} multiple>
                 {% for value, text in form.fields.category.choices %}
@@ -324,7 +364,8 @@ form#profile select {
           </div>
           <div class="col-md-6 pb-3">
             <div class="form-group">
-                <h3></h3>
+              <label for="support_matrix"><h5>Support Matrix</h5></label>
+              <div id="support_matrix">boo!</div>
             </div>
           </div>
           <div class="col-md-9 pb-3">

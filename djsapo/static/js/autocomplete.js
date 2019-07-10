@@ -12,13 +12,13 @@ const autoCompletejs = new autoComplete({
                 .setAttribute("placeholder", "Loading...");
             // Fetch External Data Source
             const source = await fetch(
-                "https://hygiea.carthage.edu/apps/student-success/early-alert/api/student/"
+                "/apps/student-success/early-alert/api/student/"
             );
             const data = await source.json();
             // Post loading placeholder text
             document
                 .querySelector("#autoComplete")
-                .setAttribute("placeholder", "Current Students");
+                .setAttribute("placeholder", "Search Students");
             // Returns Fetched data
             return data;
         },
@@ -31,7 +31,7 @@ const autoCompletejs = new autoComplete({
         if (a.match > b.match) return 1;
         return 0;
     },
-    placeHolder: "Current Students",
+    placeHolder: "Search Students",
     selector: "#autoComplete",
     threshold: 0,
     debounce: 0,
@@ -58,7 +58,7 @@ const autoCompletejs = new autoComplete({
         const result = document.createElement("li");
         result.setAttribute("class", "no_result");
         result.setAttribute("tabindex", "1");
-        result.innerHTML = "No Results";
+        result.innerHTML = "No students found";
         document.querySelector("#autoComplete_results_list").appendChild(result);
     },
     onSelection: feedback => {
@@ -69,9 +69,7 @@ const autoCompletejs = new autoComplete({
         document.querySelector("#autoComplete").value = "";
         document.querySelector("#autoComplete").setAttribute('data-email', feedback.selection.value.email);
         // Change placeholder with the selected value
-        document
-            .querySelector("#autoComplete")
-            .setAttribute("placeholder", selection);
+        //document.querySelector("#autoComplete").setAttribute("placeholder", selection);
     }
 });
 // Toggle event for search input

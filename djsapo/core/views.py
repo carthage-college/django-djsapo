@@ -3,9 +3,11 @@ from django.core.cache import cache
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
 
-from djsapo.core.models import Member
+from djsapo.core.models import GenericChoice, Member
 from djsapo.core.forms import AlertForm, DocumentForm
 from djsapo.core.utils import get_connection
 
@@ -66,17 +68,16 @@ def alert_form(request, pid=None):
     )
 
 
-#@portal_auth_required(
-    #session_var='DJSAPO_AUTH',
-    #redirect_url=reverse_lazy('access_denied')
-#)
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
 def people(request, who):
     '''
     Accepts: GET request where "who" = faculty/staff/student
     Returns: all current faculty, staff, or student types
     '''
 
-    #if request.is_ajax() and request.method == 'GET':
     if request.method == 'GET':
         sql = """
             SELECT
@@ -98,25 +99,44 @@ def people(request, who):
             peeps = []
             if objects:
                 for obj in objects:
-                    gn = obj[1]
-                    sn = obj[0]
-                    un = obj[2]
                     row = {
-                        'lastname': sn, 'firstname': gn,
-                        'email': '{}@carthage.edu'.format(un)
+                        'lastname': obj[0], 'firstname': obj[1],
+                        'email': '{}@carthage.edu'.format(obj[2])
                     }
-                    #row = {
-                        #'lastname': obj[0], 'firstname': obj[1],
-                        #'email': '{}@carthage.edu'.format(obj[2])
-                    #}
-                    #dict(zip(obj.keys(), obj))
                     peeps.append(row)
-                cache.set(key, peeps)
+                cache.set(key, peeps, timeout=86400)
         response = render(
             request, 'peeps.html', {'peeps':peeps,},
-            content_type='text/plain; charset=utf-8'
+            content_type='application/json; charset=utf-8'
         )
     else:
-        response =  HttpResponse('None', content_type='text/plain; charset=utf-8')
+        response = HttpResponse("None", content_type='text/plain; charset=utf-8')
 
     return response
+
+
+@csrf_exempt
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
+def kat_matrix(request):
+
+    if request.is_ajax() and request.method == 'POST':
+        cids = request.POST.getlist('cids[]')
+        matrix = "<ol>"
+        for c in cids:
+            cat = GenericChoice.objects.get(pk=c)
+            for m in cat.matrix.all():
+                matrix += "<li>{}, {}</li>".format(m.last_name, m.first_name)
+        matrix += "</ol>"
+        response = render(
+            request, 'matrix.html', {'matrix': mark_safe(matrix),},
+        )
+    else:
+        response = HttpResponse(
+            "Requires AJAX POST", content_type='text/plain; charset=utf-8'
+        )
+
+    return response
+

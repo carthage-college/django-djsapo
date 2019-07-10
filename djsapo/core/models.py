@@ -3,6 +3,8 @@ from django.conf import settings
 from django.db import models, connection
 from django.contrib.auth.models import Group, User
 from django.core.validators import FileExtensionValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from djtools.utils.users import in_group
 from djtools.fields import BINARY_CHOICES
@@ -121,7 +123,7 @@ class GenericChoice(models.Model):
         verbose_name="Administrative only", default=False
     )
     group = models.ManyToManyField(Group, blank=True)
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     class Meta:
         ordering = ['rank']
@@ -135,11 +137,12 @@ class GenericChoice(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.PROTECT,
+        User, on_delete=models.CASCADE
     )
     category = models.ManyToManyField(
         GenericChoice, verbose_name="Type of Concern",
-        limit_choices_to=limit_category,
+        limit_choices_to=limit_category, blank=True,
+        related_name="matrix",
         help_text = "Check all that apply"
     )
 
@@ -147,6 +150,11 @@ class Profile(models.Model):
         return "{}, {}".format(
             self.user.last_name, self.user.first_name
         )
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created and not kwargs.get('raw', False):
+        Profile.objects.create(user=instance)
 
 
 class Alert(models.Model):
@@ -311,7 +319,7 @@ class Annotation(models.Model):
     )
     body = models.TextField()
     status = models.BooleanField(default=True, verbose_name="Active?")
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
     def __str__(self):
         """
@@ -379,6 +387,7 @@ class Message(models.Model):
         help_text="Message content in text/html"
     )
     status = models.BooleanField(default=False, verbose_name="Active?")
+
 
 
 """

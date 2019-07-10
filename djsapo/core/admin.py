@@ -1,6 +1,8 @@
 from django.contrib import admin
 
-from djsapo.core.models import Alert,Annotation,Document,GenericChoice,Member,Message
+from djsapo.core.models import (
+    Alert,Annotation,Document,GenericChoice,Member,Message,Profile
+)
 
 
 class GenericChoiceAdmin(admin.ModelAdmin):
@@ -52,7 +54,6 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = (
         '__str__','name','alert','creator_name','created_at','tags'
     )
-    raw_id_fields = ('created_by','alert')
 
     def creator_name(self, obj):
         return "{}, {}".format(obj.created_by.last_name,obj.created_by.first_name)
@@ -64,9 +65,20 @@ class MessageAdmin(admin.ModelAdmin):
     list_display = ('name','slug','status')
 
 
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user_name','category')
+    raw_id_fields = ('user',)
+
+    def user_name(self, obj):
+        return "{}, {}".format(obj.user.last_name, obj.user.first_name)
+    user_name.admin_order_field  = 'user__last_name'
+    user_name.short_description = "Profile"
+
+
 admin.site.register(GenericChoice, GenericChoiceAdmin)
 admin.site.register(Alert, AlertAdmin)
 admin.site.register(Annotation, AnnotationAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Member, MemberAdmin)
 admin.site.register(Message, MessageAdmin)
+admin.site.register(Profile, ProfileAdmin)
