@@ -130,7 +130,7 @@ def kat_matrix(request):
             cat = GenericChoice.objects.get(pk=c)
             for m in cat.matrix.all():
                 if m.user.id not in peeps:
-                    matrix += "<li>{}, {}</li>".format(m.user.last_name, m.user.first_name)
+                    matrix += '<li><input type="checkbox"> {}, {}</li>'.format(m.user.last_name, m.user.first_name)
                 peeps.append(m.user.id)
         matrix += "</ol>"
         response = render(

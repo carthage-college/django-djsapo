@@ -25,10 +25,10 @@ RELATIONSHIP_CHOICES = (
     ('Admissions', "Admissions"),
     ('Aspire', "Aspire"),
     ('Athletics', "Athletics"),
-    ('Faculty', "Faculty"),
+    ('Course Instructor', "Course Instructor"),
+    ('Faculty Advisor', "Faculty Advisor"),
     ('Health and Counseling', "Health and Counseling"),
     ('Residential Life', "Residential Life"),
-    ('Staff', "Staff"),
     ('Student', "Student"),
     ('Student Financial Planning', "Student Financial Planning"),
     ('Student Involvement', "Student Involvement"),
@@ -232,7 +232,7 @@ class Alert(models.Model):
         null=True,blank=True
     )
     interaction_details = models.TextField(
-        "Interaction datails",
+        "Interaction details",
         help_text = """
             Please share any additional information about your interaction
             with the student.

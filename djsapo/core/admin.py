@@ -66,7 +66,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name','category')
+    list_display = ('user_name',)
     raw_id_fields = ('user',)
 
     def user_name(self, obj):
