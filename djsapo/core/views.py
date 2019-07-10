@@ -128,7 +128,7 @@ def kat_matrix(request):
         for c in cids:
             cat = GenericChoice.objects.get(pk=c)
             for m in cat.matrix.all():
-                matrix += "<li>{}, {}</li>".format(m.last_name, m.first_name)
+                matrix += "<li>{}, {}</li>".format(m.user.last_name, m.user.first_name)
         matrix += "</ol>"
         response = render(
             request, 'matrix.html', {'matrix': mark_safe(matrix),},
