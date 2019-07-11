@@ -51,6 +51,7 @@ class AnnotationAdmin(admin.ModelAdmin):
 
 
 class DocumentAdmin(admin.ModelAdmin):
+    raw_id_fields = ('alert','created_by','updated_by')
     list_display = (
         '__str__','name','alert','creator_name','created_at','tags'
     )

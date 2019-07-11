@@ -26,28 +26,38 @@ def alert_form(request, pid=None):
     if request.method=='POST':
         user = request.user
         form = AlertForm(request.POST, use_required_attribute=REQ_ATTR)
-        form_doc = DocumentForm(
-            request.POST, request.FILES, use_required_attribute=REQ_ATTR
-        )
-        if form.is_valid() and form_doc.is_valid():
+        form_doc1 = DocumentForm(request.POST, request.FILES, use_required_attribute=REQ_ATTR, prefix='doc1')
+        form_doc2 = DocumentForm(request.POST, request.FILES, use_required_attribute=REQ_ATTR, prefix='doc2')
+        form_doc3 = DocumentForm(request.POST, request.FILES, use_required_attribute=REQ_ATTR, prefix='doc3')
+        if form.is_valid() and form_doc1.is_valid() and form_doc2.is_valid() and form_doc3.is_valid():
             alert = form.save(commit=False)
-            #user = User.objects.get(pk=alert.student)
-            student = User.objects.get(pk=request.POST.get('student'))
+            student = User.objects.get(email=request.POST.get('student'))
             alert.student = student
             alert.created_by = user
             alert.updated_by = user
             alert.save()
             # m2m save for GenericChoice relationships
             form.save_m2m()
-            doc = form_doc.save(commit=False)
-            doc.alert = alert
-            doc.created_by = user
-            doc.save()
-
+            # documents
+            doc1 = form_doc1.save(commit=False)
+            doc1.alert = alert
+            doc1.created_by = user
+            doc1.updated_by = user
+            doc1.save()
+            doc2 = form_doc2.save(commit=False)
+            doc2.alert = alert
+            doc2.created_by = user
+            doc2.updated_by = user
+            doc2.save()
+            doc3 = form_doc3.save(commit=False)
+            doc3.alert = alert
+            doc3.created_by = user
+            doc3.updated_by = user
+            doc3.save()
+            # send mail
             to_list = [settings.SERVER_EMAIL,]
             bcc = [settings.MANAGERS,]
             frum = settings.CSS_EMAIL
-
             if not settings.DEBUG:
                 bcc.append(settings.CSS_EMAIL)
                 to_list = [user.email,]
@@ -57,14 +67,20 @@ def alert_form(request, pid=None):
             send_mail(
                 request, to_list, subject, frum, 'alert/email.html', alert, bcc
             )
+            # redirect to success page
             return HttpResponseRedirect(
                 reverse_lazy('alert_success')
             )
     else:
         form = AlertForm(use_required_attribute=REQ_ATTR)
-        form_doc = DocumentForm(use_required_attribute=REQ_ATTR)
+        form_doc1 = DocumentForm(use_required_attribute=REQ_ATTR, prefix='doc1')
+        form_doc2 = DocumentForm(use_required_attribute=REQ_ATTR, prefix='doc2')
+        form_doc3 = DocumentForm(use_required_attribute=REQ_ATTR, prefix='doc3')
     return render(
-        request, 'alert/form.html', {'form': form,'form_doc':form_doc,}
+        request, 'alert/form.html', {
+            'form': form,'form_doc1':form_doc1,'form_doc2':form_doc2,
+            'form_doc3':form_doc3
+        }
     )
 
 

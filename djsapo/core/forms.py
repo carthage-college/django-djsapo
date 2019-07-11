@@ -19,9 +19,10 @@ class AlertForm(forms.ModelForm):
 
     student = forms.CharField(
         label = "Student",
+        help_text="Search by last name or email address.",
     )
     category = forms.ModelMultipleChoiceField(
-        label="Type of Concern",
+        label="Type of concern",
         queryset=CONCERN_CHOICES, widget=forms.CheckboxSelectMultiple(),
         required=True
     )
@@ -93,14 +94,18 @@ class AlertForm(forms.ModelForm):
 
 
 class DocumentForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(DocumentForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['placeholder'] = \
-          'Name or short description'
 
     class Meta:
         model = Document
         fields = ('name','phile',)
+
+    def clean_phile(self):
+
+        cd = self.cleaned_data
+        if cd.get('phile') and not cd.get('name'):
+            self.add_error('name', "Please provide a name or description of the file.")
+
+        return cd['phile']
 
 
 class CommentForm(forms.ModelForm):

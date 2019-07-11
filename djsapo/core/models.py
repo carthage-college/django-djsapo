@@ -7,8 +7,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from djtools.utils.users import in_group
-from djtools.fields import BINARY_CHOICES
 from djtools.fields.helpers import upload_to_path
+from djtools.fields import BINARY_CHOICES
 
 from taggit.managers import TaggableManager
 
@@ -34,13 +34,6 @@ RELATIONSHIP_CHOICES = (
     ('Student Involvement', "Student Involvement"),
     ('Student Success', "Student Success"),
     ('Other', "Other"),
-)
-
-SEVERITY_CHOICES = (
-    ('High', "High"),
-    ('Moderate', "Moderate"),
-    ('Low', "Low"),
-    ('Uncertain', "Uncertain"),
 )
 
 STATUS_CHOICES = (
@@ -140,7 +133,7 @@ class Profile(models.Model):
         User, on_delete=models.CASCADE
     )
     category = models.ManyToManyField(
-        GenericChoice, verbose_name="Type of Concern",
+        GenericChoice, verbose_name="Type of concern",
         limit_choices_to=limit_category, blank=True,
         related_name="matrix",
         help_text = "Check all that apply"
@@ -183,14 +176,15 @@ class Alert(models.Model):
     )
     student = models.ForeignKey(
         User, verbose_name="Student", related_name='student',
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        help_text="Search by last name or email address.",
     )
     # we will store something like 2019_RA_CSC_1100_01
     course = models.CharField(
-        "Course number", max_length=64, null=True,blank=True,
+        "Course code and section", max_length=64, null=True,blank=True,
         help_text = """
-        If this is related to a specific course please include
-        the course number.
+        If this concern is related to a current course, please include
+        the course code and section.
         """
     )
     relationship = models.CharField(
@@ -202,19 +196,12 @@ class Alert(models.Model):
         limit_choices_to=limit_category,
         help_text="Check all that apply"
     )
-    # category:
-    # e.g. academic, attendance, low grades, financial, athletics, mental health
-    # other categories (types) will be available to administrators
-    # after the submission)
-    severity = models.CharField(
-        "Severity", max_length=24, choices=SEVERITY_CHOICES,
-    )
     description = models.TextField(
         "Details about this concern",
         help_text = """
             Please share any additional information you have about this concern
             that can help us in our efforts to connect with the student and
-            resolve their issue.
+            meet their needs.
         """,
     )
     interaction = models.CharField(
@@ -240,7 +227,8 @@ class Alert(models.Model):
         null=True,blank=True
     )
     outcome = models.CharField(
-        "Outcome", max_length=128, choices=OUTCOME_CHOICES
+        "Outcome", max_length=128, choices=OUTCOME_CHOICES,
+        null=True,blank=True
     )
     status = models.CharField(
         max_length=128, choices=STATUS_CHOICES, default='New'
@@ -264,10 +252,12 @@ class Alert(models.Model):
     def permissions(self, user):
         # we can move this to core.utils if we use it else where
         if user.is_superuser:
-            perms = {'view':True,'update':True,'delete':True}
+            perms = {'view':True,'update':True,'delete':True,'admin':True}
         else:
-            perms = {'view':False,'update':False,'delete':False}
+            perms = {'view':False,'update':False,'delete':False,'admin':False}
             group = in_group(user, settings.CSS_GROUP)
+            if group:
+                perms['admin'] = True
             if self.created_by == user or group:
                 perms['view'] = True
                 perms['update'] = True
@@ -336,11 +326,17 @@ class Document(models.Model):
     """
     created_by = models.ForeignKey(
         User, verbose_name="Created by",
-        related_name='doc_creator',
-        on_delete=models.CASCADE, editable=False
+        related_name='doc_creator', on_delete=models.CASCADE
+    )
+    updated_by = models.ForeignKey(
+        User, verbose_name="Updated by", related_name='doc_updated',
+        on_delete=models.CASCADE, null=True, blank=True
     )
     created_at = models.DateTimeField(
         "Date Created", auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        "Date Updated", auto_now=True
     )
     alert = models.ForeignKey(
         Alert, related_name='documents', on_delete=models.CASCADE
@@ -350,11 +346,10 @@ class Document(models.Model):
         max_length=128, null=True,blank=True
     )
     phile = models.FileField(
-        "Supporting Document",
+        "Supporting document",
         upload_to=upload_to_path,
         validators=FILE_VALIDATORS,
         max_length=767, null=True,blank=True,
-        help_text="PDF Format Only",
     )
     tags = TaggableManager(blank=True)
 
@@ -369,7 +364,7 @@ class Document(models.Model):
         """
         Default data for display
         """
-        return "{}: {}".format(self.name, self.alert)
+        return str(self.alert)
 
 
 class Message(models.Model):
@@ -387,15 +382,3 @@ class Message(models.Model):
         help_text="Message content in text/html"
     )
     status = models.BooleanField(default=False, verbose_name="Active?")
-
-
-
-"""
-Solutions:
-
-27: for course, instead of fetching the student's courses, we
-display a field that autocompletes based on all courses for the Term.
-that is, the submitter starts to type CSC and all computer science
-courses will appear as a select field from which they can choose the
-relevant course.
-"""

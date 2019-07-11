@@ -22,7 +22,6 @@ const autoCompletejs = new autoComplete({
             // Returns Fetched data
             return data;
         },
-        //key: ["lastname","firstname"],
         key: ["lastname"],
         cache: true
     },

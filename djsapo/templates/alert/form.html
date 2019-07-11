@@ -1,52 +1,25 @@
 {% extends "home.html" %}
 {% load livewhale_api %}
 {% block title %}
-  Early Alert Submission Form &mdash; Center for Student Success &mdash;
+  Student Concern Submission Form &mdash; Center for Student Success &mdash;
   Carthage College
 {% endblock %}
 {% block extra_javascript %}
 {{block.super}}
-{{ form.media }}
+<script src="//www.carthage.edu/static/vendor/jquery/ui/datepicker/js/jquery-ui-1.10.4.custom.min.js"
+  type="text/javascript" language="javascript"></script>
 <script src="//www.carthage.edu/static/vendor/jquery/plugins/trumbowyg/trumbowyg.min.js"
   type="text/javascript" language="javascript"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/js/bootstrap-select.min.js"
-  type="text/javascript" language="javascript"></script>
-<script src="//www.carthage.edu/static/vendor/jquery/ui/datepicker/js/jquery-ui-1.10.4.custom.min.js"
   type="text/javascript" language="javascript"></script>
 <script src="//www.carthage.edu/static/vendor/autoComplete.js/dist/js/autoComplete.js"
   type="text/javascript" language="javascript"></script>
 <script src="/static/djsapo/js/autocomplete.js"
   type="text/javascript" language="javascript"></script>
-<script src="https://malsup.github.io/min/jquery.blockUI.min.js"
-  type="text/javascript" language="javascript"></script>
-<script src="//www.carthage.edu/static/vendor/js/spin.min.js"
-  type="text/javascript" language="javascript"></script>
 <script src="/static/djsapo/js/main.js"
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
 $(function() {
-  /* spinner: instantiate */
-  var opts = {
-    lines: 13, // The number of lines to draw
-    length: 20, // The length of each line
-    width: 10, // The line thickness
-    radius: 30, // The radius of the inner circle
-    corners: 1, // Corner roundness (0..1)
-    rotate: 0, // The rotation offset
-    direction: 1, // 1: clockwise, -1: counterclockwise
-    color: '#000', // #rgb or #rrggbb or array of colors
-    speed: 1, // Rounds per second
-    trail: 60, // Afterglow percentage
-    shadow: false, // Whether to render a shadow
-    hwaccel: false, // Whether to use hardware acceleration
-    className: 'search-results', // The CSS class to assign to spinner
-    zIndex: 2e9, // The z-index (defaults to 2000000000)
-    top: '50px', // Top position relative to parent in px
-    left: 'auto' // Left position relative to parent in px
-  };
-  var target = document.getElementById("alert-container");
-  var spinner = new Spinner(opts).spin(target);
-  spinner.stop(target);
   /* interaction: fields that depend on whethor not there was an interaction */
   {% if form.interaction.value == 'Yes' %}
     $('#interactionFields').show();
@@ -58,6 +31,7 @@ $(function() {
     $('#autoComplete').val('');
     $('#autoComplete').attr('data-email','{{form.student.value}}');
   {% endif %}
+  {% if alert.id %}
   $('#id_category').on('change', function() {
     var $dis = $(this);
     $.ajax({
@@ -70,9 +44,6 @@ $(function() {
       },
       success: function(data) {
         spinner.stop(target);
-        //$.growlUI('Success', "Data saved.");
-        //$('#support_matrix').html(data.form);
-        //$('#support_matrix').html('<p><b>what what!</b></p>');
         $('#support_matrix').html(data);
       },
       error: function(data) {
@@ -81,6 +52,7 @@ $(function() {
       }
     });
   });
+  {% endif %}
 });
 </script>
 {% endblock %}
@@ -96,7 +68,6 @@ $(function() {
   rel="stylesheet" type="text/css">
 <style>
 #interactionFields {display:none;}
-/* .required {border-left: 4px solid; border-left-color: red;} */
 .required:after {content:" *";color:#dc3545;}
 #descriptionField .trumbowyg-box {
     z-index:1;
@@ -229,7 +200,7 @@ form#profile select {
 <div class="container mb-4" id="alert-container">
   <div class="col-md-12 card">
     <div class="card-title">
-      <h3>Early Alert Submission Form</h3>
+      <h3>Student Concern Submission Form</h3>
     </div>
     <div class="card-header bg-light text-black">
       {% get_lw_content as instructions blurbs 2811 %}
@@ -244,10 +215,10 @@ form#profile select {
       {% include "includes/required_text.html" %}
     </div>
     <div class="card-body">
-      <form method="post" enctype="multipart/form-data" action="."
+        <form enctype="multipart/form-data" method="post" action="{% url 'alert_form' %}"
         class="form" id="profile" style="margin-bottom:20px;">
         {% csrf_token %}
-        {% if form.errors or form_doc.errors %}
+        {% if form.errors or form_doc1.errors %}
           <div class="alert alert-danger">
             <p>Please correct the error{{ form.errors|pluralize }} below.</p>
           </div>
@@ -274,7 +245,7 @@ form#profile select {
                 value="{{form.student.value|default_if_none:''}}"
                 {% if not templates_debug %}required{% endif %}>
               <small>
-                {{form.student.help_text}}
+                {{form.student.help_text}}<br>
               </small>
               <small class="text-danger">
                 {{form.student.errors|join:", "}}
@@ -342,32 +313,14 @@ form#profile select {
               </small>
             </div>
           </div>
-          <div class="col-md-6 pb-3">
-            <div class="form-group">
-              <label for="{{form.severity.id_for_label}}"
-              {% if form.severity.errors %}class="text-danger"{% endif %}> 
-              <h5 class="required">{{form.severity.label}}</h5>
-              </label>
-              <select name="{{form.severity.name}}" id="{{form.severity.id_for_label}}"
-                class="form-control selectpicker{% if form.severity.errors %} is-invalid{% endif %}"
-                {% if not templates_debug %}required{% endif %} data-style="btn-light">
-                {% for value, text in form.fields.severity.choices %}
-                  <option value="{{value}}"{% if form.severity.value == value %} selected{% endif %}>
-                    {{text}}
-                  </option>
-                {% endfor %}
-              </select>
-              <small class="text-danger">
-                {{form.severity.errors|join:", "}}
-              </small>
-            </div>
-          </div>
+          {% if alert.id %}
           <div class="col-md-6 pb-3">
             <div class="form-group">
               <label for="support_matrix"><h5>Support Matrix</h5></label>
               <div id="support_matrix"></div>
             </div>
           </div>
+          {% endif %}
           <div class="col-md-9 pb-3">
             <div class="form-group" id="descriptionField">
               <label for="{{form.description.id_for_label}}"
@@ -426,7 +379,7 @@ form#profile select {
             <div class="form-group">
               <label for="{{form.interaction_type.id_for_label}}"
               {% if form.interaction_type.errors %}class="text-danger"{% endif %}>
-              <h5{% if form.interaction.value == 'Yes' %} class="required"{% endif %}>{{form.interaction_type.label}}</h5>
+              <h5 class="required">{{form.interaction_type.label}}</h5>
               </label>
               <select name="{{form.interaction_type.name}}" id="{{form.interaction_type.id_for_label}}"
                 class="form-control selectpicker {% if form.interaction_type.errors %} is-invalid{% endif %}"
@@ -444,7 +397,7 @@ form#profile select {
             <div class="form-group">
               <label for="{{form.interaction_details.id_for_label}}"
               {% if form.interaction_details.errors %}class="text-danger"{% endif %}>
-              <h5{% if form.interaction.value == 'Yes' %} class="required"{% endif %}>{{form.interaction_details.label}}</h5>
+              <h5 class="required">{{form.interaction_details.label}}</h5>
               </label>
               <textarea rows="2" cols="150" maxlength="1500"
               class="form-control{% if form.interaction_details.errors %} is-invalid{% endif %}"
@@ -459,7 +412,7 @@ form#profile select {
               <div class="form-group">
               <label for="{{form.interaction_date.id_for_label}}"
               {% if form.interaction_date.errors %}class="text-danger"{% endif %}>
-              <h5{% if form.interaction.value == 'Yes' %} class="required"{% endif %}>{{form.interaction_date.label}}</h5>
+              <h5 class="required">{{form.interaction_date.label}}</h5>
               </label>
               <input type="text" name="{{form.interaction_date.name}}"
                 class="form-control{% if form.interaction_date.errors %} is-invalid{% endif %}"
@@ -474,6 +427,7 @@ form#profile select {
               </div>
             </div>
           </div>
+          {% if alert.id %}
           <div class="col-md-6 pb-3 clearfix">
             <div class="form-group">
               <label for="{{form.outcome.id_for_label}}"
@@ -494,38 +448,109 @@ form#profile select {
               </small>
             </div>
           </div>
+          {% endif %}
           <div class="col-md-8 pb-3">
             <div class="form-group">
-              <label for="{{form_doc.phile.id_for_label}}"
-              {% if form_doc.phile.errors %}class="text-danger"{% endif %}>
-              <h5>{{form_doc.phile.label}}</h5>
+              <label for="{{form_doc1.phile.id_for_label}}"
+              {% if form_doc1.phile.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc1.phile.label}}</h5>
               </label>
-              <input type="file" name="{{form_doc.phile.name}}"
-                class="form-control{% if form_doc.phile.errors %} is-invalid{% endif %}"
-                id="{{form_doc.phile.id_for_label}}"
-                value="{{form_doc.phile.value|default_if_none:''}}">
-              {% if form_doc.phile.errors %}
+              <input type="file" name="{{form_doc1.prefix}}-{{form_doc1.phile.name}}"
+                class="form-control{% if form_doc1.phile.errors %} is-invalid{% endif %}"
+                id="{{form_doc1.phile.id_for_label}}"
+                value="{{form_doc1.phile.value|default_if_none:''}}">
+              {% if form_doc1.phile.errors %}
               <small class="text-danger">
-                {{form_doc.phile.errors|join:", "}}
+                {{form_doc1.phile.errors|join:", "}}
               </small>
               {% else %}
               <small>
-              {{form_doc.phile.help_text}}
+              {{form_doc1.phile.help_text}}
               </small>
               {% endif %}
               <br>
-              <label for="{{form_doc.name.id_for_label}}"
-              {% if form_doc.name.errors %}class="text-danger"{% endif %}>
-              <h5>{{form_doc.name.label}}</h5>
+              <label for="{{form_doc1.name.id_for_label}}"
+              {% if form_doc1.name.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc1.name.label}}</h5>
               </label>
-              <input type="text" name="{{form_doc.name.name}}"
-                placeholder="{{form_doc.name.help_text}}"
-                class="form-control{% if form_doc.name.errors %} is-invalid{% endif %}"
-                id="{{form_doc.name.id_for_label}}"
-                value="{{form_doc.name.value|default_if_none:''}}"
+              <input type="text" name="{{form_doc1.prefix}}-{{form_doc1.name.name}}"
+                placeholder="{{form_doc1.name.help_text}}"
+                class="form-control{% if form_doc1.name.errors %} is-invalid{% endif %}"
+                id="{{form_doc1.name.id_for_label}}"
+                value="{{form_doc1.name.value|default_if_none:''}}"
                 {% if not templates_debug %}required{% endif %}>
               <small class="text-danger">
-                {{form_doc.name.errors|join:", "}}
+                {{form_doc1.name.errors|join:", "}}
+              </small>
+            </div>
+          </div>
+          <div class="col-md-8 pb-3">
+            <div class="form-group">
+              <label for="{{form_doc2.phile.id_for_label}}"
+              {% if form_doc2.phile.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc2.phile.label}}</h5>
+              </label>
+              <input type="file" name="{{form_doc2.prefix}}-{{form_doc2.phile.name}}"
+                class="form-control{% if form_doc2.phile.errors %} is-invalid{% endif %}"
+                id="{{form_doc2.phile.id_for_label}}"
+                value="{{form_doc2.phile.value|default_if_none:''}}">
+              {% if form_doc2.phile.errors %}
+              <small class="text-danger">
+                {{form_doc2.phile.errors|join:", "}}
+              </small>
+              {% else %}
+              <small>
+              {{form_doc2.phile.help_text}}
+              </small>
+              {% endif %}
+              <br>
+              <label for="{{form_doc2.name.id_for_label}}"
+              {% if form_doc2.name.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc2.name.label}}</h5>
+              </label>
+              <input type="text" name="{{form_doc2.prefix}}-{{form_doc2.name.name}}"
+                placeholder="{{form_doc2.name.help_text}}"
+                class="form-control{% if form_doc2.name.errors %} is-invalid{% endif %}"
+                id="{{form_doc2.name.id_for_label}}"
+                value="{{form_doc2.name.value|default_if_none:''}}"
+                {% if not templates_debug %}required{% endif %}>
+              <small class="text-danger">
+                {{form_doc2.name.errors|join:", "}}
+              </small>
+            </div>
+          </div>
+          <div class="col-md-8 pb-3">
+            <div class="form-group">
+              <label for="{{form_doc3.phile.id_for_label}}"
+              {% if form_doc3.phile.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc3.phile.label}}</h5>
+              </label>
+              <input type="file" name="{{form_doc3.prefix}}-{{form_doc3.phile.name}}"
+                class="form-control{% if form_doc3.phile.errors %} is-invalid{% endif %}"
+                id="{{form_doc3.phile.id_for_label}}"
+                value="{{form_doc3.phile.value|default_if_none:''}}">
+              {% if form_doc3.phile.errors %}
+              <small class="text-danger">
+                {{form_doc3.phile.errors|join:", "}}
+              </small>
+              {% else %}
+              <small>
+              {{form_doc3.phile.help_text}}
+              </small>
+              {% endif %}
+              <br>
+              <label for="{{form_doc3.name.id_for_label}}"
+              {% if form_doc3.name.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc3.name.label}}</h5>
+              </label>
+              <input type="text" name="{{form_doc3.prefix}}-{{form_doc3.name.name}}"
+                placeholder="{{form_doc3.name.help_text}}"
+                class="form-control{% if form_doc3.name.errors %} is-invalid{% endif %}"
+                id="{{form_doc3.name.id_for_label}}"
+                value="{{form_doc3.name.value|default_if_none:''}}"
+                {% if not templates_debug %}required{% endif %}>
+              <small class="text-danger">
+                {{form_doc3.name.errors|join:", "}}
               </small>
             </div>
           </div>
