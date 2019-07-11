@@ -1,1 +1,1 @@
-[{"model": "taggit.tag", "pk": 1, "fields": {"name": "Category", "slug": "category"}}]
+[{"model": "taggit.tag", "pk": 1, "fields": {"name": "Category", "slug": "category"}}, {"model": "taggit.tag", "pk": 2, "fields": {"name": "Action Taken", "slug": "action-taken"}}]
