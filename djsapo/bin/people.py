@@ -9,9 +9,8 @@ import django
 django.setup()
 
 from django.conf import settings
-from djsapo.core.utils import get_connection
+from djimix.core.utils import get_connection
 
-import pyodbc
 import argparse
 import logging
 
@@ -63,9 +62,6 @@ def main():
         logger.debug("sql = {}".format(sql))
     else:
         connection = get_connection()
-        #connection.setencoding(encoding='cp1252', ctype=pyodbc.SQL_CHAR)
-        #connection.setencoding(encoding='latin1', ctype=pyodbc.SQL_CHAR)
-        connection.setencoding(encoding='utf-8', ctype=pyodbc.SQL_CHAR)
         cursor = connection.cursor()
         objects = cursor.execute(sql)
         peeps = []

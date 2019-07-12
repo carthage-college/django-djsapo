@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 from djsapo.core.models import GenericChoice, Member
 from djsapo.core.forms import AlertForm, DocumentForm
-from djsapo.core.utils import get_connection
+from djimix.core.utils import get_connection
 
 from djzbar.decorators.auth import portal_auth_required
 from djtools.utils.mail import send_mail
@@ -107,7 +107,8 @@ def people(request, who):
         """.format(who)
 
         key = 'provisioning_vw_{}_api'.format(who)
-        peeps = cache.get(key)
+        #peeps = cache.get(key)
+        peeps = None
         if peeps is None:
             connection = get_connection()
             cursor = connection.cursor()
@@ -120,7 +121,7 @@ def people(request, who):
                         'email': '{}@carthage.edu'.format(obj[2])
                     }
                     peeps.append(row)
-                cache.set(key, peeps, timeout=86400)
+                #cache.set(key, peeps, timeout=86400)
         response = render(
             request, 'peeps.html', {'peeps':peeps,},
             content_type='application/json; charset=utf-8'
