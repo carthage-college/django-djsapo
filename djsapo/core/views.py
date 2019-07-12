@@ -107,8 +107,7 @@ def people(request, who):
         """.format(who)
 
         key = 'provisioning_vw_{}_api'.format(who)
-        #peeps = cache.get(key)
-        peeps = None
+        peeps = cache.get(key)
         if peeps is None:
             connection = get_connection()
             cursor = connection.cursor()
@@ -121,7 +120,7 @@ def people(request, who):
                         'email': '{}@carthage.edu'.format(obj[2])
                     }
                     peeps.append(row)
-                #cache.set(key, peeps, timeout=86400)
+                cache.set(key, peeps, timeout=86400)
         response = render(
             request, 'peeps.html', {'peeps':peeps,},
             content_type='application/json; charset=utf-8'
