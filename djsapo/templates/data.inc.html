@@ -44,7 +44,7 @@
             {{a.created_by.last_name}}, {{a.created_by.first_name}}
           </a>
         </td>
-        <td class="text-center">{{a.created_at|date:'Y-m-d'}}</td>
+        <td class="text-center" nowrap>{{a.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">{{a.relationship}}</td>
         <td>
           {% for c in a.category.all %}
