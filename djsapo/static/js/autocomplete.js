@@ -1,7 +1,7 @@
 // autoComplete.js on type event emitter
-document.querySelector("#autoComplete").addEventListener("autoComplete", function(event) {
-  console.log(event.detail);
-});
+//document.querySelector("#autoComplete").addEventListener("autoComplete", function(event) {
+  //console.log(event.detail);
+//});
 // The autoComplete.js Engine instance creator
 const autoCompletejs = new autoComplete({
     data: {

@@ -16,6 +16,8 @@
   type="text/javascript" language="javascript"></script>
 <script src="/static/djsapo/js/autocomplete.js"
   type="text/javascript" language="javascript"></script>
+<script src="/static/djsapo/js/courses.autocomplete.js"
+  type="text/javascript" language="javascript"></script>
 <script src="/static/djsapo/js/main.js"
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
@@ -64,14 +66,8 @@ $(function() {
   rel="stylesheet" type="text/css">
 <link href="//www.carthage.edu/static/vendor/jquery/ui/datepicker/css/smoothness/jquery-ui-1.10.4.custom.min.css"
   rel="stylesheet" type="text/css">
-<link href="//www.carthage.edu/static/vendor/autoComplete.js/dist/css/autoComplete.css"
-  rel="stylesheet" type="text/css">
+<link href="/static/djsapo/css/autocomplete.css" rel="stylesheet" type="text/css">
 <style>
-#interactionFields {display:none;}
-.required:after {content:" *";color:#dc3545;}
-#descriptionField .trumbowyg-box {
-    z-index:1;
-}
 {% if form.description.errors %}
 #descriptionField .trumbowyg-box {
     border: 1px solid #dc3545;
@@ -82,115 +78,6 @@ $(function() {
     border: 1px solid #dc3545;
 }
 {% endif %}
-/* autocomplete styles */
-#autoComplete {
-  border: 0.05rem solid green;
-  caret-color: green;
-  color: green;
-  background-position: left .95rem top 0.5rem;
-  width:64%;
-  transition: none;
-  -webkit-transition: none;
-}
-#autoComplete:hover {
-  color: green;
-  width:64%;
-  height: 2.1rem;
-  transition: none;
-  -webkit-transition: none;
-  background-position: left 1.05rem top 0.3rem;
-  background-size: 1.5rem;
-}
-#autoComplete:focus {
-  color: green;
-  border: 0.05rem solid green;
-  background-position: left 1.05rem top 0.4rem;
-  background-size: 1.3rem;
-  width:64%;
-  height: 2.1rem;
-}
-#autoComplete::placeholder {
-  color: #8fa98f;
-  transition: none;
-}
-#autoComplete:hover::placeholder {
-  color: #8fa98f;
-  transition: none;
-  -webkit-transition: none;
-}
-#autoComplete:focus::placeholder {
-  color: #8fa98f;
-  transition: none;
-  -webkit-transition: none;
-}
-#autoComplete_results_list{
-  position: absolute;
-  left: 100px;
-  width: auto;
-  height:auto;
-  display: none;
-  z-index:9999;
-}
-.autoComplete_result {
-  max-width:inherit;
-  margin: 0;
-  color: #000;
-  background-color: #efefef;
-  border-left: 2px solid #e3e3e3;
-  border-right: 2px solid #e3e3e3;
-}
-.autoComplete_result::selection {
-  color: rgba(#ffffff, 0);
-  background-color: rgba(#ffffff, 0);
-}
-.autoComplete_result:last-child {
-  border-radius: 0 0 1rem 1rem;
-}
-.autoComplete_result:hover {
-  cursor: pointer;
-  background-color: rgba(255, 248, 248, 0.9);
-  border-left: 2px solid rgba(255, 122, 122, 1);
-  border-right: 2px solid rgba(255, 122, 122, 1);
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-}
-.autoComplete_result:focus, .no_result {
-  outline: none;
-  background-color: rgba(255, 248, 248, 0.9);
-  border-left: 2px solid rgba(255, 122, 122, 1);
-  border-right: 2px solid rgba(255, 122, 122, 1);
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-}
-.selection {color:green;}
-form#profile select {
-  width: 80%;
-}
-.no_result {
-    padding: 0.6rem;
-    width:80%;
-    border: 0.05rem solid #e3e3e3;
-    list-style: none;
-    text-align: left;
-    font-size: 1.1rem;
-    color: rgb(123, 123, 123);
-    transition: all 0.1s ease-in-out;
-    background-color: #fff;
-    border-radius: 0 0 1rem 1rem;
-    outline: none;
-  }
-
-.no_result:hover {
-    cursor: default;
-    background-color: #fff;
-    border: 0.05rem solid #e3e3e3;
-}
-
-.no_result:focus {
-    cursor: default;
-    background-color: #fff;
-    border: 0.05rem solid #e3e3e3;
-}
 </style>
 {% endblock %}
 {% block content_head %}
@@ -256,7 +143,14 @@ form#profile select {
             <div class="form-group">
               <label for="{{form.course.id_for_label}}"
               {% if form.course.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.course.label}}</h5>
+              <h5>
+                {{form.course.label}}
+                <span class="course-selection">
+                {% if form.course.value %}
+                {{form.course.value}}
+                {% endif %}
+                </span>
+              </h5>
               </label>
               <input type="text" name="{{form.course.name}}"
                 class="form-control{% if form.course.errors %} is-invalid{% endif %}"
