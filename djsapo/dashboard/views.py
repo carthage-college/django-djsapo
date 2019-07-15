@@ -24,7 +24,7 @@ def home(request):
     css = in_group(user, settings.CSS_GROUP)
     # CSS or superuser can access all objects
     if css:
-        alerts = Alert.objects.all().order_by('-created_at')[:10]
+        alerts = Alert.objects.all().order_by('-created_at')
     else:
         alerts = Alert.objects.filter(created_by=user)
     return render(
@@ -85,11 +85,14 @@ def list(request):
     """
 
     user = request.user
-
+    css = in_group(user, settings.CSS_GROUP)
+    # CSS or superuser can access all objects
+    if css:
+        alerts = Alert.objects.all().order_by('-created_at')
+    else:
+        alerts = Alert.objects.filter(created_by=user)
     return render(
-        request, 'list.html', {
-            'objects': None,
-        }
+        request, 'list.html', {'alerts':alerts,}
     )
 
 

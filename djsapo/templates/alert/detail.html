@@ -29,9 +29,8 @@ $(function() {
           title="Print to paper or PDF"></i></a> |
       <a href="{# url 'proposal_approver' proposal.id #}"
         class="no-print-icon">
-        <i class="fa fa-thumbs-o-up green blue-tooltip" aria-hidden="true"
-          data-toggle="tooltip" data-placement="top"
-          title="Add Team Member to this Alert"></i></a> |
+        <i class="fa fa-users green blue-tooltip" aria-hidden="true" data-toggle="tooltip" data-placement="bottom"
+            title="Add Team Member to this Alert"></i></a> |
       <a href="{# url 'email_team_form' alert.id #}"
         class="no-print-icon">
         <i class="fa fa-envelope green blue-tooltip" aria-hidden="true"
@@ -54,10 +53,12 @@ $(function() {
           [{{data.student.id}}]
           {% endif %}
           </dd>
-        {% if data.course %}
+          <dt>Status</dt>
+          <dd>{{data.status}}</dd>
+          {% if data.course %}
           <dt>Course</dt>
           <dd>{{data.course}}</dd>
-        {% endif %}
+          {% endif %}
           <dt>Relationship with student</dt>
           <dd>{{data.relationship}}</dd>
           <dt>Type of concern</dt>
@@ -91,7 +92,7 @@ $(function() {
           {% if d.phile %}
           <li>
             <h5>
-              <a href="https://{{server_url}}{{media_url}}{{d.phile}}">{{d.name}}</a>
+              <a href="https://{{server_url}}{{media_url}}{{d.phile}}">{% if d.name %}{{d.name}}{% else %}{{d.created_at}}{% endif %}</a>
             </h5>
           </li>
           {% endif %}
@@ -107,6 +108,24 @@ $(function() {
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-body">
+        <h4>
+          Team members
+        </h4>
+        <ol>
+        {% for m in data.team.all %}
+        <li>
+          <span{% if not m.status %} class="strike"{% endif %}>
+            <span>
+                {{m}}
+                {% if m.case_manager %}
+                <i class="fa fa-star green blue-tooltip" data-toggle="tooltip"
+                  data-placement="top" title="Case Manager" aria-hidden="true"></i>
+                {% endif %}
+            </span>
+          </span>
+        </li>
+        {% endfor %}
+        </ol>
         <h4>
           Comments
         </h4>

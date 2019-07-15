@@ -18,8 +18,8 @@
         <th>Created</th>
         <th>Relationship</th>
         <th>Category</th>
-        <th>Severity</th>
         <th>Status</th>
+        <th>Team</th>
         {% if user.is_superuser %}
         <th class="text-center">
           <i class="fa fa-trash green blue-tooltip"  data-toggle="tooltip"
@@ -27,7 +27,6 @@
             title="Delete this Alert"></i>
         </th>
         {% endif %}
-        <th>Team</th>
       </tr>
     </thead>
     <tbody>
@@ -51,19 +50,21 @@
             {{c}}{% if not forloop.last %}, {% endif %}
           {% endfor %}
         </td>
-        <td>{{a.severity}}</td>
         <td>{{a.status}}</td>
+        <td class="text-center">
+          <i class="fa fa-users{% if a.team.all %} green{% endif %}" aria-hidden="true" data-toggle="tooltip" data-placement="left"
+            title="{% for m in a.team.all %}{% if m.status %}{{m}}{% if not forloop.last %} || {% endif %}{% endif %}{% endfor %}"></i>
+        </td>
         {% if user.is_superuser %}
         <td class="text-center">
           <a href="#" data-href="{# url 'alert_delete' a.id #}"
             data-title="Alert: {{a.subject}}" data-toggle="modal"
             data-target="#confirm-delete">
-            <i class="fa fa-trash-o red blue-tooltip"  data-toggle="tooltip"
+            <i class="fa fa-trash-o red blue-tooltip" data-toggle="tooltip"
               data-placement="top" aria-hidden="true"
               title="Delete Alert: {{a.subject}}"></i>
           </a>
         </td>
-        <td class="text-center">{% for m in a.team.all %}{{m}}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
         {% endif %}
       </tr>
       {% endfor %}
@@ -86,8 +87,8 @@
         <th>Created</th>
         <th>Relationship</th>
         <th>Category</th>
-        <th>Severity</th>
         <th>Status</th>
+        <th>Team</th>
         {% if user.is_superuser %}
         <th class="text-center">
           <i class="fa fa-trash green blue-tooltip"  data-toggle="tooltip"
@@ -95,7 +96,6 @@
             title="Delete this Alert"></i>
         </th>
         {% endif %}
-        <th>Team</th>
       </tr>
     </tfoot>
   </table>
