@@ -76,7 +76,7 @@
   box-shadow: rgba(255, 122, 122, 0.1) 0px 0px 20px 5px;
 }
 
-#autoComplete_results_list {
+#autoComplete_results_list, #courses_results_list {
   position: fixed;
   height: 45vh;
   overflow: auto;
@@ -247,7 +247,7 @@
   transition: none;
   -webkit-transition: none;
 }
-#autoComplete_results_list{
+#autoComplete_results_list, #courses_results_list{
   position: absolute;
   left: 100px;
   width: auto;
