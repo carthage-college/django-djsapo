@@ -16,6 +16,18 @@ ALLOWED_EXTENSIONS = [
     'xls','xlsx','doc','docx','pdf','txt','png','jpg','jpeg'
 ]
 
+ICONS = {
+    'xls': 'excel',
+    'xlsx': 'excel',
+    'pdf': 'pdf',
+    'doc': 'word',
+    'docx': 'word',
+    'txt': 'text',
+    'png': 'image',
+    'jpg': 'image',
+    'jpeg': 'image',
+}
+
 FILE_VALIDATORS = [
     FileExtensionValidator(allowed_extensions=ALLOWED_EXTENSIONS)
 ]
@@ -34,13 +46,6 @@ RELATIONSHIP_CHOICES = (
     ('Student Involvement', "Student Involvement"),
     ('Student Success', "Student Success"),
     ('Other', "Other"),
-)
-
-STATUS_CHOICES = (
-    ('New', "New"),
-    ('Assigned', "Assigned"),
-    ('In progress', "In progress"),
-    ('Closed', "Closed"),
 )
 
 OUTCOME_CHOICES = (
@@ -154,6 +159,14 @@ class Alert(models.Model):
     """
     Data model for the early alert object
     """
+
+    STATUS_CHOICES = (
+        ('New', "New"),
+        ('Assigned', "Assigned"),
+        ('In progress', "In progress"),
+        ('Closed', "Closed"),
+    )
+
     parent = models.ForeignKey(
         'self', related_name='children',
         on_delete=models.PROTECT, null=True,blank=True,
@@ -372,6 +385,14 @@ class Document(models.Model):
 
     def get_slug(self):
         return 'alert-document'
+
+    def get_icon(self):
+        ext = self.phile.path.rpartition(".")[-1]
+        try:
+            icon = ICONS[ext]
+        except:
+            icon = ICONS['file']
+        return icon
 
     def __str__(self):
         """

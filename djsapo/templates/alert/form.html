@@ -60,13 +60,6 @@ $(function() {
 {% endblock %}
 {% block extra_style %}
 {{block.super}}
-<link href="//www.carthage.edu/static/vendor/jquery/plugins/trumbowyg/trumbowyg.min.css"
-  rel="stylesheet" type="text/css">
-<link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/css/bootstrap-select.min.css"
-  rel="stylesheet" type="text/css">
-<link href="//www.carthage.edu/static/vendor/jquery/ui/datepicker/css/smoothness/jquery-ui-1.10.4.custom.min.css"
-  rel="stylesheet" type="text/css">
-<link href="/static/djsapo/css/autocomplete.css" rel="stylesheet" type="text/css">
 <style>
 {% if form.description.errors %}
 #descriptionField .trumbowyg-box {
@@ -145,11 +138,7 @@ $(function() {
               {% if form.course.errors %}class="text-danger"{% endif %}>
               <h5>
                 {{form.course.label}}
-                <span class="course-selection">
-                {% if form.course.value %}
-                {{form.course.value}}
-                {% endif %}
-                </span>
+                <span class="course-selection"></span>
               </h5>
               </label>
               <input type="text" name="{{form.course.name}}"

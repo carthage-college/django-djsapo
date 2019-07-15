@@ -100,6 +100,50 @@ def list(request):
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
+def email_form(request, aid, action):
+    '''
+    send an email
+    '''
+
+    form_data = None
+    alert = get_object_or_404(Alert, pk=aid)
+    if request.method=='POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            form_data = form.cleaned_data
+            if 'execute' in request.POST:
+                if DEBUG:
+                    to_list = [MANAGER]
+                else:
+                    to_list = []
+                send_mail (
+                    request, to_list,
+                    "[Center for Student Success] {}".format(
+                        form_data['subject']
+                    ), request.user.email, 'email_form.html',
+                    {'content':form_data['content']}, BCC
+                )
+                return HttpResponseRedirect(
+                    reverse_lazy('email_done')
+                )
+            else:
+                return render (
+                    request, 'email_form.html',
+                    {'form':form,'data':form_data,'p':proposal}
+                )
+    else:
+        form = EmailForm()
+
+    return render(
+        request, 'email_form.html',
+        {'form': form,'data':form_data,'alert':alert,'action':action}
+    )
+
+
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
 def openxml(request):
 
     wb = Workbook()
