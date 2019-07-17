@@ -335,7 +335,9 @@ $(function() {
           <div class="col-md-12">
           <fieldset>
             <legend>Upload up to three documents (if any)</legend>
-            <div class="form-group">
+            <div class="form-row">
+            <div class="col-md-4">
+              <div class="form-group">
               <label for="{{form_doc1.phile.id_for_label}}"
               {% if form_doc1.phile.errors %}class="text-danger"{% endif %}>
               <h5>{{form_doc1.phile.label}}</h5>
@@ -367,8 +369,10 @@ $(function() {
               <small class="text-danger">
                 {{form_doc1.name.errors|join:", "}}
               </small>
+              </div>
             </div>
-            <div class="form-group">
+            <div class="col-md-4">
+              <div class="form-group">
               <label for="{{form_doc2.phile.id_for_label}}"
               {% if form_doc2.phile.errors %}class="text-danger"{% endif %}>
               <h5>{{form_doc2.phile.label}}</h5>
@@ -400,8 +404,10 @@ $(function() {
               <small class="text-danger">
                 {{form_doc2.name.errors|join:", "}}
               </small>
+              </div>
             </div>
-            <div class="form-group">
+            <div class="col-md-4">
+              <div class="form-group">
               <label for="{{form_doc3.phile.id_for_label}}"
               {% if form_doc3.phile.errors %}class="text-danger"{% endif %}>
               <h5>{{form_doc3.phile.label}}</h5>
@@ -433,6 +439,8 @@ $(function() {
               <small class="text-danger">
                 {{form_doc3.name.errors|join:", "}}
               </small>
+              </div>
+            </div>
             </div>
           </fieldset>
           </div>

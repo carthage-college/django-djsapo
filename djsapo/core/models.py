@@ -378,7 +378,7 @@ class Document(models.Model):
         Alert, related_name='documents', on_delete=models.CASCADE
     )
     name = models.CharField(
-        "Name or short description of file",
+        "Short description of file",
         max_length=128, null=True,blank=True
     )
     phile = models.FileField(
