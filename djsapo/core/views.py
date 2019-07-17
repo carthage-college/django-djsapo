@@ -158,4 +158,3 @@ def kat_matrix(request):
         )
 
     return response
-

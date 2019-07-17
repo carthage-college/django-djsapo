@@ -172,3 +172,26 @@ def openxml(request):
     )
 
     return response
+
+
+@csrf_exempt
+@portal_auth_required(
+    group = settings.CSS_GROUP,
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
+def team_manager(request):
+    """
+    add and remove team members for an alert
+    """
+    user = None
+    message = None
+    banner = messages.SUCCESS
+    tag = 'alert-success'
+
+    if request.method == 'POST':
+        pass
+    else:
+        message = "Requires HTTP POST"
+
+    return HttpResponse(message)

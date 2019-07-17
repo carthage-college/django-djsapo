@@ -272,6 +272,13 @@ class Alert(models.Model):
             self.student.last_name, self.student.first_name
         )
 
+    def category_list(self):
+        cids = [c.id for c in self.category.all()]
+        kats = GenericChoice.objects.filter(
+            tags__name__in=['Category']
+        ).exclude(id__in=cids).order_by('name')
+        return kats
+
     def get_absolute_url(self):
         return ('alert_detail', [str(self.id)])
 
