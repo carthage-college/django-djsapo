@@ -254,8 +254,8 @@ class Alert(models.Model):
         ordering  = ['-created_at']
         get_latest_by = 'created_at'
 
+        '''
         permissions = (
-            '''
             ("can_go_in_non_ac_bus", "To provide non-AC Bus facility"),
             ("can_go_in_ac_bus", "To provide AC-Bus facility"),
             ("can_stay_ac-room", "To provide staying at AC room"),
@@ -264,8 +264,8 @@ class Alert(models.Model):
             ("can_go_mussoorie", "Trip to Mussoorie"),
             ("can_go_haridwaar", "Trip to Haridwaar"),
             ("can_go_rishikesh", "Trip to Rishikesh"),
-            '''
         )
+        '''
 
     def __str__(self):
         """
