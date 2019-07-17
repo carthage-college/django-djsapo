@@ -24,6 +24,7 @@ class AlertForm(forms.ModelForm):
     category = forms.ModelMultipleChoiceField(
         label="Type of concern",
         queryset=CONCERN_CHOICES, widget=forms.CheckboxSelectMultiple(),
+        help_text="Select all that apply.",
         required=True
     )
     interaction_date = forms.DateField(

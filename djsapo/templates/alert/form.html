@@ -189,7 +189,7 @@ $(function() {
                 {% endfor %}
               </select>
               <small>
-                Click on as many types as you need<br>
+                {{form.category.help_text}}<br>
               </small>
               <small class="text-danger">
                 {{form.category.errors|join:", "}}
@@ -332,7 +332,9 @@ $(function() {
             </div>
           </div>
           {% endif %}
-          <div class="col-md-8 pb-3">
+          <div class="col-md-12">
+          <fieldset>
+            <legend>Upload up to three documents (if any)</legend>
             <div class="form-group">
               <label for="{{form_doc1.phile.id_for_label}}"
               {% if form_doc1.phile.errors %}class="text-danger"{% endif %}>
@@ -366,8 +368,6 @@ $(function() {
                 {{form_doc1.name.errors|join:", "}}
               </small>
             </div>
-          </div>
-          <div class="col-md-8 pb-3">
             <div class="form-group">
               <label for="{{form_doc2.phile.id_for_label}}"
               {% if form_doc2.phile.errors %}class="text-danger"{% endif %}>
@@ -401,8 +401,6 @@ $(function() {
                 {{form_doc2.name.errors|join:", "}}
               </small>
             </div>
-          </div>
-          <div class="col-md-8 pb-3">
             <div class="form-group">
               <label for="{{form_doc3.phile.id_for_label}}"
               {% if form_doc3.phile.errors %}class="text-danger"{% endif %}>
@@ -436,26 +434,8 @@ $(function() {
                 {{form_doc3.name.errors|join:", "}}
               </small>
             </div>
+          </fieldset>
           </div>
-          <!-- 
-          <div class="col-md-12 pb-3">
-            <div class="form-group">
-              <label for="{{form.xxx.id_for_label}}"
-              {% if form.xxx.errors %}class="text-danger"{% endif %}>
-              <h5>{{form.xxx.label}}</h5>
-              </label>
-              <input type="text" name="{{form.xxx.name}}"
-                placeholder="{{form.xxx.help_text}}"
-                class="form-control{% if form.xxx.errors %} is-invalid{% endif %}"
-                id="{{form.xxx.id_for_label}}"
-                value="{{form.xxx.value|default_if_none:''}}"
-                {% if not templates_debug %}required{% endif %}>
-              <small class="text-danger">
-                {{form.xxx.errors|join:", "}}
-              </small>
-            </div>
-          </div>
-          -->
         </div>
         <!-- /.form-row -->
         <div class="form-row mt-4">

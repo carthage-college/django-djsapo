@@ -201,7 +201,10 @@ class Alert(models.Model):
         """
     )
     relationship = models.CharField(
-        "Relationship to student", max_length=24, choices=RELATIONSHIP_CHOICES,
+        "My relationship to student", max_length=24, choices=RELATIONSHIP_CHOICES,
+        help_text = """
+            Select your main role or department as related to this concern.
+        """
     )
     category = models.ManyToManyField(
         GenericChoice, verbose_name="Type of Concern",
@@ -222,7 +225,7 @@ class Alert(models.Model):
         max_length=4, choices=BINARY_CHOICES
     )
     interaction_date = models.DateField(
-        "Date of the interaction",
+        "Last date of interaction",
         null=True,blank=True,
         help_text="mm/dd/yyyy"
     )
@@ -375,11 +378,11 @@ class Document(models.Model):
         Alert, related_name='documents', on_delete=models.CASCADE
     )
     name = models.CharField(
-        "Name or short description of the file",
+        "Name or short description of file",
         max_length=128, null=True,blank=True
     )
     phile = models.FileField(
-        "Supporting document",
+        "Supporting documentation",
         upload_to=upload_to_path,
         validators=FILE_VALIDATORS,
         max_length=767, null=True,blank=True,
