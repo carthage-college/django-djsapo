@@ -18,7 +18,6 @@ $(function() {
     window.print();
     return false;
   });
-  $('[data-toggle="tooltip"]').tooltip();
   $('#categories').multiselect();
 });
 </script>
@@ -76,18 +75,24 @@ $(function() {
             {% endfor %}
             </select>
           </dd>
+          <dt>Submitted by</dt>
+          <dd>{{data.created_by.last_name}}, {{data.created_by.first_name}}</dd>
           <dt>Date submitted</dt>
           <dd>{{data.created_at}}</dd>
         </dl>
       </div>
       <div class="col-lg-5 ml-2">
         <dl class="dl-horizontal">
+          <dt>Relationship with student</dt>
+          <dd>{{data.relationship}}</dd>
           {% if data.course %}
           <dt>Course</dt>
           <dd>{{data.course}}</dd>
           {% endif %}
-          <dt>Relationship with student</dt>
-          <dd>{{data.relationship}}</dd>
+          {% if perms.admin %}
+          <dt>Outcome</dt>
+          <dd>{{data.outcome}}</dd>
+          {% endif %}
         </dl>
       </div>
     </div>
@@ -151,8 +156,6 @@ $(function() {
               </div>
             </dd>
           {% endif %}
-          <dt>Outcome</dt>
-          <dd>{{data.outcome}}</dd>
           </dl>
           </div>
         </div>
