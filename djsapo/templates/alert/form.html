@@ -117,14 +117,16 @@ $(function() {
     </div>
     <div class="card-header bg-light text-black">
       {% get_lw_content as instructions blurbs 2811 %}
-      {{instructions.body|safe}}
+      <div id="lw_instructions">{{instructions.body|safe}}</div>
       {% if  perms.alert.delete_alert %}
       <p>
-      <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2811"
-        target="_blank">
-        <i class="fa fa-pencil green" aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
-      <a href="#">
-        <i class="fa fa-refresh green" aria-hidden="true" title="Clear the cache for this content"></i></a>
+        <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2811"
+          target="_blank">
+          <i class="fa fa-pencil green" data-toggle="tooltip" data-placement="top"
+            aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
+        <a href="#" data-cid="2811" data-target="lw_instructions" data-url="{% url 'clear_cache' 'blurbs' %}" class="clear-cache">
+          <i class="fa fa-refresh green" aria-hidden="true"
+            title="Clear the cache for this content"></i></a>
       </p>
       {% endif %}
       {% include "includes/required_text.html" %}
@@ -484,7 +486,19 @@ $(function() {
         <div class="form-row mt-4">
           <div class="col-8 pb-2">
             {% get_lw_content as contact blurbs 2812 %}
-            {{contact.body|safe}}
+            <div id="lw_contact">{{contact.body|safe}}</div>
+            {% if  perms.alert.delete_alert %}
+            <p>
+              <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2812"
+                target="_blank">
+                <i class="fa fa-pencil green" data-toggle="tooltip" data-placement="top"
+                  aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
+              <a href="#" data-cid="2812" data-target="lw_contact"
+                  data-url="{% url 'clear_cache' 'blurbs' %}" class="clear-cache">
+                <i class="fa fa-refresh green" aria-hidden="true"
+                  title="Clear the cache for this content"></i></a>
+            </p>
+            {% endif %}
           </div>
           <div class="col-12 pb-2 text-center">
             <button class="btn btn-primary" style="width:200px;" type="submit">

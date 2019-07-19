@@ -14,6 +14,11 @@ from djimix.core.utils import get_connection
 from djzbar.decorators.auth import portal_auth_required
 from djtools.utils.mail import send_mail
 
+from datetime import datetime
+
+import requests
+import json
+
 REQ_ATTR = settings.REQUIRED_ATTRIBUTE
 
 
@@ -146,7 +151,9 @@ def kat_matrix(request):
             cat = GenericChoice.objects.get(pk=c)
             for m in cat.matrix.all():
                 if m.user.id not in peeps:
-                    matrix += '<li><input type="checkbox"> {}, {}</li>'.format(m.user.last_name, m.user.first_name)
+                    matrix += '<li><input type="checkbox"> {}, {}</li>'.format(
+                        m.user.last_name, m.user.first_name
+                    )
                 peeps.append(m.user.id)
         matrix += "</ol>"
         response = render(
@@ -158,3 +165,31 @@ def kat_matrix(request):
         )
 
     return response
+
+
+@csrf_exempt
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
+def clear_cache(request, ctype='blurb'):
+
+    if request.is_ajax() and request.method == 'POST':
+        cid = request.POST.get('cid')
+        key = 'livewhale_{}_{}'.format(ctype,cid)
+        cache.delete(key)
+        timestamp = datetime.timestamp(datetime.now())
+        earl = '{}/live/{}/{}@JSON?cache={}'.format(
+            settings.LIVEWHALE_API_URL,ctype,cid,timestamp
+        )
+        try:
+            response = requests.get(earl, headers={'Cache-Control':'no-cache'})
+            text = json.loads(response.text)
+            cache.set(key, text)
+            content = mark_safe(text['body'])
+        except:
+            content = ''
+    else:
+        content = "Requires AJAX POST"
+
+    return HttpResponse(content, content_type='text/plain; charset=utf-8')

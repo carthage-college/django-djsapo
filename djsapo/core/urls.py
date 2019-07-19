@@ -52,12 +52,18 @@ urlpatterns = [
             template_name='alert/success.html'
         ), name='alert_success'
     ),
+    # APIs
     path(
         'kat-matrix/', views.kat_matrix, name='kat_matrix'
     ),
     re_path(
         '^api/(?P<who>[-\w]+)/$', views.people, name='people'
     ),
+    # clear cache via ajax post
+    re_path(
+        '^cache/(?P<ctype>[-\w]+)/clear/', views.clear_cache, name='clear_cache'
+    ),
+    # home
     path(
         '', views.alert_form, name='alert_form'
     ),

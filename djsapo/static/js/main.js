@@ -34,6 +34,8 @@ function toggle(dis, val, dom) {
 }
 
 $(function() {
+  /* bootstrap tool tip */
+  $('[data-toggle="tooltip"]').tooltip();
   /* remove team member */
   $('.remove-member').on('click', function(e){
     e.preventDefault();
@@ -57,39 +59,30 @@ $(function() {
     });
     return false;
   });
-  /* datepicker */
-  $("#id_interaction_date").datepicker({
-    firstDay:1,
-    changeFirstDay:false,
-    dateFormat:'yy-mm-dd',
-    buttonImage:'//www.carthage.edu/themes/shared/img/ico/calendar.gif',
-    showOn:'both',
-    buttonImageOnly:true
-  });
-  /* wysiwyg for textarea fields */
-  $('textarea').trumbowyg({
-    btns: [
-      ['formatting'], ['strong', 'em', 'del'], ['link'],
-      ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-      ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
-    ],
-    tagsToRemove: ['script', 'link'],
-    removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
-  });
-  /* fancy picker for select fields */
-  $('select').selectpicker();
-  /* override the submit event to handle some things */
-  $('form#profile').submit(function(){
-    // set the value of the student field to email address selected
-    // via autocomplete
-    $('#autoComplete').val($('#autoComplete').attr('data-email'));
-    /* check textarea for just br tag */
-    $("textarea").each(function(){
-      if (this.value == "<br>") {
-          this.value = "";
+  /* clear cache */
+  $('.clear-cache').on('click', function(e){
+    e.preventDefault();
+    var $dis = $(this);
+    var $cid = $dis.attr("data-cid");
+    var $url = $dis.attr("data-url");
+    var $target = '#' + $dis.attr("data-target");
+    var $html = $dis.html();
+    $dis.html('<i class="fa fa-refresh fa-spin"></i>');
+    $.ajax({
+      type: "POST",
+      url: $url,
+      data: {"cid":$cid},
+      success: function(data) {
+        $.growlUI("Cache", "Clear");
+        $($target).html(data);
+        console.log(data);
+        $dis.html('<i class="fa fa-refresh"></i>');
+        //location.reload();
+      },
+      error: function(data) {
+        $.growlUI("Error", data);
       }
     });
-    // disable submit button after users clicks it
-    $(this).children('input[type=submit]').attr('disabled', 'disabled');
+    return false;
   });
 });

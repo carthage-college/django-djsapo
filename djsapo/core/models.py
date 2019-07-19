@@ -255,6 +255,10 @@ class Alert(models.Model):
         get_latest_by = 'created_at'
 
         '''
+        # change_alert
+        # view_alert
+        # delete_alert
+        # add_alert
         permissions = (
             ("can_go_in_non_ac_bus", "To provide non-AC Bus facility"),
             ("can_go_in_ac_bus", "To provide AC-Bus facility"),
