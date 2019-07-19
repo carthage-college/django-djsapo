@@ -23,6 +23,7 @@ urlpatterns = [
     ),
     # team manager
     path('team/', views.team_manager, name='team_manager'),
+    path('category/', views.category_manager, name='category_manager'),
     # export to openxml
     path('openxml/', views.openxml, name='openxml'),
     path('', views.home, name='home'),

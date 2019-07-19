@@ -18,11 +18,39 @@ $(function() {
     window.print();
     return false;
   });
-  $('#categories').multiselect();
+    $('#categories').multiselect({
+      afterMoveToRight:function($left, $right, $options) {
+          //console.log($options[0]['attributes']['value']['value']);
+          var $cid = $options[0]['attributes']['value']['value'];
+          $.ajax({
+            type: "POST",
+            url: "{% url 'category_manager' %}",
+            data: {"aid":{{data.id}},"cid":$cid},
+            beforeSend: function(){
+                spinner.spin(target);
+            },
+            success: function(data) {
+                spinner.stop(target);
+                $.growlUI("Concern Type", "Added");
+                return true;
+            },
+            error: function(data) {
+                spinner.stop(target);
+                $.growlUI("Concern Type", "Error");
+                return false;
+            }
+          });
+      },
+      afterMoveToLeft:function($left, $right, $options) {
+          console.log($options[0]['attributes']['value']['value']);
+          return true;
+      }
+    });
 });
 </script>
 {% endblock %}
 {% block content %}
+<div class="container mb-4" id="alert-container">
 <div class="row">
   <div class="col-lg-4">
     <h3 style="margin-top:-4px;">
@@ -251,4 +279,6 @@ $(function() {
   <!-- /.col-lg-6 -->
 </div>
 <!-- /.row -->
+</div>
+<!-- /.container -->
 {% endblock content %}

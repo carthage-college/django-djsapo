@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group, User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 
-from djsapo.core.models import Alert
+from djsapo.core.models import Alert, GenericChoice
 
 from djtools.utils.users import in_group
 from djzbar.decorators.auth import portal_auth_required
@@ -37,7 +37,7 @@ def home(request):
     redirect_url=reverse_lazy('access_denied')
 )
 def detail(request, aid):
-    data = get_object_or_404(Alert, id=aid)
+    data = get_object_or_404(Alert, pk=aid)
     user = request.user
     perms = data.permissions(user)
     if not perms['view']:
@@ -195,3 +195,34 @@ def team_manager(request):
         message = "Requires HTTP POST"
 
     return HttpResponse(message)
+
+
+@csrf_exempt
+@portal_auth_required(
+    group = settings.CSS_GROUP,
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
+def category_manager(request):
+    """
+    add and remove categories for an alert
+    """
+    user = request.user
+    if request.is_ajax() and request.method == 'POST':
+        # simple error handling to prevent malicious values
+        #try:
+        if True:
+            cid = int(request.POST.get('cid'))
+            aid = int(request.POST.get('aid'))
+        #except:
+        else:
+            raise Http404
+        alert = get_object_or_404(Alert, pk=aid)
+        cat = get_object_or_404(GenericChoice, pk=cid)
+        alert.category.add(cat)
+        msg = "Success"
+    else:
+        msg = "Requires AJAX POST"
+
+    return HttpResponse(msg, content_type='text/plain; charset=utf-8')
+
