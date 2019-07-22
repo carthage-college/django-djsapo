@@ -18,34 +18,73 @@ $(function() {
     window.print();
     return false;
   });
-    $('#categories').multiselect({
-      afterMoveToRight:function($left, $right, $options) {
-          //console.log($options[0]['attributes']['value']['value']);
-          var $cid = $options[0]['attributes']['value']['value'];
-          $.ajax({
-            type: "POST",
-            url: "{% url 'category_manager' %}",
-            data: {"aid":{{data.id}},"cid":$cid},
-            beforeSend: function(){
-                spinner.spin(target);
-            },
-            success: function(data) {
-                spinner.stop(target);
-                $.growlUI("Concern Type", "Added");
-                return true;
-            },
-            error: function(data) {
-                spinner.stop(target);
-                $.growlUI("Concern Type", "Error");
-                return false;
-            }
-          });
-      },
-      afterMoveToLeft:function($left, $right, $options) {
-          console.log($options[0]['attributes']['value']['value']);
-          return true;
+  $('.remove-member').on('click', function(e){
+    e.preventDefault();
+    var $dis = $(this);
+    var $uid = $dis.attr("data-uid");
+    var $mid = $dis.attr("data-mid");
+    var $ln = $dis.attr("data-last_name");
+    var $fn = $dis.attr("data-first_name");
+    $dis.html('<i class="fa fa-refresh fa-spin"></i>');
+    $.ajax({
+      type: "POST",
+      url: "{% url 'object_manager' %}",
+      data: {"aid":{{data.id}},"oid":$uid,"action":"remove","mod":"team"},
+      success: function(data) {
+        $('.tooltip').remove();
+        $dis.html('<i class="fa fa-ban red" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team"></i>');
+        $('[data-toggle="tooltip"]').tooltip();
+        $("#member_"+$mid).addClass('strike');
+        $("#member_"+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team">'+$ln + ', '+ $fn + '</span>');
+        $.growlUI("Team Member", "Removed");
       }
     });
+    return false;
+  });
+  $('#categories').multiselect({
+    afterMoveToRight:function($left, $right, $options) {
+      var $oid = $options[0]['attributes']['value']['value'];
+      $.ajax({
+        type: "POST",
+        url: "{% url 'object_manager' %}",
+        data: {"aid":{{data.id}},"oid":$oid,"action":"add","mod":"category"},
+        beforeSend: function(){
+          spinner.spin(target);
+        },
+        success: function(data) {
+          spinner.stop(target);
+          $.growlUI("Concern Type", "Added");
+          return true;
+        },
+        error: function(data) {
+          spinner.stop(target);
+          $.growlUI("Concern Type", "Error");
+          return false;
+        }
+      });
+    },
+    afterMoveToLeft:function($left, $right, $options) {
+      var $oid = $options[0]['attributes']['value']['value'];
+      $.ajax({
+        type: "POST",
+        url: "{% url 'object_manager' %}",
+        data: {"aid":{{data.id}},"oid":$oid,"action":"remove","mod":"category"},
+        beforeSend: function(){
+          spinner.spin(target);
+        },
+        success: function(data) {
+          spinner.stop(target);
+          $.growlUI("Concern Type", "Removed");
+          return true;
+        },
+        error: function(data) {
+          spinner.stop(target);
+          $.growlUI("Concern Type", "Error");
+          return false;
+        }
+      });
+    }
+  });
 });
 </script>
 {% endblock %}
@@ -222,28 +261,27 @@ $(function() {
         </h4>
         <ul class="list-group mb-3">
         {% for m in data.team.all %}
-        <li class="list-group-item d-flex justify-content-between lh-condensed {% autoescape off %}{% cycle 'list-group-item-light' 'list-group-item-none' %}{% endautoescape %}">
-          <span{% if not m.status %} class="strike"{% endif %}>
-            <span>
-                <a href="mailto:{{m.user.email}}"{% if not m.status %} title="No longer a member of the team"{% endif %}>{{m}}</a>
-                {% if m.case_manager %}
-                <i class="fa fa-star green blue-tooltip" data-toggle="tooltip"
-                  data-placement="top" title="Case Manager" aria-hidden="true"></i>
-                {% endif %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed {% autoescape off %}{% endautoescape %}">
+          <span id="member_{{m.id}}" {% if not m.status %} class="strike"{% endif %}>
+            <span {% if not m.status %} data-toggle="tooltip" data-placement="top" title="{{m}} is no longer a member of the team"{% endif %}>
+              {{m}}
+              {% if m.case_manager %}
+              <i class="fa fa-star green blue-tooltip" data-toggle="tooltip"
+                data-placement="top" title="Case Manager" aria-hidden="true"></i>
+              {% endif %}
             </span>
           </span>
           <span>
           {% if m.status %}
-          <a href="" class="remove-member no-print-icon"
-            data-url="{% url 'team_manager' %}" data-cid="{{data.id}}"
-            data-email="{{m.user.email}}" data-last_name="{{m.user.last_name}}"
-            data-first_name="{{m.user.first_name}}">
+          <a href="#" class="remove-member no-print-icon"
+            data-url="{% url 'object_manager' %}" data-uid="{{m.user.id}}" data-mid="{{m.id}}"
+            data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
             <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top"
               title="Remove {{m.user.first_name}} {{m.user.last_name}} from the alert team"
               aria-hidden="true"></i></a>
           {% else %}
           <i class="fa fa-ban red" data-toggle="tooltip" data-placement="top"
-            title="{{m.user.first_name}} {{m.user.last_name}} is no longer a member of the alert team"
+            title="{{m}} is no longer a member of the alert team"
             aria-hidden="true"></i>
           {% endif %}
           </span>

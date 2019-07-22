@@ -279,8 +279,13 @@ class Alert(models.Model):
             self.student.last_name, self.student.first_name
         )
 
-    def category_list(self):
-        cids = [c.id for c in self.category.all()]
+    def category_list(self, admin=True):
+        if admin:
+            objects = self.category.all()
+        else:
+            objects = self.category.filter(admin=False)
+
+        cids = [o.id for o in objects]
         kats = GenericChoice.objects.filter(
             tags__name__in=['Category']
         ).exclude(id__in=cids).order_by('name')
@@ -315,7 +320,7 @@ class Member(models.Model):
     alert = models.ForeignKey(
         Alert, related_name='team', on_delete=models.CASCADE
     )
-    status = models.BooleanField(default=False, verbose_name="Active?")
+    status = models.BooleanField(default=True, verbose_name="Active?")
     case_manager = models.BooleanField(default=False)
 
     class Meta:

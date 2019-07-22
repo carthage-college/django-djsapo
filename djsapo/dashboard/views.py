@@ -1,14 +1,15 @@
 from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.models import Group, User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 
-from djsapo.core.models import Alert, GenericChoice
+from djsapo.core.models import Alert, GenericChoice, Member
 
 from djtools.utils.users import in_group
+from djtools.utils.convert import str_to_class
 from djzbar.decorators.auth import portal_auth_required
 
 from openpyxl import Workbook
@@ -41,7 +42,7 @@ def detail(request, aid):
     user = request.user
     perms = data.permissions(user)
     if not perms['view']:
-        raise Http404
+        raise Http404("You do not have permission to view that alert")
 
     return render(
         request, 'alert/detail.html', {'data':data,'perms':perms}
@@ -180,49 +181,44 @@ def openxml(request):
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
-def team_manager(request):
+def object_manager(request):
     """
-    add and remove team members for an alert
-    """
-    user = None
-    message = None
-    banner = messages.SUCCESS
-    tag = 'alert-success'
-
-    if request.method == 'POST':
-        pass
-    else:
-        message = "Requires HTTP POST"
-
-    return HttpResponse(message)
-
-
-@csrf_exempt
-@portal_auth_required(
-    group = settings.CSS_GROUP,
-    session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
-)
-def category_manager(request):
-    """
-    add and remove categories for an alert
+    manager object relationships for an alert
     """
     user = request.user
     if request.is_ajax() and request.method == 'POST':
         # simple error handling to prevent malicious values
-        #try:
-        if True:
-            cid = int(request.POST.get('cid'))
+        try:
+            oid = int(request.POST.get('oid'))
             aid = int(request.POST.get('aid'))
-        #except:
-        else:
-            raise Http404
+        except:
+            raise Http404("Invalid alert or object ID")
+        mod = request.POST.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
-        cat = get_object_or_404(GenericChoice, pk=cid)
-        alert.category.add(cat)
         msg = "Success"
+        action = request.POST.get('action')
+        if mod == "category":
+            obj = get_object_or_404(GenericChoice, pk=oid)
+            if action == 'add':
+                alert.category.add(obj)
+            elif action == 'remove':
+                alert.category.remove(obj)
+            else:
+                msg = "Options: add or remove"
+        elif mod == "team":
+            user = get_object_or_404(User, pk=oid)
+            if action == 'add':
+                alert.team.add(user)
+            elif action == 'remove':
+                member = get_object_or_404(Member, user=user,alert=alert)
+                member.status = False
+                member.case_manager = False
+                member.save()
+            else:
+                msg = "Options: add or remove"
+        else:
+            msg = "Invalid Data Model"
     else:
         msg = "Requires AJAX POST"
 
     return HttpResponse(msg, content_type='text/plain; charset=utf-8')
-

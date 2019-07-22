@@ -7,6 +7,7 @@ from djsapo.core.models import (
 
 class GenericChoiceAdmin(admin.ModelAdmin):
     list_display = ('name','value','rank','active','admin')
+    list_editable = ('active','admin')
 
 
 class AlertAdmin(admin.ModelAdmin):
@@ -33,6 +34,7 @@ class AlertAdmin(admin.ModelAdmin):
 class MemberAdmin(admin.ModelAdmin):
     list_display = ('user_name','alert','case_manager','status')
     raw_id_fields = ('user','alert')
+    list_editable = ('status','case_manager')
 
     def user_name(self, obj):
         return "{}, {}".format(obj.user.last_name, obj.user.first_name)
@@ -43,6 +45,7 @@ class MemberAdmin(admin.ModelAdmin):
 class AnnotationAdmin(admin.ModelAdmin):
     list_display = ('__str__','alert','creator_name','created_at','tags','status')
     raw_id_fields = ('created_by','alert')
+    list_editable = ('status',)
 
     def creator_name(self, obj):
         return "{}, {}".format(obj.created_by.last_name,obj.created_by.first_name)
@@ -64,6 +67,7 @@ class DocumentAdmin(admin.ModelAdmin):
 
 class MessageAdmin(admin.ModelAdmin):
     list_display = ('name','slug','status')
+    list_editable = ('status',)
 
 
 class ProfileAdmin(admin.ModelAdmin):

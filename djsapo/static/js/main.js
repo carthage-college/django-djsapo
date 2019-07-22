@@ -36,29 +36,6 @@ function toggle(dis, val, dom) {
 $(function() {
   /* bootstrap tool tip */
   $('[data-toggle="tooltip"]').tooltip();
-  /* remove team member */
-  $('.remove-member').on('click', function(e){
-    e.preventDefault();
-    var $dis = $(this);
-    var $url = $dis.attr("data-url");
-    var $id = $dis.attr("data-cid");
-    var $em = $dis.attr("data-email");
-    var $ln = $dis.attr("data-last_name");
-    var $fn = $dis.attr("data-first_name");
-    var $html = $dis.html();
-    console.log('id = ' + $id);
-    $dis.html('<i class="fa fa-refresh fa-spin"></i>');
-    $.ajax({
-      type: "POST",
-      url: $url,
-      data: {"cid":$id,"email":$em,"last_name":$ln,"first_name":$fn},
-      success: function(data) {
-        $dis.closest('li').remove();
-        $.growlUI("Team member", "Removed");
-      }
-    });
-    return false;
-  });
   /* clear cache */
   $('.clear-cache').on('click', function(e){
     e.preventDefault();

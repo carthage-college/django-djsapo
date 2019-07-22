@@ -21,9 +21,8 @@ urlpatterns = [
         '^email/(?P<aid>\d+)/(?P<action>[-\w]+)/$',
         views.email_form, name='email_form'
     ),
-    # team manager
-    path('team/', views.team_manager, name='team_manager'),
-    path('category/', views.category_manager, name='category_manager'),
+    # object manager
+    path('object/', views.object_manager, name='object_manager'),
     # export to openxml
     path('openxml/', views.openxml, name='openxml'),
     path('', views.home, name='home'),
