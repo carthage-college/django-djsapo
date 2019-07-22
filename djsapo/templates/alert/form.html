@@ -19,6 +19,7 @@
 <script src="/static/djsapo/js/courses.autocomplete.js"
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
+var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
 $(function() {
   /* datepicker */
   $("#id_interaction_date").datepicker({
@@ -124,7 +125,7 @@ $(function() {
           target="_blank">
           <i class="fa fa-pencil green" data-toggle="tooltip" data-placement="top"
             aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
-        <a href="#" data-cid="2811" data-target="lw_instructions" data-url="{% url 'clear_cache' 'blurbs' %}" class="clear-cache">
+        <a href="#" data-cid="2811" data-target="lw_instructions" class="clear-cache">
           <i class="fa fa-refresh green" aria-hidden="true"
             title="Clear the cache for this content"></i></a>
       </p>
@@ -493,8 +494,7 @@ $(function() {
                 target="_blank">
                 <i class="fa fa-pencil green" data-toggle="tooltip" data-placement="top"
                   aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
-              <a href="#" data-cid="2812" data-target="lw_contact"
-                  data-url="{% url 'clear_cache' 'blurbs' %}" class="clear-cache">
+              <a href="#" data-cid="2812" data-target="lw_contact" class="clear-cache">
                 <i class="fa fa-refresh green" aria-hidden="true"
                   title="Clear the cache for this content"></i></a>
             </p>

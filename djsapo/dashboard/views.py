@@ -183,20 +183,21 @@ def openxml(request):
 )
 def object_manager(request):
     """
-    manager object relationships for an alert
+    manage object relationships for an alert
     """
     user = request.user
     if request.is_ajax() and request.method == 'POST':
+        post = request.POST
         # simple error handling to prevent malicious values
         try:
-            oid = int(request.POST.get('oid'))
-            aid = int(request.POST.get('aid'))
+            oid = int(post.get('oid'))
+            aid = int(post.get('aid'))
         except:
             raise Http404("Invalid alert or object ID")
-        mod = request.POST.get('mod')
+        mod = post.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
         msg = "Success"
-        action = request.POST.get('action')
+        action = post.get('action')
         if mod == "category":
             obj = get_object_or_404(GenericChoice, pk=oid)
             if action == 'add':
@@ -216,8 +217,41 @@ def object_manager(request):
                 member.save()
             else:
                 msg = "Options: add or remove"
+        elif mod == "alert":
+            value = post.get('value')
+            name = post.get('name')
+            setattr(alert, name, value)
+            alert.save()
         else:
             msg = "Invalid Data Model"
+    else:
+        msg = "Requires AJAX POST"
+
+    return HttpResponse(msg, content_type='text/plain; charset=utf-8')
+
+
+@csrf_exempt
+@portal_auth_required(
+    group = settings.CSS_GROUP,
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
+def set_val(request):
+    """
+    Ajax POST for to set a single name/value pair, used mostly for
+    jquery xeditable and ajax updates.
+
+    Requires via POST:
+
+    aid (alert ID)
+    name (database field)
+    value
+    pk (primary key of object to be updated)
+    mod (optional model
+    """
+
+    if request.is_ajax() and request.method == 'POST':
+        msg = "Success"
     else:
         msg = "Requires AJAX POST"
 

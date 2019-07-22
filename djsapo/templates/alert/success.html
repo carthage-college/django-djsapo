@@ -1,5 +1,10 @@
 {% extends "home.html" %}
 {% load livewhale_api %}
+{% block extra_javascript %}
+<script type="text/javascript" charset="utf-8">
+var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
+</script>
+{% endblock %}
 {% block content %}
 <div class="container mb-4">
   <div class="col-md-8 card">
@@ -11,7 +16,7 @@
     target="_blank">
     <i class="fa fa-pencil green" data-toggle="tooltip" data-placement="top"
       aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
-  <a href="#" data-cid="2810" data-target="lw_success" data-url="{% url 'clear_cache' 'blurbs' %}" class="clear-cache">
+  <a href="#" data-cid="2810" data-target="lw_success" class="clear-cache">
     <i class="fa fa-refresh green" aria-hidden="true" title="Clear the cache for this content"></i></a>
   </p>
   {% endif %}

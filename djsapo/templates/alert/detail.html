@@ -2,90 +2,10 @@
 {% load humanize model_helpers %}
 {% block extra_javascript %}
 {{block.super}}
-<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.0/js/bootstrap-select.min.js"
-  type="text/javascript" language="javascript"></script>
-<script src="//www.carthage.edu/static/vendor/jquery/plugins/multiselect/js/multiselect.min.js"
-  type="text/javascript" language="javascript"></script>
-<script src="//www.carthage.edu/static/vendor/js/spin.min.js"
-    type="text/javascript"></script>
-<script src="https://malsup.github.io/min/jquery.blockUI.min.js"
-    type="text/javascript"></script>
-<script src="/static/djsapo/js/main.js"
-  type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
-$(function() {
-  $('#print').click(function() {
-    window.print();
-    return false;
-  });
-  $('.remove-member').on('click', function(e){
-    e.preventDefault();
-    var $dis = $(this);
-    var $uid = $dis.attr("data-uid");
-    var $mid = $dis.attr("data-mid");
-    var $ln = $dis.attr("data-last_name");
-    var $fn = $dis.attr("data-first_name");
-    $dis.html('<i class="fa fa-refresh fa-spin"></i>');
-    $.ajax({
-      type: "POST",
-      url: "{% url 'object_manager' %}",
-      data: {"aid":{{data.id}},"oid":$uid,"action":"remove","mod":"team"},
-      success: function(data) {
-        $('.tooltip').remove();
-        $dis.html('<i class="fa fa-ban red" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team"></i>');
-        $('[data-toggle="tooltip"]').tooltip();
-        $("#member_"+$mid).addClass('strike');
-        $("#member_"+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team">'+$ln + ', '+ $fn + '</span>');
-        $.growlUI("Team Member", "Removed");
-      }
-    });
-    return false;
-  });
-  $('#categories').multiselect({
-    afterMoveToRight:function($left, $right, $options) {
-      var $oid = $options[0]['attributes']['value']['value'];
-      $.ajax({
-        type: "POST",
-        url: "{% url 'object_manager' %}",
-        data: {"aid":{{data.id}},"oid":$oid,"action":"add","mod":"category"},
-        beforeSend: function(){
-          spinner.spin(target);
-        },
-        success: function(data) {
-          spinner.stop(target);
-          $.growlUI("Concern Type", "Added");
-          return true;
-        },
-        error: function(data) {
-          spinner.stop(target);
-          $.growlUI("Concern Type", "Error");
-          return false;
-        }
-      });
-    },
-    afterMoveToLeft:function($left, $right, $options) {
-      var $oid = $options[0]['attributes']['value']['value'];
-      $.ajax({
-        type: "POST",
-        url: "{% url 'object_manager' %}",
-        data: {"aid":{{data.id}},"oid":$oid,"action":"remove","mod":"category"},
-        beforeSend: function(){
-          spinner.spin(target);
-        },
-        success: function(data) {
-          spinner.stop(target);
-          $.growlUI("Concern Type", "Removed");
-          return true;
-        },
-        error: function(data) {
-          spinner.stop(target);
-          $.growlUI("Concern Type", "Error");
-          return false;
-        }
-      });
-    }
-  });
-});
+var $aid = "{{data.id}}";
+var $objectManager = "{% url 'object_manager' %}";
+var $setValUrl = "{% url 'set_val' %}";
 </script>
 {% endblock %}
 {% block content %}
@@ -133,7 +53,7 @@ $(function() {
           <dt>Status</dt>
           <dd>
             <select name="status" class="list-group-item-success selectpicker set-val"
-            data-width="200px" id="status" data-pk="{{data.id}}" data-style="list-group-item-success text-dark"
+            data-width="200px" data-style="list-group-item-success text-dark"
             title="Choose status&hellip;">
             {% for s in data.STATUS_CHOICES %}
             <option value="{{s.0}}"{% if s.0 == data.status %} selected="selected"{% endif %}>
@@ -274,7 +194,7 @@ $(function() {
           <span>
           {% if m.status %}
           <a href="#" class="remove-member no-print-icon"
-            data-url="{% url 'object_manager' %}" data-uid="{{m.user.id}}" data-mid="{{m.id}}"
+            data-uid="{{m.user.id}}" data-mid="{{m.id}}"
             data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
             <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top"
               title="Remove {{m.user.first_name}} {{m.user.last_name}} from the alert team"

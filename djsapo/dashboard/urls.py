@@ -25,5 +25,7 @@ urlpatterns = [
     path('object/', views.object_manager, name='object_manager'),
     # export to openxml
     path('openxml/', views.openxml, name='openxml'),
+    # ajax post to update name/value pair for various objects
+    path('set-val/', views.set_val, name='set_val'),
     path('', views.home, name='home'),
 ]
