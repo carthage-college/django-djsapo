@@ -44,10 +44,12 @@ $(function() {
   /* function to update a name/value pair for models */
   $('.set-val').on('change', function() {
     var $dis = $(this);
+    var $name = $dis.attr("name");
+    var $value = $dis.val();
     $.ajax({
       type: "POST",
       url: $objectManager,
-      data: {'aid':$aid,'value':$dis.val(),'name':$dis.attr("name"),'mod':"alert","oid":0},
+      data: {'aid':$aid,'value':$value,'name':$name,'mod':"alert","oid":0},
       cache: false,
       beforeSend: function(){
         spinner.spin(target);
@@ -59,10 +61,6 @@ $(function() {
         } else {
           $.growlUI('Error', data);
         }
-      },
-      error: function(data) {
-        spinner.stop(target);
-        $.growlUI('Error', data);
       }
     });
   });

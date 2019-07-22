@@ -12,9 +12,9 @@ var $setValUrl = "{% url 'set_val' %}";
 <div class="container mb-4" id="alert-container">
 <div class="row">
   <div class="col-lg-4">
-    <h3 style="margin-top:-4px;">
-      {{data.student.last_name}}, {{data.student.first_name}}
-    </h3>
+    <div class="rebecca">
+      <h3>{{data.student.last_name}}, {{data.student.first_name}}</h3>
+    </div>
   </div>
   <div class="col-lg-4">
   </div>
@@ -71,7 +71,17 @@ var $setValUrl = "{% url 'set_val' %}";
       <div class="col-lg-5 ml-2">
         <dl class="dl-horizontal">
           <dt>Relationship with student</dt>
-          <dd>{{data.relationship}}</dd>
+          <dd>
+            <select name="relationship" class="list-group-item-success selectpicker set-val"
+            data-width="200px" data-style="list-group-item-success text-dark"
+            title="Choose relationship&hellip;">
+            {% for r in data.RELATIONSHIP_CHOICES %}
+            <option value="{{r.0}}"{% if r.0 == data.relationship %} selected="selected"{% endif %}>
+            {{r.1|safe}}
+            </option>
+            {% endfor %}
+            </select>
+          </dd>
           {% if data.course %}
           <dt>Course</dt>
           <dd>{{data.course}}</dd>
@@ -98,10 +108,8 @@ var $setValUrl = "{% url 'set_val' %}";
           </select>
           </div>
           <div class="col-lg-1">
-            <button type="button" id="categories_rightAll" class="btn btn-block"><i class="fa fa-forward" aria-hidden="true"></i></button>
             <button type="button" id="categories_rightSelected" class="btn btn-block"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
             <button type="button" id="categories_leftSelected" class="btn btn-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
-            <button type="button" id="categories_leftAll" class="btn btn-block"><i class="fa fa-backward" aria-hidden="true"></i></button>
           </div>
           <div class="col-lg-5">
           <select name="to[]" id="categories_to" class="form-control mb-2" size="10" multiple="multiple">

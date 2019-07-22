@@ -32,22 +32,6 @@ FILE_VALIDATORS = [
     FileExtensionValidator(allowed_extensions=ALLOWED_EXTENSIONS)
 ]
 
-RELATIONSHIP_CHOICES = (
-    ('Academic Support Services', "Academic Support Services"),
-    ('Admissions', "Admissions"),
-    ('Aspire', "Aspire"),
-    ('Athletics', "Athletics"),
-    ('Course Instructor', "Course Instructor"),
-    ('Faculty Advisor', "Faculty Advisor"),
-    ('Health and Counseling', "Health and Counseling"),
-    ('Residential Life', "Residential Life"),
-    ('Student', "Student"),
-    ('Student Financial Planning', "Student Financial Planning"),
-    ('Student Involvement', "Student Involvement"),
-    ('Student Success', "Student Success"),
-    ('Other', "Other"),
-)
-
 OUTCOME_CHOICES = (
     ('No resolution required', "No resolution required"),
     ('Next steps discussed', "Next steps discussed"),
@@ -165,6 +149,21 @@ class Alert(models.Model):
         ('Assigned', "Assigned"),
         ('In progress', "In progress"),
         ('Closed', "Closed"),
+    )
+    RELATIONSHIP_CHOICES = (
+        ('Academic Support Services', "Academic Support Services"),
+        ('Admissions', "Admissions"),
+        ('Aspire', "Aspire"),
+        ('Athletics', "Athletics"),
+        ('Course Instructor', "Course Instructor"),
+        ('Faculty Advisor', "Faculty Advisor"),
+        ('Health and Counseling', "Health and Counseling"),
+        ('Residential Life', "Residential Life"),
+        ('Student', "Student"),
+        ('Student Financial Planning', "Student Financial Planning"),
+        ('Student Involvement', "Student Involvement"),
+        ('Student Success', "Student Success"),
+        ('Other', "Other"),
     )
 
     parent = models.ForeignKey(
