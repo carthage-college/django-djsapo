@@ -1,5 +1,22 @@
 {% extends "home.html" %}
 {% load humanize model_helpers %}
+{% block extra_style %}
+{{block.super}}
+<style>
+#id_course, #id_course:hover, #id_course:focus {
+  height: 1.8rem !important;
+  width: 100%;
+  background-size: 1.1rem;
+  background-position: left 1.05rem top 0.4rem;
+}
+#autoComplete_results_list, #courses_results_list{
+  width: 400px;
+}
+.autoComplete_result {
+  max-width:400px;
+}
+</style>
+{% endblock %}
 {% block extra_javascript %}
 {{block.super}}
 <script type="text/javascript" charset="utf-8">
@@ -64,12 +81,6 @@ var $setValUrl = "{% url 'set_val' %}";
           </dd>
           <dt>Submitted by</dt>
           <dd>{{data.created_by.last_name}}, {{data.created_by.first_name}}</dd>
-          <dt>Date submitted</dt>
-          <dd>{{data.created_at}}</dd>
-        </dl>
-      </div>
-      <div class="col-lg-5 ml-2">
-        <dl class="dl-horizontal">
           <dt>Relationship with student</dt>
           <dd>
             <select name="relationship" class="list-group-item-success selectpicker set-val"
@@ -82,13 +93,40 @@ var $setValUrl = "{% url 'set_val' %}";
             {% endfor %}
             </select>
           </dd>
-          {% if data.course %}
-          <dt>Course</dt>
-          <dd>{{data.course}}</dd>
-          {% endif %}
+        </dl>
+      </div>
+      <div class="col-lg-6">
+        <dl class="dl-horizontal">
           {% if perms.admin %}
           <dt>Outcome</dt>
-          <dd>{{data.outcome}}</dd>
+          <dd>
+            <select name="outcome" class="list-group-item-success selectpicker set-val"
+            data-width="200px" data-style="list-group-item-success text-dark"
+            title="Choose outcome&hellip;">
+            {% for o in data.OUTCOME_CHOICES %}
+            <option value="{{o.0}}"{% if o.0 == data.outcome %} selected="selected"{% endif %}>
+            {{o.1|safe}}
+            </option>
+            {% endfor %}
+            </select>
+          </dd>
+          {% endif %}
+          <dt>Date submitted</dt>
+          <dd>{{data.created_at}}</dd>
+          {% if data.course %}
+          <dt>Course</dt>
+          <dd>
+          {% if perms.admin %}
+          <div class="form-group">
+          <input type="text" name="{{form.course.name}}"
+            class="form-control input-sm{% if form.course.errors %} is-invalid{% endif %}"
+            id="id_course"
+            value="{{data.course|default_if_none:''}}">
+          </div>
+          {% else %}
+          {{data.course}}
+          {% endif %}
+          </dd>
           {% endif %}
         </dl>
       </div>
@@ -100,18 +138,18 @@ var $setValUrl = "{% url 'set_val' %}";
           title="Manage the concern types for this alert"></i>
         </h4>
         <div class="row">
-          <div class="col-lg-5">
+          <div class="float-left">
           <select name="from[]" id="categories" class="form-control mb-2" size="10" multiple="multiple">
             {% for c in data.category_list %}
             <option value="{{c.id}}">{{c.name}}</option>
             {% endfor %}
           </select>
           </div>
-          <div class="col-lg-1">
+          <div class="float-left">
             <button type="button" id="categories_rightSelected" class="btn btn-block"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
             <button type="button" id="categories_leftSelected" class="btn btn-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
           </div>
-          <div class="col-lg-5">
+          <div class="float-right">
           <select name="to[]" id="categories_to" class="form-control mb-2" size="10" multiple="multiple">
             {% for c in data.category.all %}
             <option value="{{c.id}}">{{c.name}}</option>
@@ -186,6 +224,8 @@ var $setValUrl = "{% url 'set_val' %}";
             <i class="fa fa-envelope green blue-tooltip" aria-hidden="true"
             data-toggle="tooltip" data-placement="top"
             title="Send Email to the Alert Team"></i></a>
+          <i class="fa fa-trash blue-tooltip red float-right mr-3" data-toggle="tooltip"
+            data-placement="top" aria-hidden="true" title="Remove team member"></i>
         </h4>
         <ul class="list-group mb-3">
         {% for m in data.team.all %}

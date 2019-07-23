@@ -32,13 +32,6 @@ FILE_VALIDATORS = [
     FileExtensionValidator(allowed_extensions=ALLOWED_EXTENSIONS)
 ]
 
-OUTCOME_CHOICES = (
-    ('No resolution required', "No resolution required"),
-    ('Next steps discussed', "Next steps discussed"),
-    ('Resolved', "Resolved"),
-    ('Duplicate concern', "Duplicate concern"),
-    ('Unresponsive', "Unresponsive"),
-)
 # the name/value pairs have to be on one long line otherwise the django
 # forms validation does not recognize them as valid choices
 INTERACTION_CHOICES = (
@@ -144,6 +137,13 @@ class Alert(models.Model):
     Data model for the early alert object
     """
 
+    OUTCOME_CHOICES = (
+        ('No resolution required', "No resolution required"),
+        ('Next steps discussed', "Next steps discussed"),
+        ('Resolved', "Resolved"),
+        ('Duplicate concern', "Duplicate concern"),
+        ('Unresponsive', "Unresponsive"),
+    )
     STATUS_CHOICES = (
         ('New', "New"),
         ('Assigned', "Assigned"),
