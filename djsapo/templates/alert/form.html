@@ -6,6 +6,10 @@
 {% endblock %}
 {% block extra_javascript %}
 {{block.super}}
+<script src="/static/djsapo/js/autocomplete.js"
+  type="text/javascript" language="javascript"></script>
+<script src="/static/djsapo/js/courses.autocomplete.js"
+  type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
 var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
 $(function() {

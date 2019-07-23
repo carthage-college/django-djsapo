@@ -41,6 +41,30 @@ $(function() {
     window.print();
     return false;
   });
+  /* comments form */
+  $("#commentsForm").submit(function(event){
+    var $dis = $(this);
+    $.ajax({
+      type: "POST",
+      url: $commentsUrl,
+      data: $dis.serialize(),
+      cache: false,
+      beforeSend: function(){
+        $("#commentsModal").modal('hide');
+        spinner.spin(target);
+      },
+      success: function(data){
+        spinner.stop(target);
+        $("#comments-list").append(data);
+      },
+      error: function(data){
+        spinner.stop(target);
+        console.log(data);
+        $.growlUI("Comment Form", "Error");
+      }
+    });
+    return false;
+  });
   /* function to update a name/value pair for models */
   $('.set-val').on('change', function() {
     var $dis = $(this);
@@ -48,15 +72,15 @@ $(function() {
     var $value = $dis.val();
     $.ajax({
       type: "POST",
-      url: $objectManager,
-      data: {'aid':$aid,'value':$value,'name':$name,'mod':"alert","oid":0},
+      url: $manager,
+      data: {'aid':$aid,'value':$value,'name':$name,'mod':'alert','oid':0},
       cache: false,
       beforeSend: function(){
         spinner.spin(target);
       },
       success: function(data) {
         spinner.stop(target);
-        if (data == "Success") {
+        if (data == 'Success') {
           $.growlUI('Success', "Data saved.");
         } else {
           $.growlUI('Error', data);
@@ -64,14 +88,13 @@ $(function() {
       }
     });
   });
-
   /* multiselect for moving elements between two select fields */
   $('#categories').multiselect({
     afterMoveToRight:function($left, $right, $options) {
       var $oid = $options[0]['attributes']['value']['value'];
       $.ajax({
         type: "POST",
-        url: $objectManager,
+        url: $manager,
         data: {"aid":$aid,"oid":$oid,"action":"add","mod":"category"},
         beforeSend: function(){
           spinner.spin(target);
@@ -92,7 +115,7 @@ $(function() {
       var $oid = $options[0]['attributes']['value']['value'];
       $.ajax({
         type: "POST",
-        url: $objectManager,
+        url: $manager,
         data: {"aid":$aid,"oid":$oid,"action":"remove","mod":"category"},
         beforeSend: function(){
           spinner.spin(target);
@@ -121,7 +144,7 @@ $(function() {
     $dis.html('<i class="fa fa-refresh fa-spin"></i>');
     $.ajax({
       type: "POST",
-      url: $objectManager,
+      url: $manager,
       data: {"aid":$aid,"oid":$uid,"action":"remove","mod":"team"},
       success: function(data) {
         $('.tooltip').remove();

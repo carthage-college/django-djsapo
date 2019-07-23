@@ -355,6 +355,10 @@ class Annotation(models.Model):
     status = models.BooleanField(default=True, verbose_name="Active?")
     tags = TaggableManager(blank=True)
 
+    class Meta:
+        #ordering = ('-created_at',)
+        ordering = ('created_at',)
+
     def __str__(self):
         """
         Default data for display

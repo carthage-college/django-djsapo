@@ -1,0 +1,9 @@
+  <div class="card-body">
+    <h5 class="card-title mb-2">
+      <a href="mailto:{{obj.created_by.email}}">
+        {{obj.created_by.last_name}}, {{obj.created_by.first_name}}</a>
+    </h5>
+    <h6 class="card-subtitle mb-2 text-muted">{{obj.created_at}}</h6>
+    <div class="card-text text-dark">{{obj.body|safe}}</div>
+  </div>
+</div>

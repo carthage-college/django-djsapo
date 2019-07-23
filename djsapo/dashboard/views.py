@@ -181,9 +181,9 @@ def openxml(request):
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
-def object_manager(request):
+def manager(request):
     """
-    manage object relationships for an alert
+    manage object relationships for an alert and for alert values themselves
     """
     user = request.user
     if request.is_ajax() and request.method == 'POST':
@@ -236,18 +236,14 @@ def object_manager(request):
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
-def set_val(request):
+def comments_form(request):
     """
-    Ajax POST for to set a single name/value pair, used mostly for
-    jquery xeditable and ajax updates.
+    Ajax POST form to create a new Annotation object for an Alert
 
     Requires via POST:
 
     aid (alert ID)
-    name (database field)
-    value
-    pk (primary key of object to be updated)
-    mod (optional model
+    body
     """
 
     if request.is_ajax() and request.method == 'POST':

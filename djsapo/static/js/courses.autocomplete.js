@@ -1,7 +1,7 @@
 // autoComplete.js on type event emitter
-document.querySelector("#id_course").addEventListener("autoComplete", function(event) {
-  console.log(event.detail);
-});
+//document.querySelector("#id_course").addEventListener("autoComplete", function(event) {
+  //console.log(event.detail);
+//});
 // The autoComplete.js Engine instance creator
 const coursesAutoComplete = new autoComplete({
     data: {
@@ -44,7 +44,7 @@ const coursesAutoComplete = new autoComplete({
     },
     resultItem: {
         content: (data, source) => {
-          console.log(source);
+          //console.log(source);
           source.innerHTML = data.value.title + ": " + data.value.crs_no + " " + data.value.sec_no;
         },
         element: "li"
@@ -59,6 +59,25 @@ const coursesAutoComplete = new autoComplete({
     onSelection: feedback => {
         const selection = feedback.selection.value.crs_no + " " + feedback.selection.value.sec_no;
         document.querySelector("#id_course").value = selection;
+        if ($updateAlert == true) {
+          $.ajax({
+            type: "POST",
+            url: $manager,
+            data: {"aid":$aid,"value":selection,"name":"course","mod":"alert","oid":0},
+            cache: false,
+            beforeSend: function(){
+              spinner.spin(target);
+            },
+            success: function(data) {
+              spinner.stop(target);
+              if (data == "Success") {
+              $.growlUI("Success", "Data saved.");
+              } else {
+              $.growlUI("Error", data);
+              }
+            }
+          });
+        }
     }
 });
 // Toggle event for search input
