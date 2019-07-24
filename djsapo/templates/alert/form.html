@@ -364,11 +364,11 @@ $(function() {
           {% endif %}
           <div class="col-md-12">
           <fieldset>
-            <legend>Upload up to three documents (if any)</legend>
+            <legend>Supporting documentation (if any)</legend>
             <div class="form-row">
             <div class="col-md-4">
               <div class="form-group">
-              <label for="{{form_doc1.phile.id_for_label}}"
+              <label for="{{form_doc1.phile.id_for_label}}" style="display:none;"
               {% if form_doc1.phile.errors %}class="text-danger"{% endif %}>
               <h5>{{form_doc1.phile.label}}</h5>
               </label>
@@ -385,13 +385,8 @@ $(function() {
               {{form_doc1.phile.help_text}}
               </small>
               {% endif %}
-              <br>
-              <label for="{{form_doc1.name.id_for_label}}"
-              {% if form_doc1.name.errors %}class="text-danger"{% endif %}>
-              <h5>{{form_doc1.name.label}}</h5>
-              </label>
               <input type="text" name="{{form_doc1.prefix}}-{{form_doc1.name.name}}"
-                placeholder="{{form_doc1.name.help_text}}"
+                placeholder="Short description"  maxlength="128"
                 class="form-control{% if form_doc1.name.errors %} is-invalid{% endif %}"
                 id="{{form_doc1.name.id_for_label}}"
                 value="{{form_doc1.name.value|default_if_none:''}}"
@@ -403,7 +398,7 @@ $(function() {
             </div>
             <div class="col-md-4">
               <div class="form-group">
-              <label for="{{form_doc2.phile.id_for_label}}"
+              <label for="{{form_doc2.phile.id_for_label}}"  style="display:none;"
               {% if form_doc2.phile.errors %}class="text-danger"{% endif %}>
               <h5>{{form_doc2.phile.label}}</h5>
               </label>
@@ -420,13 +415,8 @@ $(function() {
               {{form_doc2.phile.help_text}}
               </small>
               {% endif %}
-              <br>
-              <label for="{{form_doc2.name.id_for_label}}"
-              {% if form_doc2.name.errors %}class="text-danger"{% endif %}>
-              <h5>{{form_doc2.name.label}}</h5>
-              </label>
               <input type="text" name="{{form_doc2.prefix}}-{{form_doc2.name.name}}"
-                placeholder="{{form_doc2.name.help_text}}"
+                placeholder="Short description"  maxlength="128"
                 class="form-control{% if form_doc2.name.errors %} is-invalid{% endif %}"
                 id="{{form_doc2.name.id_for_label}}"
                 value="{{form_doc2.name.value|default_if_none:''}}"
@@ -438,7 +428,7 @@ $(function() {
             </div>
             <div class="col-md-4">
               <div class="form-group">
-              <label for="{{form_doc3.phile.id_for_label}}"
+              <label for="{{form_doc3.phile.id_for_label}}" style="display:none;"
               {% if form_doc3.phile.errors %}class="text-danger"{% endif %}>
               <h5>{{form_doc3.phile.label}}</h5>
               </label>
@@ -455,13 +445,8 @@ $(function() {
               {{form_doc3.phile.help_text}}
               </small>
               {% endif %}
-              <br>
-              <label for="{{form_doc3.name.id_for_label}}"
-              {% if form_doc3.name.errors %}class="text-danger"{% endif %}>
-              <h5>{{form_doc3.name.label}}</h5>
-              </label>
               <input type="text" name="{{form_doc3.prefix}}-{{form_doc3.name.name}}"
-                placeholder="{{form_doc3.name.help_text}}"
+                placeholder="Short description" maxlength="128"
                 class="form-control{% if form_doc3.name.errors %} is-invalid{% endif %}"
                 id="{{form_doc3.name.id_for_label}}"
                 value="{{form_doc3.name.value|default_if_none:''}}"
