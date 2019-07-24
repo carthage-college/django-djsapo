@@ -19,8 +19,10 @@
 {% endblock %}
 {% block extra_javascript %}
 {{block.super}}
+{% if perms.admin %}
 <script src="/static/djsapo/js/courses.autocomplete.js"
   type="text/javascript" language="javascript"></script>
+{% endif %}
 <script type="text/javascript" charset="utf-8">
 var $aid = "{{data.id}}";
 var $manager = "{% url 'manager' %}";
@@ -71,6 +73,7 @@ var $updateAlert = true;
         <dl class="dl-horizontal">
           <dt>Status</dt>
           <dd>
+          {% if perms.admin %}
             <select name="status" class="list-group-item-success selectpicker set-val"
             data-width="200px" data-style="list-group-item-success text-dark"
             title="Choose status&hellip;">
@@ -80,11 +83,15 @@ var $updateAlert = true;
             </option>
             {% endfor %}
             </select>
+          {% else %}
+          {{data.status}}
+          {% endif %}
           </dd>
           <dt>Submitted by</dt>
           <dd>{{data.created_by.last_name}}, {{data.created_by.first_name}}</dd>
           <dt>Relationship with student</dt>
           <dd>
+          {% if perms.admin %}
             <select name="relationship" class="list-group-item-success selectpicker set-val"
             data-width="200px" data-style="list-group-item-success text-dark"
             title="Choose relationship&hellip;">
@@ -94,6 +101,9 @@ var $updateAlert = true;
             </option>
             {% endfor %}
             </select>
+          {% else %}
+          {{data.relationship}}
+          {% endif %}
           </dd>
         </dl>
       </div>
@@ -136,9 +146,12 @@ var $updateAlert = true;
     <div class="panel">
       <div class="panel-body">
         <h4>Type of concern
+          {% if perms.admin %}
           <i class="fa fa-tags green blue-tooltip" aria-hidden="true" data-toggle="tooltip" data-placement="top"
           title="Manage the concern types for this alert"></i>
+          {% endif %}
         </h4>
+        {% if perms.admin %}
         <div class="row">
           <div class="float-left">
           <select name="from[]" id="categories" class="form-control mb-2" size="10" multiple="multiple">
@@ -159,6 +172,15 @@ var $updateAlert = true;
           </select>
           </div>
         </div>
+        {% else %}
+        <ul class="list-group mb-3">
+        {% for c in data.category.all %}
+          <li class="list-group-item {% cycle 'blue-box' 'lightgrey-box' %}" style="color:#000;">
+            {{c}}
+          </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
         <dl class="dl-horizontal">
           <dt><h4>Details about this concern</h4></dt>
           <dd>
@@ -198,11 +220,9 @@ var $updateAlert = true;
         <ul class="list-group mb-3">
           {% for d in data.documents.all %}
             {% if d.phile %}
-            <li class="list-group-item {% autoescape off %}{% cycle 'list-group-item-light' 'list-group-item-none' %}{% endautoescape %}">
-              <h5>
+            <li class="list-group-item {% cycle 'blue-box' 'lightgrey-box' %}" style="color:#000;">
                 <a href="https://{{server_url}}{{media_url}}{{d.phile}}">{% if d.name %}{{d.name}}{% else %}{{d.created_at}}{% endif %}</a>
                 <i class="fa fa-file-{{d.get_icon}}-o green" aria-hidden="true"></i>
-              </h5>
             </li>
             {% endif %}
           {% endfor %}
@@ -226,12 +246,14 @@ var $updateAlert = true;
             <i class="fa fa-envelope green blue-tooltip" aria-hidden="true"
             data-toggle="tooltip" data-placement="top"
             title="Send Email to the Alert Team"></i></a>
+          {% if perms.admin %}
           <i class="fa fa-trash blue-tooltip red float-right mr-3" data-toggle="tooltip"
             data-placement="top" aria-hidden="true" title="Remove team member"></i>
+          {% endif %}
         </h4>
         <ul class="list-group mb-3">
         {% for m in data.team.all %}
-        <li class="list-group-item d-flex justify-content-between lh-condensed {% autoescape off %}{% endautoescape %}">
+        <li class="list-group-item {% cycle 'list-group-item-light' 'list-group-item-none' %}" style="color:#000;">
           <span id="member_{{m.id}}" {% if not m.status %} class="strike"{% endif %}>
             <span {% if not m.status %} data-toggle="tooltip" data-placement="top" title="{{m}} is no longer a member of the team"{% endif %}>
               {{m}}
@@ -307,5 +329,6 @@ var $updateAlert = true;
     </div>
   </div>
 </div>
+<div id="id_bounce">&nbsp;</div>
 <!-- /#commentsModal -->
 {% endblock content %}

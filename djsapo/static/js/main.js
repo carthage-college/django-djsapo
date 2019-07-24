@@ -52,22 +52,24 @@ $(function() {
       cache: false,
       beforeSend: function(){
         $("#commentsModal").modal('hide');
-        spinner.spin(target);
       },
       success: function(data){
-        spinner.stop(target);
-        $.growlUI("Comment Form", "Success");
         $("#comments-list").append(data);
-        window.location.hash = "#id_bounce";
+        //window.location.hash = "";
+        //window.location.hash = "id_bounce";
+        $('html, body').animate({scrollTop:$(document).height()}, 'slow');
+        //location.hash = "id_bounce";
       },
       error: function(data){
-        spinner.stop(target);
         console.log(data);
         $.growlUI("Comment Form", "Error");
       }
     });
     return false;
   });
+  $('#commentsModal').on('shown.bs.modal', function () {
+    $('#id_body').focus();
+  })
   /* function to update a name/value pair for models */
   $('.set-val').on('change', function() {
     var $dis = $(this);

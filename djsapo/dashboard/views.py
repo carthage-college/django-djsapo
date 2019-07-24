@@ -226,7 +226,7 @@ def manager(request):
             alert.notes.add(note)
             t = loader.get_template('alert/annotation.inc.html')
             context = {
-                'obj':note,'bgcolor':'list-group-item-success','bounce':True
+                'obj':note,'bgcolor':'list-group-item-success'
             }
             msg = t.render(context, request)
         elif mod == "alert":
