@@ -385,6 +385,10 @@ $(function() {
               {{form_doc1.phile.help_text}}
               </small>
               {% endif %}
+              <label for="{{form_doc1.name.id_for_label}}" style="display:none;"
+              {% if form_doc1.name.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc1.name.label}}</h5>
+              </label>
               <input type="text" name="{{form_doc1.prefix}}-{{form_doc1.name.name}}"
                 placeholder="Short description"  maxlength="128"
                 class="form-control{% if form_doc1.name.errors %} is-invalid{% endif %}"
@@ -398,7 +402,7 @@ $(function() {
             </div>
             <div class="col-md-4">
               <div class="form-group">
-              <label for="{{form_doc2.phile.id_for_label}}"  style="display:none;"
+              <label for="{{form_doc2.phile.id_for_label}}" style="display:none;"
               {% if form_doc2.phile.errors %}class="text-danger"{% endif %}>
               <h5>{{form_doc2.phile.label}}</h5>
               </label>
@@ -415,6 +419,10 @@ $(function() {
               {{form_doc2.phile.help_text}}
               </small>
               {% endif %}
+              <label for="{{form_doc2.name.id_for_label}}" style="display:none;"
+              {% if form_doc2.name.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc2.name.label}}</h5>
+              </label>
               <input type="text" name="{{form_doc2.prefix}}-{{form_doc2.name.name}}"
                 placeholder="Short description"  maxlength="128"
                 class="form-control{% if form_doc2.name.errors %} is-invalid{% endif %}"
@@ -445,6 +453,10 @@ $(function() {
               {{form_doc3.phile.help_text}}
               </small>
               {% endif %}
+              <label for="{{form_doc3.name.id_for_label}}" style="display:none;"
+              {% if form_doc3.name.errors %}class="text-danger"{% endif %}>
+              <h5>{{form_doc3.name.label}}</h5>
+              </label>
               <input type="text" name="{{form_doc3.prefix}}-{{form_doc3.name.name}}"
                 placeholder="Short description" maxlength="128"
                 class="form-control{% if form_doc3.name.errors %} is-invalid{% endif %}"
