@@ -289,7 +289,7 @@ var $updateAlert = true;
         <div id="comments-list">
           {% for obj in data.notes.all %}
             {% if obj.status %}
-            {% cycle 'lightgrey-box' 'blue-box' as boxcolor silent %}
+            {% cycle 'blue-box' 'lightgrey-box' as boxcolor silent %}
             {% include "alert/annotation.inc.html" with bgcolor=boxcolor %}
             {% endif %}
           {% endfor %}
