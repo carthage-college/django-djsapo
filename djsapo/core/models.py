@@ -58,7 +58,7 @@ def limit_category():
     ids = [
         g.id for g in GenericChoice.objects.filter(
             tags__name__in=['Category']
-        ).order_by('name')
+        ).order_by('rank')
     ]
     return {'id__in':ids}
 

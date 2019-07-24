@@ -12,7 +12,7 @@ from djtools.fields.time import KungfuTimeField
 
 CONCERN_CHOICES = GenericChoice.objects.filter(
     tags__name__in=['Category']
-).filter(active=True).order_by('name')
+).filter(active=True).order_by('rank')
 
 
 class AlertForm(forms.ModelForm):
