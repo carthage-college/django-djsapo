@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.template import loader
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -6,7 +7,7 @@ from django.contrib.auth.models import Group, User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 
-from djsapo.core.models import Alert, GenericChoice, Member
+from djsapo.core.models import Alert, Annotation, GenericChoice, Member
 
 from djtools.utils.users import in_group
 from djtools.utils.convert import str_to_class
@@ -217,6 +218,17 @@ def manager(request):
                 member.save()
             else:
                 msg = "Options: add or remove"
+        elif mod == "comment":
+            note = Annotation.objects.create(
+                alert=alert, created_by=user, body=post.get('body'),
+                tags="Comments"
+            )
+            alert.notes.add(note)
+            t = loader.get_template('alert/annotation.inc.html')
+            context = {
+                'obj':note,'bgcolor':'list-group-item-success','bounce':True
+            }
+            msg = t.render(context, request)
         elif mod == "alert":
             value = post.get('value')
             name = post.get('name')
@@ -224,30 +236,6 @@ def manager(request):
             alert.save()
         else:
             msg = "Invalid Data Model"
-    else:
-        msg = "Requires AJAX POST"
-
-    return HttpResponse(msg, content_type='text/plain; charset=utf-8')
-
-
-@csrf_exempt
-@portal_auth_required(
-    group = settings.CSS_GROUP,
-    session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
-)
-def comments_form(request):
-    """
-    Ajax POST form to create a new Annotation object for an Alert
-
-    Requires via POST:
-
-    aid (alert ID)
-    body
-    """
-
-    if request.is_ajax() and request.method == 'POST':
-        msg = "Success"
     else:
         msg = "Requires AJAX POST"
 

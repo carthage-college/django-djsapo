@@ -42,12 +42,13 @@ $(function() {
     return false;
   });
   /* comments form */
-  $("#commentsForm").submit(function(event){
-    var $dis = $(this);
+  $("#commentsForm").submit(function(e){
+    e.preventDefault();
+    var $body = $("#id_body").val();
     $.ajax({
       type: "POST",
-      url: $commentsUrl,
-      data: $dis.serialize(),
+      url: $manager,
+      data: {'aid':$aid,'body':$body,'mod':'comment','oid':0},
       cache: false,
       beforeSend: function(){
         $("#commentsModal").modal('hide');
@@ -55,7 +56,9 @@ $(function() {
       },
       success: function(data){
         spinner.stop(target);
+        $.growlUI("Comment Form", "Success");
         $("#comments-list").append(data);
+        window.location.hash = "#id_bounce";
       },
       error: function(data){
         spinner.stop(target);
@@ -172,7 +175,6 @@ $(function() {
       success: function(data) {
         $.growlUI("Cache", "Clear");
         $($target).html(data);
-        console.log(data);
         $dis.html('<i class="fa fa-refresh"></i>');
       },
       error: function(data) {
