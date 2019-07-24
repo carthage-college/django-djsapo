@@ -265,14 +265,14 @@ var $updateAlert = true;
           </span>
           <span>
           {% if m.status %}
-          <a href="#" class="remove-member no-print-icon"
+          <a href="#" class="remove-member no-print-icon float-right"
             data-uid="{{m.user.id}}" data-mid="{{m.id}}"
             data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
             <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top"
               title="Remove {{m.user.first_name}} {{m.user.last_name}} from the alert team"
               aria-hidden="true"></i></a>
           {% else %}
-          <i class="fa fa-ban red" data-toggle="tooltip" data-placement="top"
+          <i class="fa fa-ban red float-right" data-toggle="tooltip" data-placement="top"
             title="{{m}} is no longer a member of the alert team"
             aria-hidden="true"></i>
           {% endif %}
