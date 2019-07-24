@@ -22,7 +22,7 @@ const autoCompletejs = new autoComplete({
             // Returns Fetched data
             return data;
         },
-        key: ["lastname"],
+        key: ["lastname","email"],
         cache: true
     },
     sort: (a, b) => {
@@ -37,7 +37,7 @@ const autoCompletejs = new autoComplete({
     searchEngine: "strict",
     //searchEngine: "loose",
     highlight: true,
-    maxResults: 10,
+    maxResults: 30,
     resultsList: {
         render: true,
         container: source => {

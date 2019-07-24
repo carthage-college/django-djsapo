@@ -111,7 +111,7 @@ $(function() {
     <div class="card-header bg-light text-black">
       {% get_lw_content as instructions blurbs 2811 %}
       <div id="lw_instructions">{{instructions.body|safe}}</div>
-      {% if  perms.alert.delete_alert %}
+      {% if  user.is_staff %}
       <p>
         <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2811"
           target="_blank">
@@ -465,7 +465,7 @@ $(function() {
           <div class="col-8 pb-2">
             {% get_lw_content as contact blurbs 2812 %}
             <div id="lw_contact">{{contact.body|safe}}</div>
-            {% if  perms.alert.delete_alert %}
+            {% if  user.is_staff %}
             <p>
               <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2812"
                 target="_blank">
