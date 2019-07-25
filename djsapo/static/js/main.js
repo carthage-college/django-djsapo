@@ -33,9 +33,16 @@ function toggle(dis, val, dom) {
   }
 }
 
+// stupid tooltip does not disappear on right click for links
+window.addEventListener("click", function (event) {
+   $('.tooltip.fade.top.in').tooltip("hide");
+}
+
 $(function() {
   /* bootstrap tool tip */
-  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip(
+    trigger : 'hover'
+  );
   /* print page */
   $('#print').click(function() {
     window.print();
@@ -58,6 +65,7 @@ $(function() {
         //window.location.hash = "";
         //window.location.hash = "id_bounce";
         $('html, body').animate({scrollTop:$(document).height()}, 'slow');
+        $("#id_body").val('');
         //location.hash = "id_bounce";
       },
       error: function(data){

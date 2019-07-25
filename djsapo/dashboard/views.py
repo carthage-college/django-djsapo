@@ -15,6 +15,8 @@ from djzbar.decorators.auth import portal_auth_required
 
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
+from operator import attrgetter
+from itertools import chain
 
 
 @portal_auth_required(
@@ -26,12 +28,17 @@ def home(request):
     css = in_group(user, settings.CSS_GROUP)
     # CSS or superuser can access all objects
     if css:
-        alerts = Alert.objects.all().order_by('-created_at')
+        my_alerts = Alert.objects.all().order_by('-created_at')
+        alerts = [a for a in my_alerts]
     else:
-        alerts = Alert.objects.filter(created_by=user)
-    return render(
-        request, 'list.html', {'alerts':alerts,}
-    )
+        my_alerts = Alert.objects.filter(created_by=user).order_by('-created_at')
+        teams = Member.objects.filter(user__username="akrusza")
+        team_alerts = [member.alert for member in teams]
+        alerts = sorted(
+            chain(my_alerts, team_alerts), key=attrgetter('created_at')
+        )
+
+    return render(request, 'list.html', {'alerts':alerts,'css':css})
 
 
 @portal_auth_required(

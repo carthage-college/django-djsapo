@@ -474,7 +474,7 @@ $(function() {
         </div>
         <!-- /.form-row -->
         <div class="form-row mt-4">
-          <div class="col-8 pb-2">
+          <div class="col-lg-8 col-md-8 col-sm-12 pb-2">
             {% get_lw_content as contact blurbs 2812 %}
             <div id="lw_contact">{{contact.body|safe}}</div>
             {% if  user.is_staff %}

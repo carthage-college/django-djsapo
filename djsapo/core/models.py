@@ -180,11 +180,11 @@ class Alert(models.Model):
     )
     created_by = models.ForeignKey(
         User, verbose_name="Created by",
-        on_delete=models.CASCADE, editable=False
+        on_delete=models.CASCADE
     )
     updated_by = models.ForeignKey(
         User, verbose_name="Updated by", related_name='updated_by',
-        on_delete=models.CASCADE, editable=False, null=True, blank=True
+        on_delete=models.CASCADE, null=True, blank=True
     )
     student = models.ForeignKey(
         User, verbose_name="Student", related_name='student',
@@ -296,13 +296,18 @@ class Alert(models.Model):
     def permissions(self, user):
         # we can move this to core.utils if we use it else where
         if user.is_superuser:
-            perms = {'view':True,'update':True,'delete':True,'admin':True}
+            perms = {'view':True,'team':True,'delete':True,'admin':True}
         else:
-            perms = {'view':False,'update':False,'delete':False,'admin':False}
+            perms = {'view':False,'team':False,'delete':False,'admin':False}
             group = in_group(user, settings.CSS_GROUP)
             if group:
+                perms['view'] = True
                 perms['admin'] = True
-            if self.created_by == user or group:
+            for member in self.team.all():
+                if user == member.user:
+                    perms['view'] = True
+                    perms['team'] = True
+            if self.created_by == user:
                 perms['view'] = True
                 perms['update'] = True
 

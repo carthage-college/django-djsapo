@@ -30,11 +30,11 @@
       </tr>
     </thead>
     <tbody>
-      {% for a in alerts %}
+    {% for a in alerts %}
+      {% ifchanged a.id %}
       <tr>
         <td nowrap>
-          <a href="{% url 'detail' a.id %}" data-toggle="tooltip"
-            data-placement="top" class="blue-tooltip"
+          <a href="{% url 'detail' a.id %}"
             title="View Alert Submission: {{a.student.id}}">{{a}}</a>
         </td>
         <td>{{a.course}}</td>
@@ -67,7 +67,8 @@
         </td>
         {% endif %}
       </tr>
-      {% endfor %}
+      {% endifchanged %}
+    {% endfor %}
     </tbody>
     <tfoot>
       <tr>
