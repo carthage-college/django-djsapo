@@ -33,16 +33,14 @@ function toggle(dis, val, dom) {
   }
 }
 
-// stupid tooltip does not disappear on right click for links
-window.addEventListener("click", function (event) {
-   $('.tooltip.fade.top.in').tooltip("hide");
-}
-
 $(function() {
+  $('#teamModalOpen').on('click',function(){
+    //$('.modal-body').load('getContent.php?id=2',function(){
+        //$('#myModal').modal({show:true});
+    //});
+  });
   /* bootstrap tool tip */
-  $('[data-toggle="tooltip"]').tooltip(
-    trigger : 'hover'
-  );
+  $('[data-toggle="tooltip"]').tooltip();
   /* print page */
   $('#print').click(function() {
     window.print();

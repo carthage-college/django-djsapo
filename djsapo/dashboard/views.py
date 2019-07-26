@@ -10,8 +10,10 @@ from django.shortcuts import render, get_object_or_404
 from djsapo.core.models import Alert, Annotation, GenericChoice, Member
 
 from djtools.utils.users import in_group
-from djtools.utils.convert import str_to_class
 from djzbar.decorators.auth import portal_auth_required
+from djimix.core.utils import get_connection
+from djimix.sql.students import VITALS
+from djimix.constants import SPORTS
 
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
@@ -52,8 +54,21 @@ def detail(request, aid):
     if not perms['view']:
         raise Http404("You do not have permission to view that alert")
 
+    connection = get_connection()
+    cursor = connection.cursor()
+    student = cursor.execute(VITALS(cid=data.student.id)).fetchone()
+    sports = []
+    if student:
+        athletics = student.sports.split(',')
+        for s in SPORTS:
+            for a in athletics:
+                if a in s:
+                    sports.append(s[1])
+
     return render(
-        request, 'alert/detail.html', {'data':data,'perms':perms}
+        request, 'alert/detail.html', {
+            'data':data,'student':student,'perms':perms,'sports':sports
+        }
     )
 
 
