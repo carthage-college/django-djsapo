@@ -90,7 +90,7 @@ class GenericChoice(models.Model):
     )
     active = models.BooleanField(
         help_text="""
-            Do you want the field to be visable on your form?
+            Do you want the field to be visable on the public submission form?
         """,
         verbose_name="Is active?", default=True
     )
@@ -262,16 +262,24 @@ class Alert(models.Model):
         )
 
     def category_list(self, admin=True):
+        """
+        returns a query set of categories that are currently not associated
+        with the allert
+        """
+        # current categories
         if admin:
             objects = self.category.all()
         else:
             objects = self.category.filter(admin=False)
-
         cids = [o.id for o in objects]
+        # unassigned categories
         kats = GenericChoice.objects.filter(
             tags__name__in=['Category']
         ).exclude(id__in=cids).order_by('name')
         return kats
+
+    def category_team(self):
+        kats = self.category.all()
 
     def get_absolute_url(self):
         return ('alert_detail', [str(self.id)])

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os, sys
-# env
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djsapo.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djsapo.settings.shell')
 
-# required if using django models
 import django
 django.setup()
 
@@ -18,7 +16,7 @@ logger = logging.getLogger('djsapo')
 
 # set up command-line options
 desc = """
-Accepts as input a group type: student, faculty, or staff
+    Accepts as input a person type: student, faculty, or staff
 """
 
 # RawTextHelpFormatter method allows for new lines in help text

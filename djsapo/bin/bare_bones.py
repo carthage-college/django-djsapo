@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import os, sys
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djsapo.settings.shell")
 
-# env
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djequis.settings")
+import django
+django.setup()
 
 from django.conf import settings
 

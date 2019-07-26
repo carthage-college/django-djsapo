@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os, sys
-# env
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djsapo.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djsapo.settings.shell')
 
-# required if using django models
 import django
 django.setup()
 

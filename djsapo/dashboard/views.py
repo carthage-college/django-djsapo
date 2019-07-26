@@ -21,6 +21,23 @@ from operator import attrgetter
 from itertools import chain
 
 
+def _student(alert):
+    """
+    move to core/utils if need be
+    """
+    connection = get_connection()
+    cursor = connection.cursor()
+    student = cursor.execute(VITALS(cid=alert.student.id)).fetchone()
+    sports = []
+    if student:
+        athletics = student.sports.split(',')
+        for s in SPORTS:
+            for a in athletics:
+                if a in s:
+                    sports.append(s[1])
+    return {'student':student, 'sports':sports}
+
+
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
@@ -48,26 +65,18 @@ def home(request):
     redirect_url=reverse_lazy('access_denied')
 )
 def detail(request, aid):
-    data = get_object_or_404(Alert, pk=aid)
+    alert = get_object_or_404(Alert, pk=aid)
     user = request.user
-    perms = data.permissions(user)
+    perms = alert.permissions(user)
     if not perms['view']:
         raise Http404("You do not have permission to view that alert")
-
-    connection = get_connection()
-    cursor = connection.cursor()
-    student = cursor.execute(VITALS(cid=data.student.id)).fetchone()
-    sports = []
-    if student:
-        athletics = student.sports.split(',')
-        for s in SPORTS:
-            for a in athletics:
-                if a in s:
-                    sports.append(s[1])
+    else:
+        student = _student(alert)
 
     return render(
         request, 'alert/detail.html', {
-            'data':data,'student':student,'perms':perms,'sports':sports
+            'data':alert,'student':student['student'],'perms':perms,
+            'sports':student['sports']
         }
     )
 
@@ -262,3 +271,30 @@ def manager(request):
         msg = "Requires AJAX POST"
 
     return HttpResponse(msg, content_type='text/plain; charset=utf-8')
+
+
+@portal_auth_required(
+    group = settings.CSS_GROUP,
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
+def team(request, aid):
+    """
+    manager team members
+    """
+
+    alert = get_object_or_404(Alert, pk=aid)
+    student = _student(alert)
+    team = [m.user for m in alert.team.all()]
+    matrix = []
+    for c in alert.category.all():
+        for m in c.matrix.all():
+            if m.user not in matrix:
+                matrix.append(m.user)
+
+    return render(
+        request, 'team.html', {
+            'data':alert,'student':student['student'],'sports':student['sports'],
+            'matrix':matrix
+        }
+    )
