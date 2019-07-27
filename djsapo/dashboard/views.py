@@ -278,12 +278,13 @@ def manager(request):
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
-def team(request, aid):
+def team_manager(request, aid):
     """
-    manager team members
+    manage team members
     """
 
     alert = get_object_or_404(Alert, pk=aid)
+    perms = alert.permissions(request.user)
     student = _student(alert)
     team = [m.user for m in alert.team.all()]
     matrix = []
@@ -294,7 +295,7 @@ def team(request, aid):
 
     return render(
         request, 'team.html', {
-            'data':alert,'student':student['student'],'sports':student['sports'],
-            'matrix':matrix
+            'data':alert,'perms':perms, 'matrix':matrix,
+            'student':student['student'], 'sports':student['sports']
         }
     )

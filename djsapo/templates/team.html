@@ -1,0 +1,70 @@
+{% extends "datatables.html" %}
+{% block content %}
+{% include "alert/student.header.inc.html" %}
+<div class="container mb-4">
+  <h2 class="mb-3">
+    Alert Team Manager
+  </h2>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="panel">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-5">
+              <h5>SOS Matrix</h5>
+            </div>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-5">
+              <h5>Current Team</h5>
+            </div>
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+  </div>
+  <!-- /.row -->
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="panel">
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-lg-5">
+              <select name="from[]" id="team_members" class="form-control mb-2" size="15" multiple="multiple">
+              {% for m in matrix %}
+              <option value="{{m.id}}">{{m.last_name}}, {{m.first_name}}</option>
+              {% endfor %}
+              </select>
+            </div>
+            <div class="col-lg-1">
+              <button type="button" id="categories_rightSelected" class="btn btn-block"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+              <button type="button" id="categories_leftSelected" class="btn btn-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+            </div>
+            <div class="col-lg-5">
+              <select name="to[]" id="team_members_to" class="form-control mb-2" size="15" multiple="multiple">
+              {% for m in data.team.all %}
+              {% if m.status %}
+              <option value="{{m.user.id}}">{{m.user.last_name}}, {{m.user.first_name}}</option>
+              {% endif %}
+              {% endfor %}
+              </select>
+            </div>
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.panel-body -->
+      </div>
+      <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+    <div class="col-lg-6">
+    </div>
+    <!-- /.col-lg-6 -->
+  </div>
+  <!-- /.row -->
+</div>
+<!-- /.container -->
+{% endblock content %}

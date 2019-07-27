@@ -5,9 +5,11 @@ from djsapo.dashboard import views
 
 
 urlpatterns = [
+    # detailed view
     re_path('^alert/(?P<aid>\d+)/detail/$', views.detail, name='detail'),
     # complete lising
     path('list/', views.list, name='list'),
+    # search for alerts
     path('search/', views.search, name='search'),
     # Send an email
     path(
@@ -21,7 +23,11 @@ urlpatterns = [
         '^email/(?P<aid>\d+)/(?P<action>[-\w]+)/$',
         views.email_form, name='email_form'
     ),
-    # object manager
+    # team manager
+    re_path('^team/(?P<aid>\d+)/manager/$',
+        views.team_manager, name='team_manager'
+    ),
+    # ajax object manager
     path('manager/', views.manager, name='manager'),
     # export to openxml
     path('openxml/', views.openxml, name='openxml'),
