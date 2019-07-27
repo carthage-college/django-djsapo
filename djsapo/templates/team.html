@@ -1,66 +1,100 @@
 {% extends "datatables.html" %}
+{% block extra_javascript %}
+{{block.super}}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
+<script>
+// With options:
+$('#matrix').sortable({
+  invertSwap: true,
+    group: {
+        name: 'shared'
+    },
+    animation: 150,
+    sort: false,
+    onAdd: function (evt) {
+        console.log(evt);
+    },
+    onRemove: function (evt) {
+        console.log(evt);
+    }
+});
+$('#team-members').sortable({
+    group: 'shared',
+    animation: 150,
+    sort: false,
+    onAdd: function (evt) {
+        console.log(evt);
+    },
+    onRemove: function (evt) {
+        console.log(evt);
+    }
+})
+</script>
+{% endblock %}
 {% block content %}
 {% include "alert/student.header.inc.html" %}
 <div class="container mb-4">
-  <h2 class="mb-3">
-    Alert Team Manager
-  </h2>
-  <div class="row">
+  <div class="row mb-3">
+    <div class="col-lg-9">
+      <h2>Alert Team Manager</h2>
+      <p>
+        Click on a person's name and drag the it from one side to the other.
+        To add someone to the team, drag them from the left and drop them on the right.
+        To remove someone from the team, drag them from the right to drop them on the left.
+      </p>
+    </div>
+    <!-- /.col-lg-8 -->
+  </div>
+  <!-- /.row -->
+  <div class="row mb-3">
     <div class="col-lg-6">
-      <div class="panel">
-        <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-5">
-              <h5>SOS Matrix</h5>
-            </div>
-            <div class="col-lg-1"></div>
-            <div class="col-lg-5">
-              <h5>Current Team</h5>
-            </div>
-          </div>
-          <!-- /.row -->
+      <h4>SOS Matrix</h4>
+      <div id="matrix" class="list-group col">
+        {% for m in matrix %}
+        <div class="list-group-item" data-mid="{{m.id}}">
+            <i class="fa fa-arrows handle"></i>
+            {{m.last_name}}, {{m.first_name}}
         </div>
-        <!-- /.panel-body -->
+        {% endfor %}
       </div>
-      <!-- /.panel -->
     </div>
     <!-- /.col-lg-6 -->
+    <div class="col-lg-6">
+      <h4>Current Team</h4>
+      <div id="team-members" class="list-group col">
+        {% for m in data.team.all %}
+          {% if m.status %}
+            <div class="list-group-item" data-uid="{{m.user.id}}">
+              <i class="fa fa-arrows handle"></i>
+              {{m.user.last_name}}, {{m.user.first_name}}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <!-- /.col-lg-6 -->
+  </div>
+  <!-- /.row -->
+  <div class="row">
+    <div class="col-lg-9">
+      <h3>Ad Hoc Member</h3>
+      <p>
+        If you do not see the person in the lists above that you would like
+        to add to the team, you can do so with the following form.
+      </p>
+    </div>
+    <!-- /.col-lg-8 -->
   </div>
   <!-- /.row -->
   <div class="row">
     <div class="col-lg-6">
       <div class="panel">
         <div class="panel-body">
-          <div class="row">
-            <div class="col-lg-5">
-              <select name="from[]" id="team_members" class="form-control mb-2" size="15" multiple="multiple">
-              {% for m in matrix %}
-              <option value="{{m.id}}">{{m.last_name}}, {{m.first_name}}</option>
-              {% endfor %}
-              </select>
-            </div>
-            <div class="col-lg-1">
-              <button type="button" id="categories_rightSelected" class="btn btn-block"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-              <button type="button" id="categories_leftSelected" class="btn btn-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
-            </div>
-            <div class="col-lg-5">
-              <select name="to[]" id="team_members_to" class="form-control mb-2" size="15" multiple="multiple">
-              {% for m in data.team.all %}
-              {% if m.status %}
-              <option value="{{m.user.id}}">{{m.user.last_name}}, {{m.user.first_name}}</option>
-              {% endif %}
-              {% endfor %}
-              </select>
-            </div>
-          </div>
-          <!-- /.row -->
         </div>
         <!-- /.panel-body -->
       </div>
       <!-- /.panel -->
-    </div>
-    <!-- /.col-lg-6 -->
-    <div class="col-lg-6">
     </div>
     <!-- /.col-lg-6 -->
   </div>

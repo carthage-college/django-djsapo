@@ -295,7 +295,7 @@ def team_manager(request, aid):
 
     return render(
         request, 'team.html', {
-            'data':alert,'perms':perms, 'matrix':matrix,
+            'data':alert,'perms':perms, 'matrix':matrix,'return':True,
             'student':student['student'], 'sports':student['sports']
         }
     )

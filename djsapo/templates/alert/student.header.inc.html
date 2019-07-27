@@ -2,7 +2,13 @@
 <div class="row">
   <div class="col-lg-4">
     <div class="rebecca">
-      <h3>{{data.student.last_name}}, {{data.student.first_name}}</h3>
+      <h3>
+        <a href="{% url 'detail' data.id %}" class="text-white">
+          {% if return %}<i class="fa fa-arrow-left blue-tooltip" aria-hidden="true"
+          data-toggle="tooltip" data-placement="top"
+          title="Return to the detailed view for this  alert"></i>{% endif %}
+          {{data.student.last_name}}, {{data.student.first_name}}</a>
+      </h3>
     </div>
   </div>
   <div class="col-lg-4">
