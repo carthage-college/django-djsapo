@@ -35,7 +35,18 @@ table.dataTable thead span.sort-icon {
   type="text/javascript" charset="utf-8" language="javascript"></script>
 <script>
 $(document).ready(function() {
-  var table = $('#data-table').DataTable({
+  $('.data-table').DataTable({
+    'lengthMenu': [
+      [25, 50, 100, 250, 500, 1000, 2000, -1],
+      [25, 50, 100, 250, 500, 1000, 2000, "All"]
+    ],
+    dom: 'lfrBtip',
+    bFilter: false,
+    paging: false,
+    info: false,
+    buttons: []
+  });
+  var alertTable = $('#data-table').DataTable({
     'lengthMenu': [
       [25, 50, 100, 250, 500, 1000, 2000, -1],
       [25, 50, 100, 250, 500, 1000, 2000, "All"]

@@ -286,11 +286,11 @@ def team_manager(request, aid):
     alert = get_object_or_404(Alert, pk=aid)
     perms = alert.permissions(request.user)
     student = _student(alert)
-    team = [m.user for m in alert.team.all()]
+    team = [m.user for m in alert.team.all() if m.status]
     matrix = []
     for c in alert.category.all():
         for m in c.matrix.all():
-            if m.user not in matrix:
+            if m.user not in matrix and m.user not in team:
                 matrix.append(m.user)
 
     return render(
