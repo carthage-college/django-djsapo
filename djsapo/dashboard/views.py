@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 
 from djsapo.core.models import Alert, Annotation, GenericChoice, Member
+from djsapo.core.utils import get_peeps
 
 from djtools.utils.users import in_group
 from djzbar.decorators.auth import portal_auth_required
@@ -66,6 +67,7 @@ def home(request):
 )
 def detail(request, aid):
     alert = get_object_or_404(Alert, pk=aid)
+    history = Alert.objects.filter(student=alert.student)
     user = request.user
     perms = alert.permissions(user)
     if not perms['view']:
@@ -75,8 +77,8 @@ def detail(request, aid):
 
     return render(
         request, 'alert/detail.html', {
-            'data':alert,'student':student['student'],'perms':perms,
-            'sports':student['sports']
+            'data':alert, 'history':history, 'perms':perms,
+            'student':student['student'], 'sports':student['sports']
         }
     )
 
@@ -151,7 +153,7 @@ def email_form(request, aid, action):
                     to_list = []
                 send_mail (
                     request, to_list,
-                    "[Center for Student Success] {}".format(
+                    "[Student Outreach System] {}".format(
                         form_data['subject']
                     ), request.user.email, 'email_form.html',
                     {'content':form_data['content']}, BCC
@@ -287,9 +289,18 @@ def team_manager(request, aid):
     perms = alert.permissions(request.user)
     student = _student(alert)
     team = [m.user for m in alert.team.all() if m.status]
+    peeps = get_peeps('facstaff')
+    '''
+    for p in peeps:
+        for t in team:
+            if t.id = p.cid
+                p.remove(counter)
+    '''
     matrix = []
+    mids = []
     for c in alert.category.all():
         for m in c.matrix.all():
+            mids.append(m.user.id)
             if m.user not in matrix and m.user not in team:
                 matrix.append(m.user)
 

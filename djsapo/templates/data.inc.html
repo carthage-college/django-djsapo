@@ -16,6 +16,7 @@
             title="Send email to creator"></i>
         </th>
         <th>Created</th>
+        <th>Latest activity</th>
         <th>Relationship</th>
         <th>Category</th>
         <th>Status</th>
@@ -37,20 +38,21 @@
           <a href="{% url 'detail' a.id %}"
             title="View Alert Submission: {{a.student.id}}">{{a}}</a>
         </td>
-        <td>{{a.course}}</td>
+        <td nowrap>{{a.course}}</td>
         <td nowrap title="Created at: {{a.created_at}}">
           <a href="mailto:{{a.created_by.email}}">
             {{a.created_by.last_name}}, {{a.created_by.first_name}}
           </a>
         </td>
         <td class="text-center" nowrap>{{a.created_at|date:'Y-m-d'}}</td>
+        <td class="text-center" nowrap>{{a.latest_note.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">{{a.relationship}}</td>
         <td>
           {% for c in a.category.all %}
             {{c}}{% if not forloop.last %}, {% endif %}
           {% endfor %}
         </td>
-        <td>{{a.status}}</td>
+        <td nowrap>{{a.status}}</td>
         <td class="text-center">
           <i class="fa fa-users{% if a.team.all %} green{% endif %}" aria-hidden="true" data-toggle="tooltip" data-placement="left"
             title="{% for m in a.team.all %}{% if m.status %}{{m}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}"></i>
@@ -86,6 +88,7 @@
             title="Send email to creator"></i>
         </th>
         <th>Created</th>
+        <th>Latest activity</th>
         <th>Relationship</th>
         <th>Category</th>
         <th>Status</th>

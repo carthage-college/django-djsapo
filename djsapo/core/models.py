@@ -281,22 +281,31 @@ class Alert(models.Model):
     def category_team(self):
         kats = self.category.all()
 
+    def latest_note(self):
+        return self.notes.latest('created_at')
+
     def get_absolute_url(self):
         return ('alert_detail', [str(self.id)])
 
     def permissions(self, user):
         if user.is_superuser:
-            perms = {'view':True,'team':True,'delete':True,'admin':True}
+            perms = {
+                'view':True,'team':True,'manager':True,'admin':True
+            }
         else:
-            perms = {'view':False,'team':False,'delete':False,'admin':False}
+            perms = {'view':False,'team':False,'manager':False,'admin':False}
             group = in_group(user, settings.CSS_GROUP)
             if group:
+                perms['manager'] = True
+                perms['team'] = True
                 perms['view'] = True
                 perms['admin'] = True
             for member in self.team.all():
                 if user == member.user:
                     perms['view'] = True
                     perms['team'] = True
+                    if member.case_manager:
+                        perms['manager'] = True
             if self.created_by == user:
                 perms['view'] = True
                 perms['update'] = True
@@ -351,8 +360,8 @@ class Annotation(models.Model):
     tags = TaggableManager(blank=True)
 
     class Meta:
-        #ordering = ('-created_at',)
-        ordering = ('created_at',)
+        ordering = ('-created_at',)
+        #ordering = ('created_at',)
 
     def __str__(self):
         """

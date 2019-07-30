@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 from djsapo.core.models import GenericChoice, Member
 from djsapo.core.forms import AlertForm, DocumentForm
-from djimix.core.utils import get_connection
+from djsapo.core.utils import get_peeps
 
 from djzbar.decorators.auth import portal_auth_required
 from djtools.utils.mail import send_mail
@@ -95,37 +95,12 @@ def alert_form(request, pid=None):
 )
 def people(request, who):
     '''
-    Accepts: GET request where "who" = faculty/staff/student
+    Accepts: GET request where "who" = faculty/staff/facstaff/student
     Returns: all current faculty, staff, or student types
     '''
 
     if request.method == 'GET':
-        sql = """
-            SELECT
-                lastname, firstname, username
-            FROM
-                provisioning_vw
-            WHERE
-                {} is not null
-            ORDER BY
-                lastname, firstname
-        """.format(who)
-
-        key = 'provisioning_vw_{}_api'.format(who)
-        peeps = cache.get(key)
-        if peeps is None:
-            connection = get_connection()
-            cursor = connection.cursor()
-            objects = cursor.execute(sql)
-            peeps = []
-            if objects:
-                for obj in objects:
-                    row = {
-                        'lastname': obj[0], 'firstname': obj[1],
-                        'email': '{}@carthage.edu'.format(obj[2])
-                    }
-                    peeps.append(row)
-                cache.set(key, peeps, timeout=86400)
+        peeps = get_peeps(who)
         response = render(
             request, 'peeps.html', {'peeps':peeps,},
             content_type='application/json; charset=utf-8'

@@ -59,12 +59,9 @@ $(function() {
         $("#commentsModal").modal('hide');
       },
       success: function(data){
-        $("#comments-list").append(data);
-        //window.location.hash = "";
-        //window.location.hash = "id_bounce";
-        $('html, body').animate({scrollTop:$(document).height()}, 'slow');
+        $("#comments-list").prepend(data);
+        //$('html, body').animate({scrollTop:$(document).height()}, 'slow');
         $("#id_body").val('');
-        //location.hash = "id_bounce";
       },
       error: function(data){
         console.log(data);

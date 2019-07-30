@@ -1,6 +1,7 @@
 {% extends "home.html" %}
 {% load livewhale_api %}
 {% block extra_javascript %}
+{{block.super}}
 <script type="text/javascript" charset="utf-8">
 var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
 </script>
@@ -10,15 +11,15 @@ var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
   <div class="col-md-8 card">
   {% get_lw_content as success blurbs 2810 %}
   <div id="lw_success">{{success.body|safe}}</div>
-  {% if perms.alert.delete_alert %}
+  {% if user.is_staff %}
   <p>
   <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2810"
     target="_blank">
-    <i class="fa fa-pencil green" data-toggle="tooltip" data-placement="top"
-      aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
+    <i class="fa fa-pencil green" aria-hidden="true"
+      title="Manage the content above in LiveWhale"></i></a>
   <a href="#" data-cid="2810" data-target="lw_success" class="clear-cache">
-    <i class="fa fa-refresh green" data-toggle="tooltip" data-placement="top"
-      aria-hidden="true" title="Clear the cache for this content"></i></a>
+    <i class="fa fa-refresh green" aria-hidden="true"
+      title="Clear the cache for this content"></i></a>
   </p>
   {% endif %}
   </div>
