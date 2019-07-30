@@ -42,7 +42,7 @@ class AlertForm(forms.ModelForm):
 
     class Meta:
         model = Alert
-        exclude = ('parent','status',)
+        exclude = ('parent','status','created_by')
 
     def clean_interaction_type(self):
 

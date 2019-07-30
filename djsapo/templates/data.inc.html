@@ -16,10 +16,13 @@
             title="Send email to creator"></i>
         </th>
         <th>Created</th>
-        <th>Latest activity</th>
         <th>Relationship</th>
         <th>Category</th>
         <th>Status</th>
+        <th>
+          Latest
+          <i class="fa fa-comments-o green blue-tooltip" data-toggle="tooltip" data-placement="top" title="" aria-hidden="true" title="Latest Activity"></i>
+        </th>
         <th>Team</th>
         {% if user.is_superuser %}
         <th class="text-center">
@@ -45,7 +48,6 @@
           </a>
         </td>
         <td class="text-center" nowrap>{{a.created_at|date:'Y-m-d'}}</td>
-        <td class="text-center" nowrap>{{a.latest_note.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">{{a.relationship}}</td>
         <td>
           {% for c in a.category.all %}
@@ -53,6 +55,7 @@
           {% endfor %}
         </td>
         <td nowrap>{{a.status}}</td>
+        <td class="text-center" nowrap>{{a.latest_note.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">
           <i class="fa fa-users{% if a.team.all %} green{% endif %}" aria-hidden="true" data-toggle="tooltip" data-placement="left"
             title="{% for m in a.team.all %}{% if m.status %}{{m}}{% if not forloop.last %}, {% endif %}{% endif %}{% endfor %}"></i>
@@ -88,10 +91,10 @@
             title="Send email to creator"></i>
         </th>
         <th>Created</th>
-        <th>Latest activity</th>
         <th>Relationship</th>
         <th>Category</th>
         <th>Status</th>
+        <th>Latest activity</th>
         <th>Team</th>
         {% if user.is_superuser %}
         <th class="text-center">

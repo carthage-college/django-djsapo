@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-  Submit a concern &mdash;
+  Submit a Concern &mdash;
   Student Outreach System &mdash; Carthage College
 {% endblock %}
 {% block body_tag %}{% endblock %}
@@ -36,16 +36,16 @@
 {% endblock navbar-top-links %}
 {% block navbar-sidenav %}
 <ul class="navbar-nav navbar-sidenav">
-  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Submit a concern">
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Submit a Concern">
     <a class="nav-link" href="{% url 'alert_form' %}">
       <i class="fa fa-fw fa fa-user-plus" aria-hidden="true"></i>
-      <span class="nav-link-text">Submit a concern</span>
+      <span class="nav-link-text">Submit a Concern</span>
     </a>
   </li>
-  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+  <li class="nav-item" data-toggle="tooltip" data-placement="right" title="My Student Concerns">
     <a class="nav-link" href="{% url 'home' %}">
       <i class="fa fa-fw fa fa-dashboard" aria-hidden="true"></i>
-      <span class="nav-link-text">Dashboard</span>
+      <span class="nav-link-text">My Student Concerns</span>
     </a>
   </li>
   {% if user.is_superuser %}

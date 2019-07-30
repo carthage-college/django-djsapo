@@ -12,6 +12,8 @@
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
 var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
+/* do not update the alert via ajax after course selection */
+var $updateAlert = false;
 $(function() {
   /* datepicker */
   $("#id_interaction_date").datepicker({
@@ -128,11 +130,15 @@ $(function() {
         <form enctype="multipart/form-data" method="post" action="{% url 'alert_form' %}"
         class="form" id="profile" style="margin-bottom:20px;">
         {% csrf_token %}
-        {% if form.errors or form_doc1.errors %}
+        {% if form.errors or form_doc1.errors or form_doc2.errors or form_doc3.errors %}
           <div class="alert alert-danger">
             <p>Please correct the error{{ form.errors|pluralize }} below.</p>
           </div>
         {% endif %}
+        {{form.errors}}
+        {{form_doc1.errors}}
+        {{form_doc2.errors}}
+        {{form_doc3.errors}}
         <div class="form-row mt-4">
           <div class="col-md-6 pb-3">
             <div class="form-group">

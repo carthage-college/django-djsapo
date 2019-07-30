@@ -290,12 +290,11 @@ def team_manager(request, aid):
     student = _student(alert)
     team = [m.user for m in alert.team.all() if m.status]
     peeps = get_peeps('facstaff')
-    '''
-    for p in peeps:
+    # iterate over a copy of peeps and remove duplicates from original peeps
+    for p in peeps[:]:
         for t in team:
-            if t.id = p.cid
-                p.remove(counter)
-    '''
+            if t.id == p['cid']:
+                peeps.remove(p)
     matrix = []
     mids = []
     for c in alert.category.all():
@@ -307,6 +306,7 @@ def team_manager(request, aid):
     return render(
         request, 'team.html', {
             'data':alert,'perms':perms, 'matrix':matrix,'return':True,
-            'student':student['student'], 'sports':student['sports']
+            'student':student['student'], 'sports':student['sports'],
+            'peeps':peeps
         }
     )

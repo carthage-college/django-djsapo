@@ -34,7 +34,11 @@
                   </div>
                   <div class="clearfix"></div>
                   <div class="float-right">
+                    {% if student.residency_status == "Commuter" %}
+                    {{student.residency_status}}
+                    {% else %}{% if student.bldg %}
                     {{student.bldg}}
+                    {% endif %}{% endif %}
                   </div>
                 </div>
               </div>
