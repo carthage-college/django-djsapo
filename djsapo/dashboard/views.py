@@ -289,19 +289,18 @@ def team_manager(request, aid):
     perms = alert.permissions(request.user)
     student = _student(alert)
     team = [m.user for m in alert.team.all() if m.status]
-    peeps = get_peeps('facstaff')
-    # iterate over a copy of peeps and remove duplicates from original peeps
-    for p in peeps[:]:
-        for t in team:
-            if t.id == p['cid']:
-                peeps.remove(p)
     matrix = []
-    mids = []
     for c in alert.category.all():
         for m in c.matrix.all():
-            mids.append(m.user.id)
             if m.user not in matrix and m.user not in team:
                 matrix.append(m.user)
+    peeps = get_peeps('facstaff')
+    folks = team + matrix
+    # iterate over a copy of peeps and remove duplicates from original peeps
+    for p in peeps[:]:
+        for f in folks:
+            if f.id == p['cid']:
+                peeps.remove(p)
 
     return render(
         request, 'team.html', {
