@@ -71,7 +71,7 @@ $('#faculty-staff').sortable({
   <!-- /.row -->
   <div class="row mb-3">
     <div class="col-lg-4">
-      <h4>SOS Matrix</h4>
+      <h5>Suggested Team Members</h5>
       <div class="table-responsive">
         <table class="table table-bordered table-hover display compact data-table">
           <thead>
@@ -86,12 +86,16 @@ $('#faculty-staff').sortable({
               <td nowrap data-mid="{{m.id}}">
                 <i class="fa fa-arrows handle"></i>
                 {{m.last_name}}, {{m.first_name}}
+                {% if m.profile.case_manager %}
+                  <i class="fa fa-star green blue-tooltip" title="Case Manager" aria-hidden="true"></i>
+                {% endif %}
               </td>
               <td nowrap>
                 {% for g in m.groups.all %}
                 {% if 'Status' not in g.name %}
+                {% if g.name != "CenterForStudentSuccess" %}
                 {{g}}{% if not forloop.last %}, {% endif %}
-                {% endif %}
+                {% endif %}{% endif %}
                 {% endfor %}
               </td>
             </tr>
@@ -102,7 +106,7 @@ $('#faculty-staff').sortable({
     </div>
     <!-- /.col-lg-4 -->
     <div class="col-lg-4">
-      <h4>Current Team</h4>
+      <h5>Assigned Team Members</h5>
       <div class="table-responsive">
         <table class="table table-bordered table-hover display compact data-table">
           <thead>
@@ -155,7 +159,9 @@ $('#faculty-staff').sortable({
           {% for p in peeps %}
           <tr>
             <td nowrap data-mid="{{p.cid}}">
-              <span><i class="fa fa-arrows handle"></i>{{p.lastname}}, {{p.firstname}}</span>
+              <span>
+                <i class="fa fa-arrows handle"></i> {{p.lastname}}, {{p.firstname}}
+              </span>
             </td>
           </tr>
           {% endfor %}

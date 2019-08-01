@@ -120,6 +120,7 @@ class Profile(models.Model):
         related_name="matrix",
         help_text = "Check all that apply"
     )
+    case_manager = models.BooleanField(default=False)
 
     def __str__(self):
         return "{}, {}".format(
@@ -304,7 +305,7 @@ class Alert(models.Model):
                 if user == member.user:
                     perms['view'] = True
                     perms['team'] = True
-                    if member.case_manager:
+                    if member.user.profile.case_manager:
                         perms['manager'] = True
             if self.created_by == user:
                 perms['view'] = True
@@ -324,7 +325,6 @@ class Member(models.Model):
         Alert, related_name='team', on_delete=models.CASCADE
     )
     status = models.BooleanField(default=True, verbose_name="Active?")
-    case_manager = models.BooleanField(default=False)
 
     class Meta:
         # the team should not contain a member more than once for an alert

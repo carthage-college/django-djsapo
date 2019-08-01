@@ -32,9 +32,10 @@ class AlertAdmin(admin.ModelAdmin):
 
 
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('user_name','alert','case_manager','status')
+    list_display = ('user_name','alert','status')
     raw_id_fields = ('user','alert')
     list_editable = ('status','case_manager')
+    list_editable = ('status',)
 
     def user_name(self, obj):
         return "{}, {}".format(obj.user.last_name, obj.user.first_name)
@@ -71,8 +72,9 @@ class MessageAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user_name',)
+    list_display = ('user_name','case_manager')
     raw_id_fields = ('user',)
+    list_editable = ('case_manager',)
 
     def user_name(self, obj):
         return "{}, {}".format(obj.user.last_name, obj.user.first_name)

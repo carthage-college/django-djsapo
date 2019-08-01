@@ -5,6 +5,14 @@ Django settings for project.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import datetime
+TODAY = datetime.date.today()
+
+TERM = 'RA'
+YEAR = TODAY.year
+
+if TODAY.month < 7:
+    TERM = 'RC'
 
 # sqlserver connection string
 MSSQL_EARL = ''
@@ -37,7 +45,7 @@ ROOT_DIR = os.path.dirname(__file__)
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 ROOT_URL = '/apps/student-success/early-alert/'
 MEDIA_ROOT = '{}/assets/'.format(BASE_DIR)
-MEDIA_URL = '/media/djsapo/'.format(ROOT_URL)
+MEDIA_URL = '/media/djsapo/'
 STATIC_ROOT = '{}/static/'.format(ROOT_DIR)
 STATIC_URL = 'https://{}/static/djsapo/'.format(SERVER_URL)
 UPLOADS_DIR = '{}files/'.format(MEDIA_ROOT)
@@ -200,6 +208,9 @@ SERVER_MAIL=''
 CSS_GROUP='CenterForStudentSuccess'
 CSS_EMAIL=''
 REQUIRED_ATTRIBUTE = True
+COURSE_API_URL = 'https://www.carthage.edu/academics/schedule/R/{}/{}/json/'.format(
+    TERM, YEAR
+)
 # logging
 LOG_FILEPATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'logs/')
 DEBUG_LOG_FILENAME = LOG_FILEPATH + 'debug.log'

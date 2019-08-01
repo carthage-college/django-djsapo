@@ -11,9 +11,7 @@ const coursesAutoComplete = new autoComplete({
                 .querySelector("#id_course")
                 .setAttribute("placeholder", "Loading...");
             // Fetch External Data Source
-            const source = await fetch(
-                "https://www.carthage.edu/academics/schedule/R/RA/2019/json/"
-            );
+            const source = await fetch($courseApi);
             const data = await source.json();
             // Post loading placeholder text
             document

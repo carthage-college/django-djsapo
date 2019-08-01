@@ -1,11 +1,5 @@
 {% extends "home.html" %}
 {% load livewhale_api %}
-{% block extra_javascript %}
-{{block.super}}
-<script type="text/javascript" charset="utf-8">
-var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
-</script>
-{% endblock %}
 {% block content %}
 <div class="container mb-4">
   <div class="col-md-8 card">

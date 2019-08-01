@@ -11,38 +11,13 @@
 <script src="/static/djsapo/js/courses.autocomplete.js"
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
-var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
 /* do not update the alert via ajax after course selection */
 var $updateAlert = false;
 $(function() {
-  /* datepicker */
-  $("#id_interaction_date").datepicker({
-    firstDay:1,
-    changeFirstDay:false,
-    dateFormat:'yy-mm-dd',
-    buttonImage:'//www.carthage.edu/themes/shared/img/ico/calendar.gif',
-    showOn:'both',
-    buttonImageOnly:true
-  });
-  /* wysiwyg for textarea fields */
-  $('textarea').trumbowyg({
-    btns: [
-      ['formatting'], ['strong', 'em', 'del'], ['link'],
-      ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-      ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
-    ],
-    tagsToRemove: ['script', 'link'],
-    removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
-  });
-  /* fancy picker for select fields */
-  $('select').selectpicker();
   /* interaction: fields that depend on whethor not there was an interaction */
   {% if form.interaction.value == 'Yes' %}
     $('#interactionFields').show();
   {% endif %}
-  $('input[name="interaction"]').click(function() {
-    toggle(this.value, 'Yes', '#interactionFields');
-  });
   {% if form.student.value %}
     $('#autoComplete').val('');
     $('#autoComplete').attr('data-email','{{form.student.value}}');
@@ -69,20 +44,6 @@ $(function() {
     });
   });
   {% endif %}
-  /* override the submit event to handle some things */
-  $('form#profile').submit(function(){
-    // set the value of the student field to email address selected
-    // via autocomplete
-    $('#autoComplete').val($('#autoComplete').attr('data-email'));
-    /* check textarea for just br tag */
-    $("textarea").each(function(){
-      if (this.value == "<br>") {
-          this.value = "";
-      }
-    });
-    // disable submit button after users clicks it
-    $(this).children('input[type=submit]').attr('disabled', 'disabled');
-  });
 });
 </script>
 {% endblock %}
@@ -117,28 +78,24 @@ $(function() {
       <p>
         <a href="https://www.carthage.edu/livewhale/?blurbs_edit&tid=351&id=2811"
           target="_blank">
-          <i class="fa fa-pencil green" data-toggle="tooltip" data-placement="top"
-            aria-hidden="true" title="Manage the content above in LiveWhale"></i></a>
+          <i class="fa fa-pencil green" aria-hidden="true"
+            title="Manage the content above in LiveWhale"></i></a>
         <a href="#" data-cid="2811" data-target="lw_instructions" class="clear-cache">
-          <i class="fa fa-refresh green" data-toggle="tooltip" data-placement="top"
-             aria-hidden="true" title="Clear the cache for this content"></i></a>
+          <i class="fa fa-refresh green" aria-hidden="true"
+            title="Clear the cache for this content"></i></a>
       </p>
       {% endif %}
       {% include "includes/required_text.html" %}
     </div>
     <div class="card-body">
         <form enctype="multipart/form-data" method="post" action="{% url 'alert_form' %}"
-        class="form" id="profile" style="margin-bottom:20px;">
+        class="form" id="alert-form" style="margin-bottom:20px;">
         {% csrf_token %}
         {% if form.errors or form_doc1.errors or form_doc2.errors or form_doc3.errors %}
           <div class="alert alert-danger">
             <p>Please correct the error{{ form.errors|pluralize }} below.</p>
           </div>
         {% endif %}
-        {{form.errors}}
-        {{form_doc1.errors}}
-        {{form_doc2.errors}}
-        {{form_doc3.errors}}
         <div class="form-row mt-4">
           <div class="col-md-6 pb-3">
             <div class="form-group">

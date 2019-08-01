@@ -11,9 +11,8 @@ const autoCompletejs = new autoComplete({
                 .querySelector("#autoComplete")
                 .setAttribute("placeholder", "Loading...");
             // Fetch External Data Source
-            const source = await fetch(
-                "/apps/student-success/early-alert/api/student/"
-            );
+            const source = await fetch($studentApi);
+
             const data = await source.json();
             // Post loading placeholder text
             document

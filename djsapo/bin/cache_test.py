@@ -9,7 +9,6 @@ django.setup()
 from django.conf import settings
 from django.utils.safestring import mark_safe
 
-from urllib import request
 import requests
 import datetime
 import argparse
@@ -38,30 +37,15 @@ def main():
     key = 'livewhale_{}_{}'.format(ctype,cid)
     earl = '{}/live/{}/{}@JSON?cache={}'.format(settings.LIVEWHALE_API_URL,ctype,cid,timestamp)
     print(earl)
-    '''
-    #req = urllib.request.Request(earl)
-    #req = urllib.request(earl)
-    #c=request.urlcleanup()
-    req = request.Request(earl)
-    req.add_header('Cache-Control', 'public, max-age=0')
-    '''
-    #try:
-    if True:
+    try:
         #headers = {'Cache-Control': 'public, max-age=0'}
         headers = {'Cache-Control': 'no-cache'}
         response = requests.get(earl, headers=headers)
         print(response.headers)
-        '''
-        response =  request.urlopen(req)
-        #response =  urllib.request.urlopen(req)
-        #response =  urllib.urlopen(req)
-        print("reponse.info()\n\n{}".format(response.info()))
-        data = response.read()
-        '''
         content = json.loads(response.text)
         content = mark_safe(content['body'])
         print("content = {}".format(content))
-    else:
+    except:
         content = ''
 
 

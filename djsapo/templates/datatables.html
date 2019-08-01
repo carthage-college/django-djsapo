@@ -18,44 +18,4 @@
   type="text/javascript" charset="utf-8" language="javascript"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"
   type="text/javascript" charset="utf-8" language="javascript"></script>
-<script>
-$(document).ready(function() {
-  $('.data-table').DataTable({
-    dom: 'lfrBtip',
-    bFilter: false,
-    paging: false,
-    info: false,
-    buttons: [],
-    stripeClasses: []
-  });
-  $('.faculty-staff').DataTable({
-    'lengthMenu': [
-      [15], [15]
-    ],
-    language: {"search": '<h4 class="float-left">Search</h4>'},
-    dom: 'lfrBtip',
-    buttons: [],
-    stripeClasses: [],
-    info: false,
-    paging: true,
-    lengthChange: false,
-    searching: true
-  });
-  var alertTable = $('#data-table').DataTable({
-    'lengthMenu': [
-      [25, 50, 100, 250, 500, 1000, 2000, -1],
-      [25, 50, 100, 250, 500, 1000, 2000, "All"]
-    ],
-    dom: 'lfrBtip',
-    buttons: [
-      'csv', 'excel'
-    ]
-  });
-  // disable submit button after user clicks it
-  $('form#profile').bind('submit', function (e) {
-    $('form#profile input[type=submit]').prop('disabled', true);
-    return true;
-  });
-});
-</script>
 {% endblock %}

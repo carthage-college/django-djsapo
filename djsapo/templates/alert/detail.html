@@ -30,20 +30,8 @@
 {% endif %}
 <script type="text/javascript" charset="utf-8">
 var $aid = "{{data.id}}";
-var $manager = "{% url 'manager' %}";
 /* update the alert via ajax after course selection */
 var $updateAlert = true;
-var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
-$(function() {
-  $('.data-table').DataTable({
-    dom: 'lfrBtip',
-    bFilter: false,
-    paging: false,
-    info: false,
-    buttons: [],
-    stripeClasses: []
-  });
-});
 </script>
 {% endblock %}
 {% block content %}
@@ -265,7 +253,7 @@ $(function() {
           <span id="member_{{m.id}}" {% if not m.status %} class="strike"{% endif %}>
             <span {% if not m.status %} data-toggle="tooltip" data-placement="top" title="{{m}} is no longer a member of the team"{% endif %}>
               {{m}}
-              {% if m.case_manager %}
+              {% if m.user.profile.case_manager %}
               <i class="fa fa-star green blue-tooltip" data-toggle="tooltip"
                 data-placement="top" title="Case Manager" aria-hidden="true"></i>
               {% endif %}

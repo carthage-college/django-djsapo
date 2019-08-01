@@ -34,17 +34,41 @@ function toggle(dis, val, dom) {
 }
 
 $(function() {
-  $('#teamModalOpen').on('click',function(){
-    //$('.modal-body').load('getContent.php?id=2',function(){
-        //$('#myModal').modal({show:true});
-    //});
-  });
   /* bootstrap tool tip */
   $('[data-toggle="tooltip"]').tooltip();
+  /* team manager modal */
+  $('#teamModalOpen').on('click',function(){
+  });
   /* print page */
   $('#print').click(function() {
     window.print();
     return false;
+  });
+  /* datepicker */
+  $("#id_interaction_date").datepicker({
+    firstDay:1,
+    changeFirstDay:false,
+    dateFormat:'yy-mm-dd',
+    buttonImage:'//www.carthage.edu/themes/shared/img/ico/calendar.gif',
+    showOn:'both',
+    buttonImageOnly:true
+  });
+  /* wysiwyg for textarea fields */
+  $('textarea').trumbowyg({
+    btns: [
+      ['formatting'], ['strong', 'em', 'del'], ['link'],
+      ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+      ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
+    ],
+    tagsToRemove: ['script', 'link'],
+    removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
+  });
+  /* fancy picker for select fields */
+  $('#id_relationship').selectpicker();
+  $('#id_category').selectpicker();
+  /* toggle interaction fields */
+  $('input[name="interaction"]').click(function() {
+    toggle(this.value, 'Yes', '#interactionFields');
   });
   /* comments form */
   $("#commentsForm").submit(function(e){
@@ -187,5 +211,51 @@ $(function() {
       }
     });
     return false;
+  });
+  /* datatables initialization */
+  $('.data-table').DataTable({
+    dom: 'lfrBtip',
+    bFilter: false,
+    paging: false,
+    info: false,
+    buttons: [],
+    stripeClasses: []
+  });
+  $('.faculty-staff').DataTable({
+    'lengthMenu': [
+      [15], [15]
+    ],
+    language: {"search": '<h4 class="float-left">Search</h5>'},
+    dom: 'lfrBtip',
+    buttons: [],
+    stripeClasses: [],
+    info: false,
+    paging: true,
+    lengthChange: false,
+    searching: true
+  });
+  var alertTable = $('#data-table').DataTable({
+    'lengthMenu': [
+      [25, 50, 100, 250, 500, 1000, 2000, -1],
+      [25, 50, 100, 250, 500, 1000, 2000, "All"]
+    ],
+    dom: 'lfrBtip',
+    buttons: [
+      'csv', 'excel'
+    ]
+  });
+  /* override the submit event for the alert form to handle some things */
+  $('form#alert-form').submit(function(){
+    // set the value of the student field to email address selected
+    // via autocomplete
+    $('#autoComplete').val($('#autoComplete').attr('data-email'));
+    /* check textarea for just br tag */
+    $("textarea").each(function(){
+      if (this.value == "<br>") {
+          this.value = "";
+      }
+    });
+    // disable submit button after users clicks it
+    $(this).children('input[type=submit]').attr('disabled', 'disabled');
   });
 });
