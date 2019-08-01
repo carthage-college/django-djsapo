@@ -3,7 +3,7 @@
 {{block.super}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
-<script>
+<script type="text/javascript" charset="utf-8">
 $('#matrix-table').sortable({
     group: {
         name:'matrix',
@@ -28,7 +28,7 @@ $('#team-members').sortable({
     sort: false,
     filter: '.strike', // is not draggable
     onAdd: function (evt) {
-        //console.log(evt['item']['firstElementChild']);
+        $('#team-members tr .dataTables_empty').hide();
         $mid = evt['item']['firstElementChild']['dataset']['mid'];
         $midDom = $('[data-mid="' + $mid + '"]');
         $midDom.prepend('<a href="#" class="remove-member"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the alert team"></i></a>');

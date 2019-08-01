@@ -27,7 +27,7 @@ $(function() {
     var $dis = $(this);
     $.ajax({
       type: "POST",
-      url: "{% url 'kat_matrix' %}",
+      url: $katMatrix,
         data: {'cids': $dis.val()},
       cache: false,
       beforeSend: function(){
