@@ -22,28 +22,6 @@ $(function() {
     $('#autoComplete').val('');
     $('#autoComplete').attr('data-email','{{form.student.value}}');
   {% endif %}
-  {% if alert.id %}
-  $('#id_category').on('change', function() {
-    var $dis = $(this);
-    $.ajax({
-      type: "POST",
-      url: $katMatrix,
-        data: {'cids': $dis.val()},
-      cache: false,
-      beforeSend: function(){
-        spinner.spin(target);
-      },
-      success: function(data) {
-        spinner.stop(target);
-        $('#support_matrix').html(data);
-      },
-      error: function(data) {
-        spinner.stop(target);
-        $.growlUI('Error', data);
-      }
-    });
-  });
-  {% endif %}
 });
 </script>
 {% endblock %}

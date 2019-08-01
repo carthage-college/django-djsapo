@@ -52,10 +52,6 @@ urlpatterns = [
             template_name='alert/success.html'
         ), name='alert_success'
     ),
-    # APIs
-    path(
-        'kat-matrix/', views.kat_matrix, name='kat_matrix'
-    ),
     re_path(
         '^api/(?P<who>[-\w]+)/$', views.people, name='people'
     ),

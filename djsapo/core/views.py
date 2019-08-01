@@ -116,37 +116,6 @@ def people(request, who):
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied')
 )
-def kat_matrix(request):
-
-    if request.is_ajax() and request.method == 'POST':
-        cids = request.POST.getlist('cids[]')
-        matrix = "<ol>"
-        peeps = []
-        for c in cids:
-            cat = GenericChoice.objects.get(pk=c)
-            for m in cat.matrix.all():
-                if m.user.id not in peeps:
-                    matrix += '<li><input type="checkbox"> {}, {}</li>'.format(
-                        m.user.last_name, m.user.first_name
-                    )
-                peeps.append(m.user.id)
-        matrix += "</ol>"
-        response = render(
-            request, 'matrix.html', {'matrix': mark_safe(matrix),'peeps':peeps}
-        )
-    else:
-        response = HttpResponse(
-            "Requires AJAX POST", content_type='text/plain; charset=utf-8'
-        )
-
-    return response
-
-
-@csrf_exempt
-@portal_auth_required(
-    session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
-)
 def clear_cache(request, ctype='blurb'):
 
     if request.is_ajax() and request.method == 'POST':
