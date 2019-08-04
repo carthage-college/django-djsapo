@@ -166,6 +166,8 @@ $(function() {
     }
   });
   /* remove a team member */
+  //$('.remove-member').on('click', 'a', function(e){
+  //$(document).on("click",".remove-member", function (e) {
   $('.remove-member').on('click', function(e){
     e.preventDefault();
     var $dis = $(this);
@@ -183,6 +185,7 @@ $(function() {
         $dis.html('<i class="fa fa-ban red" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team"></i>');
         $('[data-toggle="tooltip"]').tooltip();
         $("#member_"+$mid).addClass('strike');
+        $("#del_"+$uid).addClass('strike');
         $("#member_"+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team">'+$ln + ', '+ $fn + '</span>');
         $.growlUI("Team Member", "Removed");
       }
@@ -220,6 +223,18 @@ $(function() {
     info: false,
     buttons: [],
     stripeClasses: []
+  });
+  $('.sos-matrix').DataTable({
+    'lengthMenu': [
+      [15], [15]
+    ],
+    dom: 'lfrBtip',
+    buttons: [],
+    stripeClasses: [],
+    info: false,
+    paging: true,
+    lengthChange: false,
+    searching: false
   });
   $('.faculty-staff').DataTable({
     'lengthMenu': [

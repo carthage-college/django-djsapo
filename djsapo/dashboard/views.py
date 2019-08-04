@@ -11,6 +11,7 @@ from djsapo.core.models import Alert, Annotation, GenericChoice, Member
 from djsapo.core.utils import get_peeps
 
 from djtools.utils.users import in_group
+from djauth.LDAPManager import LDAPManager
 from djzbar.decorators.auth import portal_auth_required
 from djimix.core.utils import get_connection
 from djimix.sql.students import VITALS
@@ -52,7 +53,7 @@ def home(request):
         alerts = [a for a in my_alerts]
     else:
         my_alerts = Alert.objects.filter(created_by=user).order_by('-created_at')
-        teams = Member.objects.filter(user__username="akrusza")
+        teams = Member.objects.filter(user__username=user.username)
         team_alerts = [member.alert for member in teams]
         alerts = sorted(
             chain(my_alerts, team_alerts), key=attrgetter('created_at')
@@ -241,16 +242,35 @@ def manager(request):
             else:
                 msg = "Options: add or remove"
         elif mod == "team":
-            user = get_object_or_404(User, pk=oid)
-            if action == 'add':
-                alert.team.add(user)
-            elif action == 'remove':
-                member = get_object_or_404(Member, user=user,alert=alert)
-                member.status = False
-                member.case_manager = False
-                member.save()
+            try:
+                user = User.objects.get(pk=oid)
+            except:
+                l = LDAPManager()
+                luser = l.search(oid)
+                user = l.dj_create(luser)
+            if user:
+                if action == 'add':
+                    try:
+                        member = Member.objects.get(user=user)
+                        if member.status:
+                            msg = "User is already a team member"
+                        else:
+                            member.status = True
+                            member.save()
+                            msg = "User has been reactivated"
+                    except:
+                        member = Member.objects.create(user=user,alert=alert)
+                        alert.team.add(member)
+                        msg = "User added to team"
+                elif action == 'remove':
+                    member = get_object_or_404(Member, user=user,alert=alert)
+                    member.status = False
+                    member.case_manager = False
+                    member.save()
+                else:
+                    msg = "Options: add or remove"
             else:
-                msg = "Options: add or remove"
+                    msg = "User not found"
         elif mod == "comment":
             note = Annotation.objects.create(
                 alert=alert, created_by=user, body=post.get('body'),
@@ -294,6 +314,10 @@ def team_manager(request, aid):
         for m in c.matrix.all():
             if m.user not in matrix and m.user not in team:
                 matrix.append(m.user)
+    # obtain all users who are a member of "Coaches" group
+    for c in User.objects.filter(groups__name='Coaches'):
+        if c not in matrix and c not in team:
+            matrix.append(c)
     peeps = get_peeps('facstaff')
     folks = team + matrix
     # iterate over a copy of peeps and remove duplicates from original peeps

@@ -21,6 +21,9 @@ table.dataTable thead span.sort-icon {
 .dataTables_wrapper{margin-bottom:20px;}
 .dataTables_length{margin-right:50px;}
 .dataTables_filter { float: left; margin-right:20px; }
+#DataTables_Table_1_wrapper .dataTables_paginate .paginate_button {display:none;}
+.dataTables_wrapper .dataTables_paginate #DataTables_Table_1_next {display:inherit;}
+.dataTables_wrapper .dataTables_paginate #DataTables_Table_1_previous {display:inherit;}
 #DataTables_Table_2_wrapper .dataTables_paginate .paginate_button {display:none;}
 .dataTables_wrapper .dataTables_paginate #DataTables_Table_2_next {display:inherit;}
 .dataTables_wrapper .dataTables_paginate #DataTables_Table_2_previous {display:inherit;}

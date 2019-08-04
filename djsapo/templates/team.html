@@ -1,9 +1,14 @@
 {% extends "datatables.html" %}
+{% block title %}
+  Team Manager &mdash; Center for Student Success &mdash;
+  Carthage College
+{% endblock %}
 {% block extra_javascript %}
 {{block.super}}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
 <script type="text/javascript" charset="utf-8">
+var $aid = "{{data.id}}";
 $('#matrix-table').sortable({
     group: {
         name:'matrix',
@@ -12,6 +17,7 @@ $('#matrix-table').sortable({
     animation: 150,
     sort: false,
     onAdd: function (evt) {
+        console.log('matrix-table: onAdd callback');
         console.log(evt);
     },
     onRemove: function (evt) {
@@ -28,11 +34,35 @@ $('#team-members').sortable({
     sort: false,
     filter: '.strike', // is not draggable
     onAdd: function (evt) {
+        console.log('team-members: onAdd callback');
         $('#team-members tr .dataTables_empty').hide();
-        $mid = evt['item']['firstElementChild']['dataset']['mid'];
-        $midDom = $('[data-mid="' + $mid + '"]');
-        $midDom.prepend('<a href="#" class="remove-member"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the alert team"></i></a>');
-        //console.log('mid=' + $midDom.html());
+        $data = evt['item']['firstElementChild']['dataset'];
+        $uid = $data['uid'];
+        $lastName = $data['last_name'];
+        $firstName = $data['first_name'];
+        console.log('uid=' + $uid);
+        $uidDom = $('[data-uid="' + $uid + '"]');
+        console.log('uidDom=' + $uidDom.html());
+        var $mid = null;
+        $.ajax({
+          type: "POST",
+          url: $manager,
+          data: {"aid":$aid,"oid":$uid,"action":"add","mod":"team"},
+          beforeSend: function(){
+            spinner.spin(target);
+          },
+          success: function(data) {
+            spinner.stop(target);
+            $('#del_' + $uid).append('<td class="text-center"><a href="#" class="remove-member" data-uid="'+$uid+'" data-mid="'+$mid+'" data-last_name="'+$lastName+'" data-first_name="'+$firstName+'"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the alert team"></i></a></td>');
+            $.growlUI("Member Status", data);
+            return true;
+          },
+          error: function(data) {
+            spinner.stop(target);
+            $.growlUI("Team Member", "Error");
+            return false;
+          }
+        });
     },
     onRemove: function (evt) {
         //console.log(evt);
@@ -73,7 +103,7 @@ $('#faculty-staff').sortable({
     <div class="col-lg-4">
       <h5>Suggested Team Members</h5>
       <div class="table-responsive">
-        <table class="table table-bordered table-hover display compact data-table">
+        <table class="table table-bordered table-hover display compact sos-matrix">
           <thead>
             <tr>
               <th>Name</th>
@@ -82,8 +112,8 @@ $('#faculty-staff').sortable({
           </thead>
           <tbody id="matrix-table">
             {% for m in matrix %}
-            <tr>
-              <td nowrap data-mid="{{m.id}}">
+            <tr id="del_{{m.id}}">
+              <td nowrap data-uid="{{m.id}}" data-last_name="{{m.last_name}}" data-first_name="{{m.first_name}}">
                 <i class="fa fa-arrows handle"></i>
                 {{m.last_name}}, {{m.first_name}}
                 {% if m.profile.case_manager %}
@@ -93,7 +123,7 @@ $('#faculty-staff').sortable({
               <td nowrap>
                 {% for g in m.groups.all %}
                 {% if 'Status' not in g.name %}
-                {% if g.name != "CenterForStudentSuccess" %}
+                {% if g.name != "CenterForStudentSuccess" and g.name != "Coaches" %}
                 {{g}}{% if not forloop.last %}, {% endif %}
                 {% endif %}{% endif %}
                 {% endfor %}
@@ -113,22 +143,19 @@ $('#faculty-staff').sortable({
             <tr>
               <th>Name</th>
               <th>Groups</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="team-members">
             {% for m in data.team.all %}
-            <tr{% if not  m.status %} class="strike"{% endif %}>
-              <td nowrap data-mid="{{m.user.id}}">
+            <tr{% if not  m.status %} class="strike"{% endif %} id="del_{{m.user.id}}">
+              <td nowrap data-uid="{{m.user.id}}">
                 <span>
-                  {% if m.status %}
-                  <a href="#" class="remove-member"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove {{m}} from the team"></i></a>
-                  {% else %}
-                    <i class="fa fa-ban red" data-toggle="tooltip" data-placement="top"
-                    title="{{m}} is no longer a member of the team"
-                    aria-hidden="true"></i>
-                  {% endif %}
                   <i class="fa fa-arrows handle"></i>
                   {{m}}
+                  {% if m.user.profile.case_manager %}
+                  <i class="fa fa-star green blue-tooltip" title="Case Manager" aria-hidden="true"></i>
+                  {% endif %}
                 </span>
               </td>
               <td nowrap>
@@ -139,6 +166,17 @@ $('#faculty-staff').sortable({
                 {% endif %}
                 {% endfor %}
                 </span>
+              </td>
+              <td class="text-center">
+              {% if m.status %}
+                <a href="#" class="remove-member" data-uid="{{m.user.id}}" data-mid="{{m.id}}"
+                  data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
+                  <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove {{m}} from the team"></i></a>
+              {% else %}
+                <i class="fa fa-ban red" data-toggle="tooltip" data-placement="top"
+                  title="{{m}} is no longer a member of the team"
+                  aria-hidden="true"></i>
+              {% endif %}
               </td>
             </tr>
             {% endfor %}
@@ -157,8 +195,8 @@ $('#faculty-staff').sortable({
           </thead>
           <tbody id="faculty-staff">
           {% for p in peeps %}
-          <tr>
-            <td nowrap data-mid="{{p.cid}}">
+          <tr id="del_{{p.cid}}">
+            <td nowrap data-uid="{{p.cid}}" data-last_name="{{p.lastname}}" data-first_name="{{p.firstname}}">
               <span>
                 <i class="fa fa-arrows handle"></i> {{p.lastname}}, {{p.firstname}}
               </span>

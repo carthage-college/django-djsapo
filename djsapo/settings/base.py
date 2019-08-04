@@ -18,6 +18,17 @@ if TODAY.month < 7:
 MSSQL_EARL = ''
 # informix connection string
 INFORMIX_ODBC = ''
+# informix environment for shell scripts that run under cron
+INFORMIXSERVER = ''
+DBSERVERNAME = ''
+INFORMIXDIR = ''
+ODBCINI = ''
+ONCONFIG = ''
+INFORMIXSQLHOSTS = ''
+LD_LIBRARY_PATH = '{}/lib:{}/lib/esql:{}/lib/tools:/usr/lib/apache2/modules:{}/lib/cli'.format(
+    INFORMIXDIR,INFORMIXDIR,INFORMIXDIR,INFORMIXDIR
+)
+LD_RUN_PATH = ''
 # Debug
 DEBUG = False
 INFORMIX_DEBUG = 'debug'

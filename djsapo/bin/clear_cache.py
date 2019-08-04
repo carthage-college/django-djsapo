@@ -12,6 +12,16 @@ from django.core.cache import cache
 
 from djsapo.core.utils import get_peeps
 
+# informix environment
+os.environ['INFORMIXSERVER'] = settings.INFORMIXSERVER
+os.environ['DBSERVERNAME'] = settings.DBSERVERNAME
+os.environ['INFORMIXDIR'] = settings.INFORMIXDIR
+os.environ['ODBCINI'] = settings.ODBCINI
+os.environ['ONCONFIG'] = settings.ONCONFIG
+os.environ['INFORMIXSQLHOSTS'] = settings.INFORMIXSQLHOSTS
+os.environ['LD_LIBRARY_PATH'] = settings.LD_LIBRARY_PATH
+os.environ['LD_RUN_PATH'] = settings.LD_RUN_PATH
+
 # set up command-line options
 desc = """
     clear the cache and repopulate it for API data
