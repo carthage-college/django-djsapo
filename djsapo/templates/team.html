@@ -53,8 +53,9 @@ $('#team-members').sortable({
           },
           success: function(data) {
             spinner.stop(target);
+            $mid=data['id']
             $('#del_' + $uid).append('<td class="text-center"><a href="#" class="remove-member" data-uid="'+$uid+'" data-mid="'+$mid+'" data-last_name="'+$lastName+'" data-first_name="'+$firstName+'"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the alert team"></i></a></td>');
-            $.growlUI("Member Status", data);
+            $.growlUI("Member Status", data['msg']);
             return true;
           },
           error: function(data) {
@@ -162,8 +163,9 @@ $('#faculty-staff').sortable({
                 <span>
                 {% for g in m.user.groups.all %}
                 {% if 'Status' not in g.name %}
+                {% if g.name != "CenterForStudentSuccess" and g.name != "Coaches" %}
                 {{g.name}}{% if not forloop.last %}, {% endif %}
-                {% endif %}
+                {% endif %}{% endif %}
                 {% endfor %}
                 </span>
               </td>
@@ -186,11 +188,13 @@ $('#faculty-staff').sortable({
     </div>
     <!-- /.col-lg-4 -->
     <div class="col-lg-4">
+      <h5>Faculty/Staff</h5>
       <div class="table-responsive" id="facultyStaff">
         <table class="table table-bordered table-hover display compact faculty-staff">
           <thead>
             <tr>
-              <th>Faculty/Staff</th>
+              <th>Name</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="faculty-staff">
@@ -201,6 +205,7 @@ $('#faculty-staff').sortable({
                 <i class="fa fa-arrows handle"></i> {{p.lastname}}, {{p.firstname}}
               </span>
             </td>
+            <td nowrap></td>
           </tr>
           {% endfor %}
           </tbody>

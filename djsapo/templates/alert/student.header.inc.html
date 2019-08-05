@@ -24,7 +24,7 @@
                   <a href="mailto:{{data.student.email}}">{{data.student.email}}</a><br>
                   {% if sports %}
                     {% for s in sports %}
-                      {{s}}{% if not forloop.last %}, {% endif %}
+                      {{s|safe}}{% if not forloop.last %}, {% endif %}
                     {% endfor %}
                   {% endif %}
                 </div>

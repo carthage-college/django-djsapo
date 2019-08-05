@@ -22,6 +22,8 @@ from openpyxl.writer.excel import save_virtual_workbook
 from operator import attrgetter
 from itertools import chain
 
+import json
+
 
 def _student(alert):
     """
@@ -231,7 +233,7 @@ def manager(request):
             raise Http404("Invalid alert or object ID")
         mod = post.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
-        msg = "Success"
+        data =  {'msg': "Success", 'id':''}
         action = post.get('action')
         if mod == "category":
             obj = get_object_or_404(GenericChoice, pk=oid)
@@ -240,7 +242,7 @@ def manager(request):
             elif action == 'remove':
                 alert.category.remove(obj)
             else:
-                msg = "Options: add or remove"
+                data['msg'] = "Options: add or remove"
         elif mod == "team":
             try:
                 user = User.objects.get(pk=oid)
@@ -251,26 +253,28 @@ def manager(request):
             if user:
                 if action == 'add':
                     try:
-                        member = Member.objects.get(user=user)
+                        member = Member.objects.get(user=user, alert=alert)
                         if member.status:
-                            msg = "User is already a team member"
+                            data['msg'] = "User is already a team member"
                         else:
                             member.status = True
                             member.save()
-                            msg = "User has been reactivated"
+                            data['msg'] = "User has been reactivated"
+                            data['id'] = member.id
                     except:
                         member = Member.objects.create(user=user,alert=alert)
                         alert.team.add(member)
-                        msg = "User added to team"
+                        data['msg'] = "User added to team"
+                        data['id'] = member.id
                 elif action == 'remove':
                     member = get_object_or_404(Member, user=user,alert=alert)
                     member.status = False
                     member.case_manager = False
                     member.save()
                 else:
-                    msg = "Options: add or remove"
+                    data['msg'] = "Options: add or remove"
             else:
-                    msg = "User not found"
+                    data['msg'] = "User not found"
         elif mod == "comment":
             note = Annotation.objects.create(
                 alert=alert, created_by=user, body=post.get('body'),
@@ -281,18 +285,21 @@ def manager(request):
             context = {
                 'obj':note,'bgcolor':'list-group-item-success'
             }
-            msg = t.render(context, request)
+            data['msg'] = t.render(context, request)
         elif mod == "alert":
             value = post.get('value')
             name = post.get('name')
             setattr(alert, name, value)
             alert.save()
         else:
-            msg = "Invalid Data Model"
+            data['msg'] = "Invalid Data Model"
     else:
-        msg = "Requires AJAX POST"
+        data['msg'] = "Requires AJAX POST"
 
-    return HttpResponse(msg, content_type='text/plain; charset=utf-8')
+    return HttpResponse(
+        json.dumps(data), content_type='application/json; charset=utf-8'
+    )
+
 
 
 @portal_auth_required(

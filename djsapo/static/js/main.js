@@ -57,7 +57,6 @@ $(function() {
   $('textarea').trumbowyg({
     btns: [
       ['formatting'], ['strong', 'em', 'del'], ['link'],
-      ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
       ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
     ],
     tagsToRemove: ['script', 'link'],
@@ -166,9 +165,7 @@ $(function() {
     }
   });
   /* remove a team member */
-  //$('.remove-member').on('click', 'a', function(e){
-  //$(document).on("click",".remove-member", function (e) {
-  $('.remove-member').on('click', function(e){
+  $(document).on("click",".remove-member", function (e) {
     e.preventDefault();
     var $dis = $(this);
     var $uid = $dis.attr("data-uid");
@@ -234,13 +231,12 @@ $(function() {
     info: false,
     paging: true,
     lengthChange: false,
-    searching: false
+    searching: true
   });
   $('.faculty-staff').DataTable({
     'lengthMenu': [
       [15], [15]
     ],
-    language: {"search": '<h4 class="float-left">Search</h5>'},
     dom: 'lfrBtip',
     buttons: [],
     stripeClasses: [],

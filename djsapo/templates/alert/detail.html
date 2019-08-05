@@ -242,10 +242,12 @@ var $updateAlert = true;
               data-placement="top" title="Add Team Member to this Alert"
               aria-hidden="true"></i></a> |
           {% endif %}
+          <!--
           <a href="{# url 'email_team_form' alert.id #}" class="no-print-icon">
             <i class="fa fa-envelope green blue-tooltip" aria-hidden="true"
             data-toggle="tooltip" data-placement="top"
             title="Send Email to the Alert Team"></i></a>
+          -->
         </h4>
         <ul class="list-group mb-3">
         {% for m in data.team.all %}
