@@ -122,12 +122,16 @@ $('#faculty-staff').sortable({
                 {% endif %}
               </td>
               <td nowrap>
+              {% if student.adv_id == m.id %}
+                Advisor
+              {% else %}
                 {% for g in m.groups.all %}
                 {% if 'Status' not in g.name %}
                 {% if g.name != "CenterForStudentSuccess" and g.name != "Coaches" %}
                 {{g}}{% if not forloop.last %}, {% endif %}
                 {% endif %}{% endif %}
                 {% endfor %}
+              {% endif %}
               </td>
             </tr>
             {% endfor %}

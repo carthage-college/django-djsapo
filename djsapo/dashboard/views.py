@@ -315,12 +315,21 @@ def team_manager(request, aid):
     alert = get_object_or_404(Alert, pk=aid)
     perms = alert.permissions(request.user)
     student = _student(alert)
+    vitals = student['student']
     team = [m.user for m in alert.team.all() if m.status]
     matrix = []
     for c in alert.category.all():
         for m in c.matrix.all():
             if m.user not in matrix and m.user not in team:
                 matrix.append(m.user)
+    try:
+        advisor = User.objects.get(pk=vitals.adv_id)
+    except:
+        l = LDAPManager()
+        luser = l.search(vitals.adv_id)
+        advisor = l.dj_create(luser)
+    if advisor and advisor not in matrix and advisor not in team:
+        matrix.append(advisor)
     # obtain all users who are a member of "Coaches" group
     for c in User.objects.filter(groups__name='Coaches'):
         if c not in matrix and c not in team:
@@ -332,11 +341,14 @@ def team_manager(request, aid):
         for f in folks:
             if f.id == p['cid']:
                 peeps.remove(p)
+                # very rarely but for some reason this fails
+                #try:
+                #except:
+                    #pass
 
     return render(
         request, 'team.html', {
             'data':alert,'perms':perms, 'matrix':matrix,'return':True,
-            'student':student['student'], 'sports':student['sports'],
-            'peeps':peeps
+            'student':vitals,'sports':student['sports'],'peeps':peeps
         }
     )
