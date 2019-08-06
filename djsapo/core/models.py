@@ -201,7 +201,7 @@ class Alert(models.Model):
         """
     )
     relationship = models.CharField(
-        "My relationship to student", max_length=24, choices=RELATIONSHIP_CHOICES,
+        "My relationship to student", max_length=128, choices=RELATIONSHIP_CHOICES,
         help_text = """
             Select your main role or department as related to this concern.
         """
