@@ -101,28 +101,6 @@
     </div>
     {% endfor %}
   {% endif %}
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
-      <h4>
-        <a href="{% url 'list' %}">
-          <i class="fa fa-list-alt blue-tooltip" aria-hidden="true"
-            data-toggle="tooltip" data-placement="top"
-            title="View All Early Submissions"></i></a>
-          Latest Concern Submissions
-        <i class="fa fa-leaf green blue-tooltip" aria-hidden="true"
-          data-toggle="tooltip" data-placement="top" aria-hidden="true"
-          title="The 10 most recent Alert submissions are list below"></i>
-        |
-        <a href="{% url 'openxml' %}">
-          <i class="fa fa-file-excel-o blue-tooltip" aria-hidden="true"
-            data-toggle="tooltip" data-placement="top"
-            title="Download data as a Spreadsheet"></i></a>
-      </h4>
-      {% if alerts %}
-        {% include "data.inc.html" %}
-      {% else %}
-        <h5>No submissions</h5>
-      {% endif %}
-    </div>
 </div>
 <!-- /.row -->
 {% endblock content %}

@@ -1,15 +1,7 @@
 {% extends "datatables.html" %}
 {% block content %}
+{{block.super}}
 <div class="row">
-  {% if messages %}
-    {% for message in messages %}
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
-      <div class=" alert {{message.tags}}">
-        <strong>{{ message }}</strong>
-      </div>
-    </div>
-    {% endfor %}
-  {% endif %}
   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
     <h4>My Student Concerns</h4>
     {% if alerts %}
