@@ -56,7 +56,7 @@ $(function() {
   /* wysiwyg for textarea fields */
   $('textarea').trumbowyg({
     btns: [
-      ['formatting'], ['strong', 'em', 'del'], ['link'],
+      ['formatting'], ['strong', 'em', 'del'],
       ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
     ],
     tagsToRemove: ['script', 'link'],
