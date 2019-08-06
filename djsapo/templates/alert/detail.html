@@ -92,7 +92,13 @@ var $updateAlert = true;
             {% endfor %}
             </select>
           </dd>
-          {% endif %}
+          {% else %}
+          {% if perms.team %}
+          <dt>Outcome</dt>
+          <dd>
+          {{data.outcome}}
+          </dd>
+          {% endif %}{% endif %}
           <dt>Date submitted</dt>
           <dd>{{data.created_at}}</dd>
           {% if data.course %}
@@ -189,7 +195,7 @@ var $updateAlert = true;
           {% for d in data.documents.all %}
             {% if d.phile %}
             <li class="list-group-item {% cycle 'blue-box' 'lightgrey-box' %}" style="color:#000;">
-                <a href="https://{{server_url}}{{media_url}}{{d.phile}}">{% if d.name %}{{d.name}}{% else %}{{d.created_at}}{% endif %}</a>
+                <a href="https://{{server_url}}{{media_url}}{{d.phile}}" target="_blank">{% if d.name %}{{d.name}}{% else %}{{d.created_at}}{% endif %}</a>
                 <i class="fa fa-file-{{d.get_icon}}-o green" aria-hidden="true"></i>
             </li>
             {% endif %}
@@ -263,12 +269,14 @@ var $updateAlert = true;
           </span>
           <span>
           {% if m.status %}
+          {% if perms.admin %}
           <a href="#" class="remove-member no-print-icon float-right"
             data-uid="{{m.user.id}}" data-mid="{{m.id}}"
             data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
             <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top"
               title="Remove {{m.user.first_name}} {{m.user.last_name}} from the alert team"
               aria-hidden="true"></i></a>
+          {% endif %}
           {% else %}
           <i class="fa fa-ban red float-right" data-toggle="tooltip" data-placement="top"
             title="{{m}} is no longer a member of the alert team"
