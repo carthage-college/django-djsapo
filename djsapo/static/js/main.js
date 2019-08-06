@@ -82,7 +82,7 @@ $(function() {
         $("#commentsModal").modal('hide');
       },
       success: function(data){
-        $("#comments-list").prepend(data);
+        $("#comments-list").prepend(data['msg']);
         //$('html, body').animate({scrollTop:$(document).height()}, 'slow');
         $("#id_body").val('');
       },
@@ -111,7 +111,7 @@ $(function() {
       },
       success: function(data) {
         spinner.stop(target);
-        if (data == 'Success') {
+        if (data['msg'] == 'Success') {
           $.growlUI('Success', "Data saved.");
         } else {
           $.growlUI('Error', data);

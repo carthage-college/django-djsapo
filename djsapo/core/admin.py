@@ -11,7 +11,7 @@ class GenericChoiceAdmin(admin.ModelAdmin):
 
 
 class AlertAdmin(admin.ModelAdmin):
-    list_display = ('student_name','cid','creator_name')
+    list_display = ('student_name','cid','creator_name','created_at')
     search_fields = ('created_by__username','student__username')
     raw_id_fields = ('created_by','updated_by','student')
 
