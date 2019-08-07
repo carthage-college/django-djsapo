@@ -3,13 +3,37 @@
 {{block.super}}
 <div class="row">
   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
-    <h4>My Student Concerns</h4>
-    {% if alerts %}
-      {% include "data.inc.html" %}
-    {% else %}
-      <h5>No submissions</h5>
-    {% endif %}
+    <div class="float-left"><h4>My Student Concerns</h4></div>
+    <div class="float-right">
+      <form class="form-inline" method="post" action="." role="form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label style="margin-right:10px;">Show</label>
+            <select name="status" class="form-control" id="students-toggle">
+              <option value="">--select--</option>
+              {% for value, text in status_choices %}
+              <option value="{{value}}"{% if status == value %} selected{% endif %}>{{text}}</option>
+              {% endfor %}
+              <option value="">All</option>
+            </select>
+          </div>
+      </form>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-body" id="students-data-panel">
+      {% if alerts %}
+        {% include "data.inc.html" %}
+      {% else %}
+        <div class="table-responsive">
+          <h5>No submissions</h5>
+        </div>
+      {% endif %}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
   </div>
+  <!-- /.col-lg-12 -->
 </div>
 <!-- /.row -->
 {% endblock content %}

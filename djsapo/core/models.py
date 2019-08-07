@@ -149,6 +149,7 @@ class Alert(models.Model):
         ('New', "New"),
         ('Assigned', "Assigned"),
         ('In progress', "In progress"),
+        ('Suggest Close', "Suggest Close"),
         ('Closed', "Closed"),
     )
     RELATIONSHIP_CHOICES = (

@@ -49,19 +49,34 @@ def _student(alert):
 def home(request):
     user = request.user
     css = in_group(user, settings.CSS_GROUP)
+    status = request.POST.get('status')
     # CSS or superuser can access all objects
     if css:
-        my_alerts = Alert.objects.all().order_by('-created_at')
+        if status:
+            my_alerts = Alert.objects.filter(status=status)
+        else:
+            my_alerts = Alert.objects.all()
         alerts = [a for a in my_alerts]
     else:
-        my_alerts = Alert.objects.filter(created_by=user).order_by('-created_at')
+        if status:
+            my_alerts = Alert.objects.filter(created_by=user).filter(status=status)
+        else:
+            my_alerts = Alert.objects.filter(created_by=user)
         teams = Member.objects.filter(user__username=user.username)
-        team_alerts = [member.alert for member in teams]
+        if status:
+            team_alerts = [member.alert for member in teams if member.alert.status == status]
+        else:
+            team_alerts = [member.alert for member in teams]
         alerts = sorted(
             chain(my_alerts, team_alerts), key=attrgetter('created_at')
         )
 
-    return render(request, 'list.html', {'alerts':alerts,'css':css})
+    return render(
+        request, 'list.html', {
+            'alerts':alerts,'css':css,'status_choices':Alert.STATUS_CHOICES,
+            'status':status
+        }
+    )
 
 
 @portal_auth_required(

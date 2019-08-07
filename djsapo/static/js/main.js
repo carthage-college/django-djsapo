@@ -69,6 +69,9 @@ $(function() {
   $('input[name="interaction"]').click(function() {
     toggle(this.value, 'Yes', '#interactionFields');
   });
+  $('#students-toggle').change(function() {
+    this.form.submit();
+  });
   /* comments form */
   $("#commentsForm").submit(function(e){
     e.preventDefault();

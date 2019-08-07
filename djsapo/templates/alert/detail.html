@@ -201,7 +201,6 @@ var $updateAlert = true;
             {% endif %}
           {% endfor %}
         </ul>
-        {% if perms.manager %}
         <h4>
           Student history
          <i class="fa fa-hourglass-half green blue-tooltip" data-toggle="tooltip"
@@ -228,7 +227,6 @@ var $updateAlert = true;
           </tbody>
         </table>
         </div>
-        {% endif %}
         <!-- fin -->
       </div>
       <!-- /.panel-body -->
@@ -246,7 +244,7 @@ var $updateAlert = true;
           <a href="{% url 'team_manager' data.id %}">
             <i class="fa fa-users green blue-tooltip" data-toggle="tooltip"
               data-placement="top" title="Add Team Member to this Alert"
-              aria-hidden="true"></i></a> |
+              aria-hidden="true"></i></a>
           {% endif %}
           <!--
           <a href="{# url 'email_team_form' alert.id #}" class="no-print-icon">
