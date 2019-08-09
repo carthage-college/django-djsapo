@@ -296,12 +296,12 @@ def manager(request):
             t = loader.get_template('alert/annotation.inc.html')
             if oid == 0:
                 note = Annotation.objects.create(
-                    alert=alert, created_by=user, body=post.get('body'),
-                    tags="Comments"
+                    alert=alert, created_by=user, updated_by=user,
+                    body=post.get('body'), tags="Comments"
                 )
                 alert.notes.add(note)
                 context = {
-                    'obj':note,'bgcolor':'list-group-item-success'
+                    'obj':note,'bgcolor':'bg-warning'
                 }
                 data['msg'] = t.render(context, request)
             else:
@@ -314,7 +314,7 @@ def manager(request):
                         note.updated_by = user
                         note.save()
                         context = {
-                            'obj':note,'bgcolor':'list-group-item-success'
+                            'obj':note,'bgcolor':'bg-warning'
                         }
                         data['msg'] = t.render(context, request)
                     data['id'] = note.id

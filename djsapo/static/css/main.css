@@ -51,3 +51,6 @@ h6 {font-weight:600;}
 .rebecca h5 {color:white;}
 .rebecca i {color:white;}
 .filtered td {color: black !important;}
+.bg-success {
+    background-color: #c3e6cb !important;
+}
