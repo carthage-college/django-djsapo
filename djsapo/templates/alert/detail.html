@@ -234,10 +234,10 @@ var $updateAlert = true;
     <!-- /.panel -->
   </div>
   <!-- /.col-lg-6 -->
-  {% if perms.team %}
   <div class="col-lg-6">
     <div class="panel panel-default">
       <div class="panel-body">
+        {% if perms.team %}
         <h4>
           Team members
           {% if perms.admin %}
@@ -246,12 +246,6 @@ var $updateAlert = true;
               data-placement="top" title="Add Team Member to this Alert"
               aria-hidden="true"></i></a>
           {% endif %}
-          <!--
-          <a href="{# url 'email_team_form' alert.id #}" class="no-print-icon">
-            <i class="fa fa-envelope green blue-tooltip" aria-hidden="true"
-            data-toggle="tooltip" data-placement="top"
-            title="Send Email to the Alert Team"></i></a>
-          -->
         </h4>
         <ul class="list-group mb-3">
         {% for m in data.team.all %}
@@ -284,6 +278,7 @@ var $updateAlert = true;
         </li>
         {% endfor %}
         </ul>
+        {% endif %}
         <h4>
           Follow-up
           <a href="" data-toggle="modal" data-target="#commentsModal">
@@ -305,10 +300,10 @@ var $updateAlert = true;
         {% endif %}
         <div id="comments-list">
           {% for obj in data.notes.all %}
-            {% if obj.status %}
+            {% if obj.status %}{% if obj.created_by == user or perms.team %}
             {% cycle 'blue-box' 'lightgrey-box' as boxcolor silent %}
             {% include "alert/annotation.inc.html" with bgcolor=boxcolor %}
-            {% endif %}
+            {% endif %}{% endif %}
           {% endfor %}
         </div>
         <!-- fin -->
@@ -318,7 +313,6 @@ var $updateAlert = true;
     <!-- /.panel -->
   </div>
   <!-- /.col-lg-6 -->
-  {% endif %}
 </div>
 <!-- /.row -->
 </div>

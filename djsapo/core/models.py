@@ -221,27 +221,20 @@ class Alert(models.Model):
             meet their needs.
         """,
     )
-    interaction = models.CharField(
-        "Have you interacted with the student regarding this concern?",
-        max_length=4, choices=BINARY_CHOICES
-    )
-    interaction_date = models.DateField(
-        "Last date of interaction",
-        null=True,blank=True,
-        help_text="mm/dd/yyyy"
-    )
     interaction_type = models.CharField(
         "How did you interact with this student?",
         max_length=128, choices=INTERACTION_CHOICES,
-        null=True,blank=True
+    )
+    interaction_date = models.DateField(
+        "Approximate date of interaction",
+        help_text="mm/dd/yyyy"
     )
     interaction_details = models.TextField(
         "Interaction details",
         help_text = """
             Please share any additional information about your interaction
             with the student.
-        """,
-        null=True,blank=True
+        """
     )
     outcome = models.CharField(
         "Outcome", max_length=128, choices=OUTCOME_CHOICES,

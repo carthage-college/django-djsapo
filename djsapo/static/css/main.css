@@ -1,3 +1,7 @@
+.required:after {content:" *";color:#dc3545;}
+#descriptionField .trumbowyg-box {
+    z-index:1;
+}
 .table thead {
   background-color: #efefef;
   color: #000;

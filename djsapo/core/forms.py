@@ -28,8 +28,7 @@ class AlertForm(forms.ModelForm):
         required=True
     )
     interaction_date = forms.DateField(
-        label="Date of interaction",
-        required=False,
+        label="Approximate date of interaction"
     )
 
     def __init__(self, *args, **kwargs):
@@ -43,36 +42,6 @@ class AlertForm(forms.ModelForm):
     class Meta:
         model = Alert
         exclude = ('parent','status','created_by')
-
-    def clean_interaction_type(self):
-
-        cd = self.cleaned_data
-        if cd.get('interaction') == 'Yes' and not cd.get('interaction_type'):
-            raise forms.ValidationError("You must provide an interaction type")
-        if cd.get('interaction') == 'No':
-            cd['interaction_type'] = None
-
-        return cd['interaction_type']
-
-    def clean_interaction_details(self):
-
-        cd = self.cleaned_data
-        if cd.get('interaction') == 'Yes' and not cd.get('interaction_details'):
-            raise forms.ValidationError("Please provide some details about the interaction")
-        if cd.get('interaction') == 'No':
-            cd['interaction_details'] = None
-
-        return cd['interaction_details']
-
-    def clean_interaction_date(self):
-
-        cd = self.cleaned_data
-        if cd.get('interaction') == 'Yes' and not cd.get('interaction_date'):
-            raise forms.ValidationError("You must provide a date for the interaction")
-        if cd.get('interaction') == 'No':
-            cd['interaction_date'] = None
-
-        return cd['interaction_date']
 
     def clean_student(self):
         cd = self.cleaned_data

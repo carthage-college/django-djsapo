@@ -66,10 +66,6 @@ $(function() {
   /* fancy picker for select fields */
   $('#id_relationship').selectpicker();
   $('#id_category').selectpicker();
-  /* toggle interaction fields */
-  $('input[name="interaction"]').click(function() {
-    toggle(this.value, 'Yes', '#interactionFields');
-  });
   $('#students-toggle').change(function() {
     this.form.submit();
   });

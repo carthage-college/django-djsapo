@@ -14,10 +14,7 @@
 /* do not update the alert via ajax after course selection */
 var $updateAlert = false;
 $(function() {
-  /* interaction: fields that depend on whethor not there was an interaction */
-  {% if form.interaction.value == 'Yes' %}
-    $('#interactionFields').show();
-  {% endif %}
+  /* set up the autocomplete field for student */
   {% if form.student.value %}
     $('#autoComplete').val('');
     $('#autoComplete').attr('data-email','{{form.student.value}}');
@@ -195,44 +192,6 @@ $(function() {
               </small>
             </div>
           </div>
-          <div class="col-md-12 pb-3">
-            <div class="form-group">
-              <label for="id_{{form.interaction.name}}_0"
-                {% if form.interaction.errors %}
-                  class="d-block text-danger"
-                {% else %}
-                  class="d-block"
-                {% endif %}
-                >
-                <h5 class="required">{{form.interaction.label}}</h5>
-              </label>
-              <div class="form-check form-check-inline">
-                <label for="id_{{form.interaction.name}}_0"
-                  class="form-check-label">
-                  <input class="form-check-input" value="Yes"
-                    type="radio" name="interaction"
-                    {% if not templates_debug %} required{% endif %}
-                    id="id_{{form.interaction.name}}_0"
-                    {% if form.interaction.value == 'Yes' %}
-                      checked
-                    {% endif %}>
-                    Yes
-                </label>
-              </div>
-              <div class="form-check form-check-inline">
-                <label for="id_{{form.interaction.name}}_1"
-                  class="form-check-label">
-                  <input class="form-check-input" value="No"
-                    type="radio" name="interaction"
-                    id="id_{{form.interaction.name}}_1"
-                    {% if form.interaction.value == 'No' %}
-                      checked
-                    {% endif %}>
-                    No
-                </label>
-              </div>
-            </div>
-          </div>
           <div class="col-md-9 pb-3" id="interactionFields">
             <div class="form-group">
               <label for="{{form.interaction_type.id_for_label}}"
@@ -269,7 +228,7 @@ $(function() {
                 {{form.interaction_details.errors|join:", "}}
               </small>
             </div>
-            <div class="col-md-4">
+            <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12">
               <div class="form-group">
               <label for="{{form.interaction_date.id_for_label}}"
               {% if form.interaction_date.errors %}class="text-danger"{% endif %}>

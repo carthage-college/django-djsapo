@@ -202,11 +202,6 @@
 
 /* DJ Sapo customizations */
 
-#interactionFields {display:none;}
-.required:after {content:" *";color:#dc3545;}
-#descriptionField .trumbowyg-box {
-    z-index:1;
-}
 #autoComplete, #id_course {
   border: 0.05rem solid green;
   caret-color: green;
