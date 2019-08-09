@@ -324,7 +324,9 @@ var $updateAlert = true;
 </div>
 <!-- /.container -->
 <!-- #commentsModal -->
-<div class="modal fade" id="commentsModal" tabindex="-1" role="dialog" aria-labelledby="commentsModalLabel" aria-hidden="true">
+<div class="modal fade" id="commentsModal" tabindex="-1" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false" role="dialog"
+  aria-labelledby="commentsModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form id="commentsForm">
@@ -337,6 +339,7 @@ var $updateAlert = true;
         <div class="modal-body">
           <div class="form-group">
             <textarea class="form-control" name="body" id="id_body" rows="8" style="resize: none;height: 150px !important;width:95% !important;"></textarea>
+            <input type="hidden" name="fid" value="0" id="id_fid">
           </div>
         </div>
         <div class="modal-footer">

@@ -17,7 +17,7 @@ var opts = {
   top: '50px', // Top position relative to parent in px
   left: 'auto' // Left position relative to parent in px
 };
-var target = document.getElementById("alert-container");
+var target = document.getElementById('alert-container');
 var spinner = new Spinner(opts).spin(target);
 spinner.stop(target);
 
@@ -45,7 +45,7 @@ $(function() {
     return false;
   });
   /* datepicker */
-  $("#id_interaction_date").datepicker({
+  $('#id_interaction_date').datepicker({
     firstDay:1,
     changeFirstDay:false,
     dateFormat:'yy-mm-dd',
@@ -54,14 +54,15 @@ $(function() {
     buttonImageOnly:true
   });
   /* wysiwyg for textarea fields */
-  $('textarea').trumbowyg({
+  var $trumBowygDict = {
     btns: [
       ['formatting'], ['strong', 'em', 'del'],
       ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
     ],
     tagsToRemove: ['script', 'link'],
     removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
-  });
+  };
+  $('textarea').trumbowyg($trumBowygDict);
   /* fancy picker for select fields */
   $('#id_relationship').selectpicker();
   $('#id_category').selectpicker();
@@ -73,21 +74,46 @@ $(function() {
     this.form.submit();
   });
   /* comments form */
-  $("#commentsForm").submit(function(e){
+  $(document).on('click','.comment-update', function (e) {
+    var $dis = $(this);
+    var $oid = $dis.attr('data-fid');
+    if ($oid) {
+      $.ajax({
+        url: $manager,
+        type: 'post',
+        data: {'aid':$aid,'action':'fetch','mod':'comment','oid':$oid},
+        success: function(data){
+          // Add response in Modal body
+          $('#id_fid').val(data['id']);
+          $('#id_body').val(data['msg']);
+          // Display Modal
+          $('#id_body').trumbowyg('destroy');
+          $('#commentsForm').modal('show');
+          $('#id_body').trumbowyg($trumBowygDict);
+        }
+      });
+    }
+  });
+  $('#commentsForm').submit(function(e){
     e.preventDefault();
-    var $body = $("#id_body").val();
+    var $body = $('#id_body').val();
+    var $oid = $('#id_fid').val();
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: $manager,
-      data: {'aid':$aid,'body':$body,'mod':'comment','oid':0},
+      data: {'aid':$aid,'body':$body,'mod':'comment','oid':$oid},
       cache: false,
       beforeSend: function(){
-        $("#commentsModal").modal('hide');
+        $('#commentsModal').modal('hide');
       },
       success: function(data){
-        $("#comments-list").prepend(data['msg']);
-        //$('html, body').animate({scrollTop:$(document).height()}, 'slow');
-        $("#id_body").val('');
+        if (data['id']) {
+          $('#fid_' + data['id']).replaceWith(data['msg']);
+        } else {
+          $('#comments-list').prepend(data['msg']);
+        }
+        $('#id_body').val('');
+        $('.modal-backdrop').remove();
       },
       error: function(data){
         console.log(data);
@@ -99,13 +125,16 @@ $(function() {
   $('#commentsModal').on('shown.bs.modal', function () {
     $('#id_body').focus();
   })
+  $('#commentsModal').on('hidden.bs.modal', function () {
+    $('#id_body').trumbowyg('destroy');
+  });
   /* function to update a name/value pair for models */
   $('.set-val').on('change', function() {
     var $dis = $(this);
-    var $name = $dis.attr("name");
+    var $name = $dis.attr('name');
     var $value = $dis.val();
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: $manager,
       data: {'aid':$aid,'value':$value,'name':$name,'mod':'alert','oid':0},
       cache: false,
@@ -127,9 +156,9 @@ $(function() {
     afterMoveToRight:function($left, $right, $options) {
       var $oid = $options[0]['attributes']['value']['value'];
       $.ajax({
-        type: "POST",
+        type: 'POST',
         url: $manager,
-        data: {"aid":$aid,"oid":$oid,"action":"add","mod":"category"},
+        data: {'aid':$aid,'oid':$oid,'action':'add','mod':'category'},
         beforeSend: function(){
           spinner.spin(target);
         },
@@ -148,9 +177,9 @@ $(function() {
     afterMoveToLeft:function($left, $right, $options) {
       var $oid = $options[0]['attributes']['value']['value'];
       $.ajax({
-        type: "POST",
+        type: 'POST',
         url: $manager,
-        data: {"aid":$aid,"oid":$oid,"action":"remove","mod":"category"},
+        data: {'aid':$aid,'oid':$oid,'action':'remove','mod':'category'},
         beforeSend: function(){
           spinner.spin(target);
         },
@@ -168,25 +197,25 @@ $(function() {
     }
   });
   /* remove a team member */
-  $(document).on("click",".remove-member", function (e) {
+  $(document).on('click','.remove-member', function (e) {
     e.preventDefault();
     var $dis = $(this);
-    var $uid = $dis.attr("data-uid");
-    var $mid = $dis.attr("data-mid");
-    var $ln = $dis.attr("data-last_name");
-    var $fn = $dis.attr("data-first_name");
+    var $uid = $dis.attr('data-uid');
+    var $mid = $dis.attr('data-mid');
+    var $ln = $dis.attr('data-last_name');
+    var $fn = $dis.attr('data-first_name');
     $dis.html('<i class="fa fa-refresh fa-spin"></i>');
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: $manager,
-      data: {"aid":$aid,"oid":$uid,"action":"remove","mod":"team"},
+      data: {'aid':$aid,'oid':$uid,'action':'remove','mod':'team'},
       success: function(data) {
         $('.tooltip').remove();
         $dis.html('<i class="fa fa-ban red" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team"></i>');
         $('[data-toggle="tooltip"]').tooltip();
-        $("#member_"+$mid).addClass('strike');
-        $("#del_"+$uid).addClass('strike');
-        $("#member_"+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team">'+$ln + ', '+ $fn + '</span>');
+        $('#member_'+$mid).addClass('strike');
+        $('#del_'+$uid).addClass('strike');
+        $('#member_'+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team">'+$ln + ', '+ $fn + '</span>');
         $.growlUI("Team Member", "Removed");
       }
     });
@@ -196,14 +225,14 @@ $(function() {
   $('.clear-cache').on('click', function(e){
     e.preventDefault();
     var $dis = $(this);
-    var $cid = $dis.attr("data-cid");
-    var $target = '#' + $dis.attr("data-target");
+    var $cid = $dis.attr('data-cid');
+    var $target = '#' + $dis.attr('data-target');
     var $html = $dis.html();
     $dis.html('<i class="fa fa-refresh fa-spin"></i>');
     $.ajax({
-      type: "POST",
+      type: 'POST',
       url: $clearCacheUrl,
-      data: {"cid":$cid},
+      data: {'cid':$cid},
       success: function(data) {
         $.growlUI("Cache", "Clear");
         $($target).html(data);
@@ -251,7 +280,7 @@ $(function() {
   var alertTable = $('#data-table').DataTable({
     'lengthMenu': [
       [25, 50, 100, 250, 500, 1000, 2000, -1],
-      [25, 50, 100, 250, 500, 1000, 2000, "All"]
+      [25, 50, 100, 250, 500, 1000, 2000, 'All']
     ],
     dom: 'lfrBtip',
     buttons: [
@@ -264,9 +293,9 @@ $(function() {
     // via autocomplete
     $('#autoComplete').val($('#autoComplete').attr('data-email'));
     /* check textarea for just br tag */
-    $("textarea").each(function(){
-      if (this.value == "<br>") {
-          this.value = "";
+    $('textarea').each(function(){
+      if (this.value == '<br>') {
+          this.value = '';
       }
     });
     // disable submit button after users clicks it

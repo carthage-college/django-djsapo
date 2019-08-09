@@ -26,7 +26,11 @@
                     {% for s in sports %}
                       {{s|safe}}{% if not forloop.last %}, {% endif %}
                     {% endfor %}
+                    <br>
                   {% endif %}
+                  {% if student.major1 %}{{student.major1}},{% endif %}
+                  {% if student.major2 %}{{student.major2}},{% endif %}
+                  {% if student.major3 %}{{student.major3}}{% endif %}
                 </div>
                 <div class="col-lg-4 col-md-4">
                   <div class="float-right">
@@ -37,7 +41,7 @@
                     {% if student.residency_status == "Commuter" %}
                     {{student.residency_status}}
                     {% else %}{% if student.bldg %}
-                    {{student.bldg}}
+                    {{student.bldg}}&nbsp;{{student.room}}
                     {% endif %}{% endif %}
                   </div>
                 </div>

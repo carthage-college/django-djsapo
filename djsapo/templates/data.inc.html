@@ -51,7 +51,7 @@
             {{c}}{% if not forloop.last %}, {% endif %}
           {% endfor %}
         </td>
-        <td nowrap{% if a.status == "Suggest Close" %} class="bg-warning"{% endif %}>{{a.status}}</td>
+        <td nowrap{% if a.status == "Closure suggested" %} class="bg-warning"{% endif %}>{{a.status}}</td>
         <td class="text-center" nowrap>{{a.latest_note.created_at|date:'Y-m-d'}}</td>
         <td class="text-center">
           <i class="fa fa-users{% if a.team.all %} green{% endif %}" aria-hidden="true" data-toggle="tooltip" data-placement="left"

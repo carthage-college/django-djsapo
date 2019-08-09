@@ -1,10 +1,20 @@
-<div class="card mb-3 {{bgcolor}}{% if obj.created_by.profile.case_manager %} bg-warning{% endif %}">
+<div id="fid_{{obj.id}}" class="card mb-3 {{bgcolor}}{% if obj.created_by.profile.case_manager %} rebecca{% endif %}">
   <div class="card-body">
-    <h5 class="card-title mb-2">
-    <a href="mailto:{{obj.created_by.email}}">
-      {{obj.created_by.last_name}}, {{obj.created_by.first_name}}</a>
-    </h5>
-    <h6 class="card-subtitle mb-2 text-muted">{{obj.created_at}}</h6>
-    <div class="card-text text-dark">{{obj.body|safe}}</div>
+    <div class="float-left">
+      <h5 class="card-title mb-2">
+      {{obj.created_by.last_name}}, {{obj.created_by.first_name}}
+      </h5>
+      <h6 class="card-subtitle mb-2{% if not obj.created_by.profile.case_manager %} text-muted{% endif %}">{{obj.created_at}}</h6>
+    </div>
+    {% if perms.admin %}
+    <div class="float-right">
+      <a href="" data-toggle="modal" data-target="#commentsModal"
+        data-fid="{{obj.id}}" class="comment-update">
+        <i class="fa fa-pencil-square-o green blue-toolsip"
+          data-placement="top" title="Update this follow-up" aria-hidden="true"></i></a>
+    </div>
+    {% endif %}
+    <div class="clearfix"></div>
+    <div class="card-text{% if obj.created_by.profile.case_manager %} text-light {% else %} text-dark{% endif %}">{{obj.body|safe}}</div>
   </div>
 </div>

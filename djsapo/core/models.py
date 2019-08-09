@@ -149,7 +149,7 @@ class Alert(models.Model):
         ('New', "New"),
         ('Assigned', "Assigned"),
         ('In progress', "In progress"),
-        ('Suggest Close', "Suggest Close"),
+        ('Closure suggested', "Closure suggested"),
         ('Closed', "Closed"),
     )
     RELATIONSHIP_CHOICES = (
@@ -350,8 +350,15 @@ class Annotation(models.Model):
         related_name='note_creator',
         on_delete=models.PROTECT
     )
+    updated_by = models.ForeignKey(
+        User, verbose_name="Updated by", related_name='note_updated',
+        on_delete=models.CASCADE, null=True, blank=True
+    )
     created_at = models.DateTimeField(
         "Date Created", auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        "Date Updated", auto_now=True
     )
     recipients = models.ManyToManyField(
         User, blank=True

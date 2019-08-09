@@ -48,4 +48,6 @@ h6 {font-weight:600;}
     font-size: .8em;
 }
 .rebecca {background-color: rebeccapurple;color: white;padding-left:4px;border-radius:.25rem;}
+.rebecca h5 {color:white;}
+.rebecca i {color:white;}
 .filtered td {color: black !important;}

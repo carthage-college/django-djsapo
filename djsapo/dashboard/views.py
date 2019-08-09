@@ -291,16 +291,35 @@ def manager(request):
             else:
                     data['msg'] = "User not found"
         elif mod == "comment":
-            note = Annotation.objects.create(
-                alert=alert, created_by=user, body=post.get('body'),
-                tags="Comments"
-            )
-            alert.notes.add(note)
+            note = None
+            body = post.get('body')
             t = loader.get_template('alert/annotation.inc.html')
-            context = {
-                'obj':note,'bgcolor':'list-group-item-success'
-            }
-            data['msg'] = t.render(context, request)
+            if oid == 0:
+                note = Annotation.objects.create(
+                    alert=alert, created_by=user, body=post.get('body'),
+                    tags="Comments"
+                )
+                alert.notes.add(note)
+                context = {
+                    'obj':note,'bgcolor':'list-group-item-success'
+                }
+                data['msg'] = t.render(context, request)
+            else:
+                try:
+                    note = Annotation.objects.get(pk=oid)
+                    if action == "fetch":
+                        data['msg'] = note.body
+                    else:
+                        note.body=body
+                        note.updated_by = user
+                        note.save()
+                        context = {
+                            'obj':note,'bgcolor':'list-group-item-success'
+                        }
+                        data['msg'] = t.render(context, request)
+                    data['id'] = note.id
+                except:
+                    data['msg'] = "Follow-up not found"
         elif mod == "alert":
             value = post.get('value')
             name = post.get('name')
