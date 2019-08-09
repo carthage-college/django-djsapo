@@ -187,6 +187,9 @@ $(function() {
               id="{{form.description.id_for_label}}" name="{{form.description.name}}"
               placeholder="{{form.description.help_text}}"
               >{{form.description.value|default_if_none:''}}</textarea>
+              <small>
+                No more than 250 words.<br>
+              </small>
               <small class="text-danger">
                 {{form.description.errors|join:", "}}
               </small>
@@ -259,6 +262,9 @@ $(function() {
               id="{{form.interaction_details.id_for_label}}" name="{{form.interaction_details.name}}"
               placeholder="{{form.interaction_details.help_text}}"
               >{{form.interaction_details.value|default_if_none:''}}</textarea>
+              <small>
+                No more than 250 words.<br>
+              </small>
               <small class="text-danger">
                 {{form.interaction_details.errors|join:", "}}
               </small>
