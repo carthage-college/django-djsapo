@@ -267,6 +267,9 @@ def manager(request):
                 user = l.dj_create(luser)
             if user:
                 if action == 'add':
+                    if not alert.team.all():
+                        alert.status='Assigned'
+                        alert.save()
                     try:
                         member = Member.objects.get(user=user, alert=alert)
                         if member.status:
@@ -295,6 +298,9 @@ def manager(request):
             body = post.get('body')
             t = loader.get_template('alert/annotation.inc.html')
             if oid == 0:
+                if not alert.notes.all():
+                    alert.status='In progress'
+                    alert.save()
                 note = Annotation.objects.create(
                     alert=alert, created_by=user, updated_by=user,
                     body=post.get('body'), tags="Comments"
@@ -377,10 +383,6 @@ def team_manager(request, aid):
         for f in folks:
             if f.id == p['cid']:
                 peeps.remove(p)
-                # very rarely but for some reason this fails
-                #try:
-                #except:
-                    #pass
 
     return render(
         request, 'team.html', {
