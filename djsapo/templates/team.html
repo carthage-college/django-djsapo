@@ -9,80 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
 <script type="text/javascript" charset="utf-8">
 var $aid = "{{data.id}}";
-$('#matrix-table').sortable({
-    group: {
-        name:'matrix',
-        pull:['team']
-    },
-    animation: 150,
-    sort: false,
-    onAdd: function (evt) {
-        console.log('matrix-table: onAdd callback');
-        console.log(evt);
-    },
-    onRemove: function (evt) {
-        console.log(evt);
-    }
-});
-$('#team-members').sortable({
-    group: {
-        name: 'team',
-        put: ['matrix','facstaff'],
-        pull: ['matrix','facstaff']
-    },
-    animation: 150,
-    sort: false,
-    filter: '.strike', // is not draggable
-    onAdd: function (evt) {
-        console.log('team-members: onAdd callback');
-        $('#team-members tr .dataTables_empty').hide();
-        $data = evt['item']['firstElementChild']['dataset'];
-        $uid = $data['uid'];
-        $lastName = $data['last_name'];
-        $firstName = $data['first_name'];
-        console.log('uid=' + $uid);
-        $uidDom = $('[data-uid="' + $uid + '"]');
-        console.log('uidDom=' + $uidDom.html());
-        var $mid = null;
-        $.ajax({
-          type: "POST",
-          url: $manager,
-          data: {"aid":$aid,"oid":$uid,"action":"add","mod":"team"},
-          beforeSend: function(){
-            spinner.spin(target);
-          },
-          success: function(data) {
-            spinner.stop(target);
-            $mid=data['id']
-            $('#del_' + $uid).append('<td class="text-center"><a href="#" class="remove-member" data-uid="'+$uid+'" data-mid="'+$mid+'" data-last_name="'+$lastName+'" data-first_name="'+$firstName+'"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the alert team"></i></a></td>');
-            $.growlUI("Member Status", data['msg']);
-            return true;
-          },
-          error: function(data) {
-            spinner.stop(target);
-            $.growlUI("Team Member", "Error");
-            return false;
-          }
-        });
-    },
-    onRemove: function (evt) {
-        //console.log(evt);
-    }
-});
-$('#faculty-staff').sortable({
-    group: {
-        name: 'facstaff'
-    },
-    animation: 150,
-    sort: false,
-    filter: '.dataTables_empty', // is not draggable
-    onAdd: function (evt) {
-        console.log(evt);
-    },
-    onRemove: function (evt) {
-        console.log(evt);
-    }
-});
 </script>
 {% endblock %}
 {% block content %}
@@ -145,14 +71,25 @@ $('#faculty-staff').sortable({
         <table class="table table-bordered table-hover display compact data-table">
           <thead>
             <tr>
+              <th></th>
               <th>Name</th>
               <th>Groups</th>
-              <th></th>
             </tr>
           </thead>
           <tbody id="team-members">
             {% for m in data.team.all %}
             <tr{% if not  m.status %} class="strike"{% endif %} id="del_{{m.user.id}}">
+              <td class="text-center">
+              {% if m.status %}
+                <a href="#" class="remove-member" data-uid="{{m.user.id}}" data-mid="{{m.id}}"
+                  data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
+                  <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove {{m}} from the team"></i></a>
+              {% else %}
+                <i class="fa fa-ban red" data-toggle="tooltip" data-placement="top"
+                  title="{{m}} is no longer a member of the team"
+                  aria-hidden="true"></i>
+              {% endif %}
+              </td>
               <td nowrap data-uid="{{m.user.id}}">
                 <span>
                   <i class="fa fa-arrows handle"></i>
@@ -172,17 +109,6 @@ $('#faculty-staff').sortable({
                 {% endfor %}
                 </span>
               </td>
-              <td class="text-center">
-              {% if m.status %}
-                <a href="#" class="remove-member" data-uid="{{m.user.id}}" data-mid="{{m.id}}"
-                  data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
-                  <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove {{m}} from the team"></i></a>
-              {% else %}
-                <i class="fa fa-ban red" data-toggle="tooltip" data-placement="top"
-                  title="{{m}} is no longer a member of the team"
-                  aria-hidden="true"></i>
-              {% endif %}
-              </td>
             </tr>
             {% endfor %}
           </tbody>
@@ -197,7 +123,6 @@ $('#faculty-staff').sortable({
           <thead>
             <tr>
               <th>Name</th>
-              <th></th>
             </tr>
           </thead>
           <tbody id="faculty-staff">
@@ -208,7 +133,6 @@ $('#faculty-staff').sortable({
                 <i class="fa fa-arrows handle"></i> {{p.lastname}}, {{p.firstname}}
               </span>
             </td>
-            <td nowrap></td>
           </tr>
           {% endfor %}
           </tbody>
