@@ -96,7 +96,7 @@ var $updateAlert = true;
           {% if perms.team %}
           <dt>Outcome</dt>
           <dd>
-          {{data.outcome}}
+          {{data.outcome|default_if_none:'&nbsp;'}}
           </dd>
           {% endif %}{% endif %}
           <dt>Date submitted</dt>
@@ -190,7 +190,10 @@ var $updateAlert = true;
           </dl>
           </div>
         </div>
-        <h4>Documents <i class="fa fa-floppy-o green" aria-hidden="true"></i></h4>
+        <h4>Documents <i class="fa fa-floppy-o green" data-toggle="tooltip"
+           data-placement="top" title="All documents uploaded for this concern"
+           aria-hidden="true"></i>
+        </h4>
         <ul class="list-group mb-3">
           {% for d in data.documents.all %}
             {% if d.phile %}
@@ -211,6 +214,7 @@ var $updateAlert = true;
         <table class="table table-bordered table-hover display compact data-table">
           <thead>
             <tr>
+              <th></th>
               <th>Submitted by</th>
               <th>Date</th>
             </tr>
@@ -218,6 +222,7 @@ var $updateAlert = true;
           <tbody>
             {% for a in history %}
             <tr>
+                <td>{{forloop.counter}}</td>
               <td nowrap>
                 <a href="{% url 'detail' a.id %}">{{a.created_by.last_name}}, {{a.created_by.first_name}}</a>
               </td>
@@ -300,7 +305,7 @@ var $updateAlert = true;
         {% endif %}
         <div id="comments-list">
           {% for obj in data.notes.all %}
-            {% if obj.status %}{% if obj.created_by == user or perms.team %}
+            {% if obj.status %}{% if obj.created_by == user or perms.team or perms.former %}
             {% cycle 'blue-box' 'lightgrey-box' as boxcolor silent %}
             {% include "alert/annotation.inc.html" with bgcolor=boxcolor %}
             {% endif %}{% endif %}
