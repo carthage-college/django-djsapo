@@ -247,7 +247,8 @@ $(function() {
     paging: false,
     info: false,
     buttons: [],
-    stripeClasses: []
+    stripeClasses: [],
+    order: [[ 1, 'asc' ]]
   });
   $('.sos-matrix').DataTable({
     'lengthMenu': [
@@ -282,6 +283,64 @@ $(function() {
     buttons: [
       'csv', 'excel'
     ]
+  });
+  /* team manager sortables */
+  $('#matrix-table').sortable({
+      group: {
+          name:'matrix',
+          pull:['team']
+      },
+      animation: 150,
+      sort: false
+  });
+  $('#team-members').sortable({
+      group: {
+          name: 'team',
+          put: ['matrix','facstaff'],
+          pull: ['matrix','facstaff']
+      },
+      animation: 150,
+      sort: false,
+      filter: '.strike', // is not draggable
+      onAdd: function (evt) {
+          $('#team-members tr .dataTables_empty').hide();
+          $data = evt['item']['firstElementChild']['dataset'];
+          $uid = $data['uid'];
+          console.log($data);
+          console.log('$uid = ' + $uid);
+          $lastName = $data['last_name'];
+          $firstName = $data['first_name'];
+          $uidDom = $('[data-uid="' + $uid + '"]');
+          var $mid = null;
+          $.ajax({
+            type: "POST",
+            url: $manager,
+            data: {"aid":$aid,"oid":$uid,"action":"add","mod":"team"},
+            beforeSend: function(){
+              spinner.spin(target);
+            },
+            success: function(data) {
+              spinner.stop(target);
+              $mid=data['id']
+              $('#del_' + $uid).prepend('<td class="text-center"><a href="#" class="remove-member" data-uid="'+$uid+'" data-mid="'+$mid+'" data-last_name="'+$lastName+'" data-first_name="'+$firstName+'"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the alert team"></i></a></td>');
+              $.growlUI("Member Status", data['msg']);
+              return true;
+            },
+            error: function(data) {
+              spinner.stop(target);
+              $.growlUI("Team Member", "Error");
+              return false;
+            }
+          });
+      }
+  });
+  $('#faculty-staff').sortable({
+      group: {
+          name: 'facstaff'
+      },
+      animation: 150,
+      sort: false,
+      filter: '.dataTables_empty' // is not draggable
   });
   /* override the submit event for the alert form to handle some things */
   $('form#alert-form').submit(function(){
