@@ -51,6 +51,7 @@ INTERACTION_CHOICES = (
         'I have communicated my concern to the student, but they did not agree it was an issue.',
         "I have communicated my concern to the student, but they did not agree it was an issue."
     ),
+    ('No but...', "No but..."),
     ('Other', "Other")
 )
 
@@ -143,7 +144,7 @@ class Alert(models.Model):
         ('Next steps discussed', "Next steps discussed"),
         ('Resolved', "Resolved"),
         ('Duplicate concern', "Duplicate concern"),
-        ('Unresponsive', "Unresponsive"),
+        ('Unresponsive [term end]', "Unresponsive [term end]"),
     )
     STATUS_CHOICES = (
         ('New', "New"),
@@ -285,22 +286,28 @@ class Alert(models.Model):
     def permissions(self, user):
         if user.is_superuser:
             perms = {
-                'view':True,'team':True,'manager':True,'admin':True
+                'view':True,'team':True,'former':True,'manager':True,'admin':True
             }
         else:
-            perms = {'view':False,'team':False,'manager':False,'admin':False}
+            perms = {
+                'view':False,'team':False,'former':False,'manager':False,'admin':False
+            }
             group = in_group(user, settings.CSS_GROUP)
             if group:
                 perms['manager'] = True
                 perms['team'] = True
+                perms['former'] = True
                 perms['view'] = True
                 perms['admin'] = True
             for member in self.team.all():
                 if user == member.user:
                     perms['view'] = True
-                    perms['team'] = True
-                    if member.user.profile.case_manager:
-                        perms['manager'] = True
+                    if member.status:
+                        perms['team'] = True
+                        if member.user.profile.case_manager:
+                            perms['manager'] = True
+                    else:
+                        perms['former'] = True
             if self.created_by == user:
                 perms['view'] = True
                 perms['update'] = True
