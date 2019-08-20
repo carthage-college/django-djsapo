@@ -147,6 +147,30 @@ $(function() {
       }
     });
   });
+  $(".alert-status").click(function () {
+    $.ajax({
+      type: "POST",
+      url: $manager,
+      data: {'aid':$aid,'value':'Closure suggested','name':'status','mod':'alert','oid':0},
+      cache: false,
+      beforeSend: function(){
+        spinner.spin(target);
+      },
+      success: function(data) {
+        spinner.stop(target);
+        $.growlUI("Alert Status", data['msg']);
+        $('#alertStatus').hide();
+        $('#id_status option[value="Closure suggested"]').attr('selected','selected');
+        $('#id_status').text('Closure suggested');
+        //$('.bootstrap-select .filter-option').text(text);
+        $('.selectpicker').selectpicker('refresh');
+      },
+      error: function(data) {
+        spinner.stop(target);
+        $.growlUI('Error', data);
+      }
+    });
+  });
   /* multiselect for moving elements between two select fields */
   $('#categories').multiselect({
     afterMoveToRight:function($left, $right, $options) {

@@ -42,21 +42,23 @@ var $updateAlert = true;
       <div class="col-lg-6">
         <dl class="dl-horizontal">
           <dt>Status</dt>
-          <dd>
           {% if perms.admin %}
+          <dd>
             <select name="status" class="list-group-item-success selectpicker set-val"
             data-width="200px" data-style="list-group-item-success text-dark"
-            title="Choose status&hellip;">
+            id="id_status" title="Choose status&hellip;">
             {% for s in data.STATUS_CHOICES %}
             <option value="{{s.0}}"{% if s.0 == data.status %} selected="selected"{% endif %}>
             {{s.1|safe}}
             </option>
             {% endfor %}
             </select>
-          {% else %}
-          {{data.status}}
-          {% endif %}
           </dd>
+          {% else %}
+          <dd id="id_status">
+          {{data.status}}
+          </dd>
+          {% endif %}
           <dt>Submitted by</dt>
           <dd>{{data.created_by.last_name}}, {{data.created_by.first_name}}</dd>
           <dt>Relationship with student</dt>
