@@ -43,11 +43,11 @@ $(function() {
 {% block content %}
 {{block.super}}
 <div class="container mb-4" id="alert-container">
-  <div class="col-md-12 card">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 card">
     <div class="card-title">
       <h3>Student Concern Submission Form</h3>
     </div>
-    <div class="card-header bg-light text-black">
+    <div class="text-black">
       {% get_lw_content as instructions blurbs 2811 %}
       <div id="lw_instructions">{{instructions.body|safe}}</div>
       {% if  user.is_staff %}
