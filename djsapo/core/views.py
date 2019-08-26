@@ -12,7 +12,6 @@ from djsapo.core.forms import AlertForm, DocumentForm
 from djsapo.core.utils import get_peeps
 
 from djzbar.decorators.auth import portal_auth_required
-from djtools.utils.mail import send_mail
 
 from datetime import datetime
 
@@ -59,19 +58,6 @@ def alert_form(request, pid=None):
             doc3.created_by = user
             doc3.updated_by = user
             doc3.save()
-            # send mail
-            to_list = [settings.SERVER_EMAIL,]
-            bcc = [settings.MANAGERS,]
-            frum = settings.CSS_EMAIL
-            if not settings.DEBUG:
-                bcc.append(settings.CSS_EMAIL)
-                to_list = [user.email,]
-            subject = "[Early Alert] {} {}".format(
-                alert.student.first_name, alert.student.last_name
-            )
-            send_mail(
-                request, to_list, subject, frum, 'alert/email.html', alert, bcc
-            )
             # redirect to success page
             return HttpResponseRedirect(
                 reverse_lazy('alert_success')

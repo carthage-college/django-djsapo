@@ -1,0 +1,11 @@
+{% load livewhale_api %}
+{% autoescape off %}
+<h4>Greetings, {{user.first_name|capfirst}}</h4>
+<div>
+  {% get_lw_content as team blurbs 2839 %}
+  {{team.body}}
+</div>
+<p>
+  <a href="{% url 'detail' alert.id %}">View the details</a>
+</p>
+{% endautoescape %}

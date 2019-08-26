@@ -11,6 +11,7 @@ from djsapo.core.models import Alert, Annotation, GenericChoice, Member
 from djsapo.core.utils import get_peeps
 
 from djtools.utils.users import in_group
+from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager
 from djzbar.decorators.auth import portal_auth_required
 from djimix.core.utils import get_connection
@@ -171,9 +172,8 @@ def email_form(request, aid, action):
                     to_list = []
                 send_mail (
                     request, to_list,
-                    "[Student Outreach System] {}".format(
-                        form_data['subject']
-                    ), request.user.email, 'email_form.html',
+                    "[Student Outreach System] {}".format(form_data['subject']),
+                    request.user.email, 'email_form.html',
                     {'content':form_data['content']}, BCC
                 )
                 return HttpResponseRedirect(
@@ -267,6 +267,7 @@ def manager(request):
                 user = l.dj_create(luser)
             if user:
                 if action == 'add':
+                    mail = False
                     if not alert.team.all():
                         alert.status='Assigned'
                         alert.save()
@@ -279,11 +280,21 @@ def manager(request):
                             member.save()
                             data['msg'] = "User has been reactivated"
                             data['id'] = member.id
+                            mail = True
                     except:
                         member = Member.objects.create(user=user,alert=alert)
                         alert.team.add(member)
                         data['msg'] = "User added to team"
                         data['id'] = member.id
+                        mail = True
+                    if mail:
+                        send_mail (
+                            request, [member.user.email],
+                            "[Student Outreach System] You have been added to the team",
+                            request.user.email, 'alert/email_team_added.html',
+                            {'alert':alert,'user':member.user}, BCC
+                        )
+
                 elif action == 'remove':
                     member = get_object_or_404(Member, user=user,alert=alert)
                     member.status = False
