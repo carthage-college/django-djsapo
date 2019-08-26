@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.db import models, connection
+from django.urls import reverse
 from django.contrib.auth.models import Group, User
 from django.core.validators import FileExtensionValidator
 from django.db.models.signals import post_save
@@ -281,7 +282,9 @@ class Alert(models.Model):
         return self.notes.latest('created_at')
 
     def get_absolute_url(self):
-        return ('alert_detail', [str(self.id)])
+        return 'https://{}{}'.format(
+            settings.SERVER_URL, reverse('detail', args=(self.id,))
+        )
 
     def permissions(self, user):
         if user.is_superuser:

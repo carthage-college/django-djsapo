@@ -174,7 +174,7 @@ def email_form(request, aid, action):
                     request, to_list,
                     "[Student Outreach System] {}".format(form_data['subject']),
                     request.user.email, 'email_form.html',
-                    {'content':form_data['content']}, BCC
+                    {'content':form_data['content']}, [settings.ADMINS[0][1],]
                 )
                 return HttpResponseRedirect(
                     reverse_lazy('email_done')
@@ -288,11 +288,11 @@ def manager(request):
                         data['id'] = member.id
                         mail = True
                     if mail:
-                        send_mail (
+                        send_mail(
                             request, [member.user.email],
                             "[Student Outreach System] You have been added to the team",
                             request.user.email, 'alert/email_team_added.html',
-                            {'alert':alert,'user':member.user}, BCC
+                            {'alert':alert,'user':member.user}, [settings.ADMINS[0][1],]
                         )
 
                 elif action == 'remove':
