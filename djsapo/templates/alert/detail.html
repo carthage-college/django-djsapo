@@ -171,24 +171,20 @@ var $updateAlert = true;
         <div class="card bg-light mb-3">
           <div class="card-body">
           <dl class="dl-horizontal">
-          <dt>Have you interacted with the student regarding this concern?</dt>
+          <dt>How did you interact with this student?</dt>
           <dd>
-            {{data.interaction}}
+            {{data.interaction_type}}
           </dd>
-          {% if data.interaction == 'Yes' %}
-            <dt>How did you interact with this student?</dt>
-            <dd>{{data.interaction_type}}</dd>
-            <dt>Date of interaction</dt>
-            <dd>{{data.interaction_date}}</dd>
-            <dt>Details</dt>
-            <dd>
-              <div class="card bg-light">
-                <div class="card-body">
-                  <div class="card-text">{{data.interaction_details|safe}}</div>
-                </div>
+          <dt>Date of interaction</dt>
+          <dd>{{data.interaction_date}}</dd>
+          <dt>Details</dt>
+          <dd>
+            <div class="card bg-light">
+              <div class="card-body">
+                <div class="card-text">{{data.interaction_details|safe}}</div>
               </div>
-            </dd>
-          {% endif %}
+            </div>
+          </dd>
           </dl>
           </div>
         </div>
