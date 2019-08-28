@@ -34,6 +34,7 @@ function toggle(dis, val, dom) {
 }
 
 $(function() {
+
   /* bootstrap tool tip */
   $('[data-toggle="tooltip"]').tooltip();
   /* team manager modal */
@@ -62,7 +63,19 @@ $(function() {
     tagsToRemove: ['script', 'link'],
     removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
   };
-  $('textarea').trumbowyg($trumBowygDict);
+  /* limit alert details textareas to 1500 characters */
+  var maxLength = 1500;
+  $('textarea').trumbowyg($trumBowygDict).on('tbwchange', function(){
+    var length = $(this).val().length;
+    var length = maxLength-length;
+    $('#details-chars').text(length);
+    if($(this).val().length > maxLength){
+      console.log($(this));
+      $(this).css('color','red');
+    }else{
+      $("this").css('color','black');
+    }
+  });
   /* fancy picker for select fields */
   $('#id_relationship').selectpicker();
   $('#id_category').selectpicker();
