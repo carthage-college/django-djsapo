@@ -129,7 +129,7 @@ var $updateAlert = true;
           title="Manage the concern types for this alert"></i>
           {% endif %}
         </h4>
-        {% if perms.team %}
+        {% if perms.admin %}
         <div class="row">
           <div class="col-12">
           <div class="float-left">
@@ -171,24 +171,20 @@ var $updateAlert = true;
         <div class="card bg-light mb-3">
           <div class="card-body">
           <dl class="dl-horizontal">
-          <dt>Have you interacted with the student regarding this concern?</dt>
+          <dt>How did you interact with this student?</dt>
           <dd>
-            {{data.interaction}}
+            {{data.interaction_type}}
           </dd>
-          {% if data.interaction == 'Yes' %}
-            <dt>How did you interact with this student?</dt>
-            <dd>{{data.interaction_type}}</dd>
-            <dt>Date of interaction</dt>
-            <dd>{{data.interaction_date}}</dd>
-            <dt>Details</dt>
-            <dd>
-              <div class="card bg-light">
-                <div class="card-body">
-                  <div class="card-text">{{data.interaction_details|safe}}</div>
-                </div>
+          <dt>Date of interaction</dt>
+          <dd>{{data.interaction_date}}</dd>
+          <dt>Details</dt>
+          <dd>
+            <div class="card bg-light">
+              <div class="card-body">
+                <div class="card-text">{{data.interaction_details|safe}}</div>
               </div>
-            </dd>
-          {% endif %}
+            </div>
+          </dd>
           </dl>
           </div>
         </div>
@@ -332,14 +328,14 @@ var $updateAlert = true;
     <div class="modal-content">
       <form id="commentsForm">
         <div class="header" style="padding:4px 8px 0 16px;">
-          <label for="id_body" style="margin-bottom:0;"><h5>New comment</h5></label>
+          <label for="id_body" style="margin-bottom:0;"><h5>New follow-up</h5></label>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <textarea class="form-control" name="body" id="id_body" rows="8" style="resize: none;height: 150px !important;width:95% !important;"></textarea>
+            <textarea class="form-control" name="body" id="id_body" rows="8" maxlength="1500" style="resize: none;height: 150px !important;width:95% !important;" placeholder="Limit 250 words"></textarea>
             <input type="hidden" name="fid" value="0" id="id_fid">
           </div>
         </div>

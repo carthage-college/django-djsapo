@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.db import models, connection
+from django.urls import reverse
 from django.contrib.auth.models import Group, User
 from django.core.validators import FileExtensionValidator
 from django.db.models.signals import post_save
@@ -51,9 +52,13 @@ INTERACTION_CHOICES = (
         'I have communicated my concern to the student, but they did not agree it was an issue.',
         "I have communicated my concern to the student, but they did not agree it was an issue."
     ),
-    ('No but...', "No but..."),
+    (
+        'I have not communicated my concern to the student, for reasons specified below.',
+        "I have not communicated my concern to the student, for reasons specified below."
+    ),
     ('Other', "Other")
 )
+
 
 def limit_category():
     ids = [
@@ -146,13 +151,13 @@ class Alert(models.Model):
         ('Duplicate concern', "Duplicate concern"),
         ('Unresponsive [term end]', "Unresponsive [term end]"),
     )
-    STATUS_CHOICES = (
+    STATUS_CHOICES = [
         ('New', "New"),
         ('Assigned', "Assigned"),
         ('In progress', "In progress"),
         ('Closure suggested', "Closure suggested"),
         ('Closed', "Closed"),
-    )
+    ]
     RELATIONSHIP_CHOICES = (
         ('Academic Support Services', "Academic Support Services"),
         ('Admissions', "Admissions"),
@@ -219,7 +224,8 @@ class Alert(models.Model):
         help_text = """
             Please share any additional information you have about this concern
             that can help us in our efforts to connect with the student and
-            meet their needs.
+            meet their needs. Please focus on observed behaviors and statements,
+            avoiding speculation. Limit: 250 words.
         """,
     )
     interaction_type = models.CharField(
@@ -234,7 +240,7 @@ class Alert(models.Model):
         "Interaction details",
         help_text = """
             Please share any additional information about your interaction
-            with the student.
+            with the student. Limit: 250 words.
         """
     )
     outcome = models.CharField(
@@ -281,7 +287,9 @@ class Alert(models.Model):
         return self.notes.latest('created_at')
 
     def get_absolute_url(self):
-        return ('alert_detail', [str(self.id)])
+        return 'https://{}{}'.format(
+            settings.SERVER_URL, reverse('detail', args=(self.id,))
+        )
 
     def permissions(self, user):
         if user.is_superuser:

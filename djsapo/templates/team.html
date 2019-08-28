@@ -1,6 +1,6 @@
 {% extends "datatables.html" %}
 {% block title %}
-  Team Manager &mdash; Center for Student Success &mdash;
+  Team Management &mdash; Center for Student Success &mdash;
   Carthage College
 {% endblock %}
 {% block extra_javascript %}
@@ -14,10 +14,10 @@ var $aid = "{{data.id}}";
 <div class="container mb-4">
   <div class="row mb-3">
     <div class="col-lg-9">
-      <h2>Team Manager</h2>
+      <h2>Team Management</h2>
       <p>
         To add someone to the team, drag them from the left or right table
-        and drop them to the middle. To remove somone, click on the red X icon.
+        and drop them in the middle. To remove somone, click on the red X icon.
       </p>
     </div>
     <!-- /.col-lg-8 -->
@@ -64,7 +64,7 @@ var $aid = "{{data.id}}";
     </div>
     <!-- /.col-lg-4 -->
     <div class="col-lg-4">
-      <h5>Assigned Team Members</h5>
+      <h5 style="margin-bottom:46px;text-align:center;">Assigned Team Members</h5>
       <div class="table-responsive">
         <table class="table table-bordered table-hover display compact data-table">
           <thead>

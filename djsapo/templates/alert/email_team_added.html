@@ -1,11 +1,17 @@
 {% load livewhale_api %}
 {% autoescape off %}
-<h4>Greetings, {{user.first_name|capfirst}}</h4>
-<div>
-  {% get_lw_content as team blurbs 2839 %}
-  {{team.body}}
-</div>
+<h4>Hello, {{data.user.first_name|capfirst}},</h4>
 <p>
-  <a href="{% url 'detail' alert.id %}">View the details</a>
+  The Center for Student Success has added you as a member of the
+  intervention team for a concern submitted regarding
+  {{data.alert.student.first_name}} {{data.alert.student.last_name}}.
+</p>
+<p>
+  Please review the full details of this submission and share any
+  follow-up information related to the concern by
+  <a href="{{data.alert.get_absolute_url}}">here</a>.
+</p>
+<p>
+  This is an automated message from the Student Outreach System. Please do not reply to this email. 
 </p>
 {% endautoescape %}

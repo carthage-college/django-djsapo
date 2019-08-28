@@ -218,6 +218,7 @@ SERVER_MAIL=''
 # app settings
 CSS_GROUP='CenterForStudentSuccess'
 CSS_EMAIL=''
+CSS_FROM_EMAIL=''
 REQUIRED_ATTRIBUTE = True
 COURSE_API_URL = 'https://www.carthage.edu/academics/schedule/R/{}/{}/json/'.format(
     TERM, YEAR
