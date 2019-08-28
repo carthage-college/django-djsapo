@@ -185,10 +185,10 @@ $(function() {
               placeholder="{{form.description.help_text}}"
               >{{form.description.value|default_if_none:''}}</textarea>
               <small>
-                No more than 250 words.<br>
+                <span id="details-chars">1500</span> characters remaining
               </small>
               <small class="text-danger">
-                {{form.description.errors|join:", "}}
+                  <br>{{form.description.errors|join:", "}}
               </small>
             </div>
           </div>
