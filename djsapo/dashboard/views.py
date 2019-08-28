@@ -54,27 +54,41 @@ def home(request):
     # CSS or superuser can access all objects
     if css:
         if status:
-            my_alerts = Alert.objects.filter(status=status)
+            if status == 'All but closed':
+                my_alerts = Alert.objects.exclude(status='Closed')
+            else:
+                my_alerts = Alert.objects.filter(status=status)
         else:
             my_alerts = Alert.objects.all()
         alerts = [a for a in my_alerts]
     else:
         if status:
-            my_alerts = Alert.objects.filter(created_by=user).filter(status=status)
+            if status == 'All but closed':
+                my_alerts = Alert.objects.filter(created_by=user).exclude(status='Closed')
+            else:
+                my_alerts = Alert.objects.filter(created_by=user).filter(status=status)
         else:
             my_alerts = Alert.objects.filter(created_by=user)
+
         teams = Member.objects.filter(user__username=user.username)
         if status:
-            team_alerts = [member.alert for member in teams if member.alert.status == status]
+            if status == 'All but closed':
+                team_alerts = [member.alert for member in teams if member.alert.status != 'Closed']
+            else:
+                team_alerts = [member.alert for member in teams if member.alert.status == status]
         else:
             team_alerts = [member.alert for member in teams]
         alerts = sorted(
             chain(my_alerts, team_alerts), key=attrgetter('created_at')
         )
 
+    status_choices = Alert.STATUS_CHOICES.copy()
+    status_choices.append(('All but closed',"All but closed"))
+    status_choices.append(('',"All"))
+
     return render(
         request, 'list.html', {
-            'alerts':alerts,'css':css,'status_choices':Alert.STATUS_CHOICES,
+            'alerts':alerts,'css':css,'status_choices':status_choices,
             'status':status
         }
     )
@@ -290,8 +304,8 @@ def manager(request):
                     if mail:
                         send_mail(
                             request, [member.user.email],
-                            "[Student Outreach System] You have been added to the team",
-                            request.user.email, 'alert/email_team_added.html',
+                            "Assignment to Intervention Team",
+                            settings.CSS_FROM_EMAIL, 'alert/email_team_added.html',
                             {'alert':alert,'user':member.user}, [settings.ADMINS[0][1],]
                         )
 

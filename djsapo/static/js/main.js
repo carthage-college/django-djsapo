@@ -47,6 +47,7 @@ $(function() {
   /* datepicker */
   $('#id_interaction_date').datepicker({
     firstDay:1,
+    maxDate: new Date,
     changeFirstDay:false,
     dateFormat:'yy-mm-dd',
     buttonImage:'//www.carthage.edu/themes/shared/img/ico/calendar.gif',
