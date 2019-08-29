@@ -252,6 +252,7 @@ def manager(request):
     manage object relationships for an alert and for alert values themselves
     """
     user = request.user
+    data =  {'msg': "Success", 'id':''}
     if request.is_ajax() and request.method == 'POST':
         post = request.POST
         # simple error handling to prevent malicious values
@@ -262,7 +263,6 @@ def manager(request):
             raise Http404("Invalid alert or object ID")
         mod = post.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
-        data =  {'msg': "Success", 'id':''}
         action = post.get('action')
         if mod == "category":
             obj = get_object_or_404(GenericChoice, pk=oid)

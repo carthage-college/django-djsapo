@@ -185,7 +185,7 @@ $(function() {
         },
         success: function(data) {
           spinner.stop(target);
-          $.growlUI("Concern Type", "Added");
+          $.growlUI("Success", "Data saved");
           return true;
         },
         error: function(data) {
@@ -206,7 +206,7 @@ $(function() {
         },
         success: function(data) {
           spinner.stop(target);
-          $.growlUI("Concern Type", "Removed");
+          $.growlUI("Success", "Data saved");
           return true;
         },
         error: function(data) {
@@ -237,7 +237,7 @@ $(function() {
         $('#member_'+$mid).addClass('strike');
         $('#del_'+$uid).addClass('strike');
         $('#member_'+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team">'+$ln + ', '+ $fn + '</span>');
-        $.growlUI("Team Member", "Removed");
+        $.growlUI("Success", "Data saved");
       }
     });
     return false;

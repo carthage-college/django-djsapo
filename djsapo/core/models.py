@@ -351,7 +351,7 @@ class Member(models.Model):
 class Annotation(models.Model):
 
     alert = models.ForeignKey(
-        Alert, related_name='notes', on_delete=models.PROTECT
+        Alert, related_name='notes', on_delete=models.CASCADE
     )
     created_by = models.ForeignKey(
         User, verbose_name="Created by",
