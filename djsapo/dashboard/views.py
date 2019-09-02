@@ -100,7 +100,7 @@ def home(request):
 )
 def detail(request, aid):
     alert = get_object_or_404(Alert, pk=aid)
-    history = Alert.objects.filter(student=alert.student)
+    history = Alert.objects.filter(student=alert.student).exclude(pk=aid)
     user = request.user
     perms = alert.permissions(user)
     if not perms['view']:
