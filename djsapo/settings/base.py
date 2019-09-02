@@ -307,6 +307,11 @@ LOGGING = {
             'propagate': True,
             'level':'DEBUG',
         },
+        'djtools': {
+            'handlers':['debug_logfile'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
         'error_logger': {
             'handlers': ['error_logfile'],
             'level': 'ERROR'
