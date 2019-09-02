@@ -185,7 +185,7 @@ $(function() {
               placeholder="{{form.description.help_text}}"
               >{{form.description.value|default_if_none:''}}</textarea>
               <small>
-                <span id="details-chars">1500</span> characters remaining
+                <span id="description">250</span> words remaining
               </small>
               <small class="text-danger">
                   <br>{{form.description.errors|join:", "}}
@@ -223,6 +223,12 @@ $(function() {
               >{{form.interaction_details.value|default_if_none:''}}</textarea>
               <small class="text-danger">
                 {{form.interaction_details.errors|join:", "}}
+              </small>
+              <small>
+                <span id="interaction_details">250</span> words remaining
+              </small>
+              <small class="text-danger">
+                  <br>{{form.description.errors|join:", "}}
               </small>
             </div>
             <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12">

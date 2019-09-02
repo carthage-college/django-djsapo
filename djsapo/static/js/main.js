@@ -58,23 +58,31 @@ $(function() {
   /* wysiwyg for textarea fields */
   var $trumBowygDict = {
     btns: [
-      ['formatting'], ['strong', 'em', 'del'],
+      ['formatting'], ['strong', 'em', 'del'], ['link'],
       ['unorderedList', 'orderedList'], ['horizontalRule'], ['viewHTML'],
     ],
-    tagsToRemove: ['script', 'link'],
+    tagsToRemove: ['script', 'link'], urlProtocol: true,
     removeformatPasted: true, semantic: true, autogrow: true, resetCss: true
   };
-  /* limit alert details textareas to 1500 characters */
-  var maxLength = 1500;
-  $('textarea').trumbowyg($trumBowygDict).on('tbwchange', function(){
-    var length = $(this).val().length;
-    var length = maxLength-length;
-    $('#details-chars').text(length);
-    if($(this).val().length > maxLength){
-      console.log($(this));
-      $(this).css('color','red');
-    }else{
-      $("this").css('color','black');
+  /* limit alert details textareas to 250 words */
+  var maxWords = 250;
+  var maxAlert = false;
+  $('textarea').trumbowyg($trumBowygDict).on('tbwchange', function(e){
+    var $this, wordcount;
+    $this = $(this);
+    //wordcount = $this.val().split(/\b[\s,\.-:;]*/).length;
+    wordcount = $this.val().split(" ").length;
+    //var length = maxLength - $(this).val().length;
+    $('#' + $this.attr('name')).text(maxWords - wordcount);
+    if (wordcount > maxWords && maxAlert == false) {
+      alert('Please limit your text\nto fewer than 250 words')
+      maxAlert = true;
+      $('#' + $this.attr('name')).parent().css({'color':'red','font-weight':'bold'});
+      //$(this).trumbowyg('disable');
+      //e.preventDefault();
+    }
+    if (wordcount < maxWords) {
+      $('#' + $this.attr('name')).parent().css({'color':'#212529','font-weight':'normal'});
     }
   });
   /* fancy picker for select fields */
