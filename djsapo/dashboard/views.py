@@ -394,7 +394,8 @@ def team_manager(request, aid):
         except:
             l = LDAPManager()
             luser = l.search(vitals.adv_id)
-            advisor = l.dj_create(luser)
+            if luser:
+                advisor = l.dj_create(luser)
     if advisor and advisor not in matrix and advisor not in team:
         matrix.append(advisor)
     # obtain all users who are a member of "Coaches" group
