@@ -164,7 +164,7 @@ class Alert(models.Model):
         ('Aspire', "Aspire"),
         ('Athletics', "Athletics"),
         ('Course Instructor', "Course Instructor"),
-        ('Faculty Advisor', "Faculty Advisor"),
+        ('Faculty Advising', "Faculty Advising"),
         ('Health and Counseling', "Health and Counseling"),
         ('Residential Life', "Residential Life"),
         ('Student', "Student"),
