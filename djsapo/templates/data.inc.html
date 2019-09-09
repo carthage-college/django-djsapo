@@ -18,6 +18,7 @@
         <th>Created</th>
         <th>Relationship</th>
         <th>Category</th>
+        {% if css %}<th>Case Manager</th>{% endif %}
         <th>Status</th>
         <th>Latest Follow-Up</th>
         {% if user.is_superuser %}
@@ -50,6 +51,11 @@
             {{c}}{% if not forloop.last %}, {% endif %}
           {% endfor %}
         </td>
+        {% if css %}
+        <td>
+            {% for m in a.team.all %}{% if m.user.profile.case_manager %}{{m}}{% if not forloop.last %}<br>{% endif %}{% endif %}{% endfor %}
+        </td>
+        {% endif %}
         <td nowrap{% if a.status == "Closure suggested" %} class="bg-warning"{% endif %}>{{a.status}}</td>
         <td class="text-center" nowrap>{{a.latest_note.created_at|date:'Y-m-d'}}</td>
         {% if user.is_superuser %}
@@ -85,6 +91,7 @@
         <th>Created</th>
         <th>Relationship</th>
         <th>Category</th>
+        {% if css %}<th>Case Manager</th>{% endif %}
         <th>Status</th>
         <th>Latest Follow-Up</th>
         {% if user.is_superuser %}

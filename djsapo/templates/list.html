@@ -12,7 +12,7 @@
             <select name="status" class="form-control" id="students-toggle">
               <option value="">--select--</option>
               {% for value, text in status_choices %}
-              <option value="{{value}}"{% if status == value %} selected{% endif %}>{{text}}</option>
+              <option value="{{value}}"{% if status == value %} selected{% else %}{% if not status and value == 'All but closed' %}selected {% endif %}{% endif %}>{{text}}</option>
               {% endfor %}
             </select>
           </div>

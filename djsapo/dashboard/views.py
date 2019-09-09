@@ -56,24 +56,30 @@ def home(request):
         if status:
             if status == 'All but closed':
                 my_alerts = Alert.objects.exclude(status='Closed')
+            elif status == 'All':
+                my_alerts = Alert.objects.all()
             else:
                 my_alerts = Alert.objects.filter(status=status)
         else:
-            my_alerts = Alert.objects.all()
+            my_alerts = Alert.objects.exclude(status='Closed')
         alerts = [a for a in my_alerts]
     else:
         if status:
             if status == 'All but closed':
                 my_alerts = Alert.objects.filter(created_by=user).exclude(status='Closed')
+            elif status == 'All':
+                my_alerts = Alert.objects.filter(created_by=user)
             else:
                 my_alerts = Alert.objects.filter(created_by=user).filter(status=status)
         else:
-            my_alerts = Alert.objects.filter(created_by=user)
+            my_alerts = Alert.objects.filter(created_by=user).exclude(status='Closed')
 
         teams = Member.objects.filter(user__username=user.username)
         if status:
             if status == 'All but closed':
                 team_alerts = [member.alert for member in teams if member.alert.status != 'Closed']
+            elif status == 'All':
+                team_alerts = [member.alert for member in teams]
             else:
                 team_alerts = [member.alert for member in teams if member.alert.status == status]
         else:
@@ -84,7 +90,7 @@ def home(request):
 
     status_choices = Alert.STATUS_CHOICES.copy()
     status_choices.append(('All but closed',"All but closed"))
-    status_choices.append(('',"All"))
+    status_choices.append(('All',"All"))
 
     return render(
         request, 'list.html', {

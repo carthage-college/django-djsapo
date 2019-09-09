@@ -126,7 +126,7 @@ var $updateAlert = true;
         <h4>Type of concern
           {% if perms.team %}
           <i class="fa fa-tags green blue-tooltip" aria-hidden="true" data-toggle="tooltip" data-placement="top"
-          title="Manage the concern types for this alert"></i>
+          title="Manage concern types"></i>
           {% endif %}
         </h4>
         {% if perms.admin %}
@@ -246,7 +246,7 @@ var $updateAlert = true;
           {% if perms.admin %}
           <a href="{% url 'team_manager' data.id %}">
             <i class="fa fa-users green blue-tooltip" data-toggle="tooltip"
-              data-placement="top" title="Add Team Member to this Alert"
+              data-placement="top" title="Add team members"
               aria-hidden="true"></i></a>
           {% endif %}
         </h4>
@@ -286,7 +286,7 @@ var $updateAlert = true;
           Follow-up
           <a href="" data-toggle="modal" data-target="#commentsModal">
             <i class="fa fa-comments-o green blue-tooltip" data-toggle="tooltip"
-              data-placement="top" title="Submit a comment" aria-hidden="true"></i></a>
+              data-placement="top" title="Submit follow-up notes" aria-hidden="true"></i></a>
         </h4>
         {% get_lw_content as intro blurbs 2824 %}
         <div id="lw_success">{{intro.body|safe}}</div>
