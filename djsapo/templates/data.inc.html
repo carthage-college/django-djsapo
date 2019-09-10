@@ -53,7 +53,7 @@
         </td>
         {% if css %}
         <td>
-            {% for m in a.team.all %}{% if m.user.profile.case_manager %}{{m}}{% if not forloop.last %}<br>{% endif %}{% endif %}{% endfor %}
+            {% for m in a.team.all %}{% if m.status and m.user.profile.case_manager %}{{m}}{% if not forloop.last %}<br>{% endif %}{% endif %}{% endfor %}
         </td>
         {% endif %}
         <td nowrap{% if a.status == "Closure suggested" %} class="bg-warning"{% endif %}>{{a.status}}</td>

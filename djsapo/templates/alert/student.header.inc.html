@@ -1,13 +1,15 @@
 <div class="container mb-4" id="alert-container">
-<div class="row">
+<div class="row row-no-gutters">
   <div class="col-lg-4 col-md-4 col-sm-12">
-    <div class="btn btn-block rebecca">
-        <a href="{% url 'detail' data.id %}" class="text-white">
-          {% if return %}<i class="fa fa-arrow-left blue-tooltip" aria-hidden="true"
-          data-toggle="tooltip" data-placement="top"
-          title="Return to the detailed view for this  alert"></i>{% endif %}
-          {{data.student.last_name}}, {{data.student.first_name}}</a>
+    <div class="btn btn-block rebecca float-left col-lg-10 col-md-10 col-sm-10 col-xs-8">
+      <a href="{% url 'detail' data.id %}" class="text-white">
+        {% if return %}<i class="fa fa-arrow-left blue-tooltip" aria-hidden="true"
+        data-toggle="tooltip" data-placement="top"
+        title="Return to the detailed view for this  alert"></i>{% endif %}
+        {{data.student.last_name}}, {{data.student.first_name}}</a>
     </div>
+    <a href="#" id="print" class="noprint float-right">
+      <i class="fa fa-print fa-2x green blue-tooltip float-right" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="" data-original-title="Print to PDF or paper"></i></a>
   </div>
   <div class="col-lg-4 col-md-4 col-sm-12">
     {% if perms.manager and data.status != "Closure suggested" and data.status != "Closed" and not perms.admin %}

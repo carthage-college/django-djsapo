@@ -34,7 +34,7 @@ def _student(alert):
     cursor = connection.cursor()
     student = cursor.execute(VITALS(cid=alert.student.id)).fetchone()
     sports = []
-    if student:
+    if student and student.sports:
         athletics = student.sports.split(',')
         for s in SPORTS:
             for a in athletics:
