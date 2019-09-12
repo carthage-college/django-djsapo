@@ -110,7 +110,7 @@ def detail(request, aid):
     user = request.user
     perms = alert.permissions(user)
     if not perms['view']:
-        raise Http404("You do not have permission to view that alert")
+        return HttpResponseRedirect(reverse_lazy('access_denied'))
     else:
         student = _student(alert)
 
