@@ -150,6 +150,7 @@ class Alert(models.Model):
         ('Resolved', "Resolved"),
         ('Duplicate concern', "Duplicate concern"),
         ('Unresponsive [term end]', "Unresponsive [term end]"),
+        ('Withdrew', "Withdrew"),
     )
     STATUS_CHOICES = [
         ('New', "New"),
