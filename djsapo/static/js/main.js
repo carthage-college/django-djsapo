@@ -172,27 +172,33 @@ $(function() {
     $('#id_body').trumbowyg($trumBowygDict);
   });
   /* function to update a name/value pair for models */
-  $('.set-val').on('change', function() {
+  $('.set-val').on('change', function(e) {
+    e.preventDefault();
+
     var $dis = $(this);
     var $name = $dis.attr('name');
     var $value = $dis.val();
+    var $data = {'aid':$aid,'value':$value,'name':$name,'mod':'alert','oid':0};
+    console.log('data name = ' + $data['name']);
+    console.log('data value = ' + $data['value']);
     $.ajax({
       type: 'POST',
       url: $manager,
-      data: {'aid':$aid,'value':$value,'name':$name,'mod':'alert','oid':0},
+      data: $data,
       cache: false,
       beforeSend: function(){
         spinner.spin(target);
       },
       success: function(data) {
         spinner.stop(target);
-        if (data['msg'] == 'Success') {
-          $.growlUI('Success', "Data saved.");
-        } else {
-          $.growlUI('Error', data);
-        }
+        $.growlUI('Success', "Data saved.");
+      },
+      error: function(data) {
+        spinner.stop(target);
+        $.growlUI('Error', data);
       }
     });
+    return false;
   });
   $(".alert-status").click(function () {
     $.ajax({

@@ -64,8 +64,9 @@ var $updateAlert = true;
           <dt>Relationship with student</dt>
           <dd>
           {% if perms.admin %}
-            <select name="relationship" class="list-group-item-success selectpicker set-val"
-            data-width="200px" data-style="list-group-item-success text-dark"
+            <select name="relationship" data-width="200px"
+            class="list-group-item-success selectpicker set-val"
+            data-style="list-group-item-success text-dark"
             title="Choose relationship&hellip;">
             {% for r in data.RELATIONSHIP_CHOICES %}
             <option value="{{r.0}}"{% if r.0 == data.relationship %} selected="selected"{% endif %}>

@@ -362,9 +362,12 @@ def manager(request):
                 value = post.get('value')
                 setattr(alert, name, value)
                 alert.save()
-                data['msg'] = '<div class="card-text" id="oid_{}_{}">{}</div>'.format(
-                    name, aid, value
-                )
+                if name in ['description','interaction_details']:
+                    data['msg'] = '<div class="card-text" id="oid_{}_{}">{}</div>'.format(
+                        name, aid, value
+                    )
+                else:
+                    data['msg'] = 'Success'
         else:
             data['msg'] = "Invalid Data Model"
     else:
