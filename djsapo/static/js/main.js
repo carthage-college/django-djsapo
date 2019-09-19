@@ -108,16 +108,27 @@ $(function() {
           // Add response in Modal body
           $('#id_oid').val(data['id']);
           $('#id_fld').val($fld);
-          $('#id_mod').val($mod);
           $('#id_body').val(data['msg']);
+          $('#textModalHeader').text('Update ' + header);
           // Display Modal
           $('#id_body').trumbowyg('destroy');
-          $('#textModalHeader').text('Update ' + header);
           $('#textModal').modal('show');
           $('#id_body').trumbowyg($trumBowygDict);
         }
       });
+    } else {
+        if ($mod == 'comment') {
+          $('#id_oid').val(0);
+          $('#id_fld').val('');
+          $('#id_body').val('');
+          $('#textModalHeader').text('New ' + header);
+          // Display Modal
+          $('#id_body').trumbowyg('destroy');
+          $('#textModal').modal('show');
+          $('#id_body').trumbowyg($trumBowygDict);
+        }
     }
+    $('#id_mod').val($mod);
   });
   $('#textModal').submit(function(e){
     e.preventDefault();

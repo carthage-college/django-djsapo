@@ -168,7 +168,7 @@ var $updateAlert = true;
             <div class="float-right">
               <a href="" data-toggle="modal" data-target="#textModal"
                 data-oid="{{data.id}}" data-mod="alert" data-fld="description"
-                class="text-update">
+                class="text-update ml-1">
                 <i class="fa fa-pencil-square-o green blue-toolsip"
                 data-placement="top" title="Update this text" aria-hidden="true"></i></a>
             </div>
@@ -194,7 +194,7 @@ var $updateAlert = true;
                 <div class="float-right">
                   <a href="" data-toggle="modal" data-target="#textModal"
                     data-oid="{{data.id}}" data-mod="alert" data-fld="interaction_details"
-                    class="text-update">
+                    class="text-update ml-1">
                     <i class="fa fa-pencil-square-o green blue-toolsip"
                     data-placement="top" title="Update this text" aria-hidden="true"></i></a>
                 </div>
@@ -303,7 +303,8 @@ var $updateAlert = true;
         {% endif %}
         <h4>
           Follow-up
-          <a href="" data-toggle="modal" data-target="#textModal">
+          <a href="" data-toggle="modal" data-target="#textModal"
+            data-mod="comment" class="text-update">
             <i class="fa fa-comments-o green blue-tooltip" data-toggle="tooltip"
               data-placement="top" title="Submit follow-up notes" aria-hidden="true"></i></a>
         </h4>
