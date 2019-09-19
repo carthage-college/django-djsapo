@@ -37,9 +37,6 @@ $(function() {
 
   /* bootstrap tool tip */
   $('[data-toggle="tooltip"]').tooltip();
-  /* team manager modal */
-  $('#teamModalOpen').on('click',function(){
-  });
   /* print page */
   $('#print').click(function() {
     window.print();
@@ -91,42 +88,58 @@ $(function() {
   $('#students-toggle').change(function() {
     this.form.submit();
   });
-  /* comments form */
-  $(document).on('click','.comment-update', function (e) {
+  /* modal form for textarea data */
+  $(document).on('click','.text-update', function (e) {
     var $dis = $(this);
-    var $oid = $dis.attr('data-fid');
-    if ($oid) {
+    var $oid = $dis.attr('data-oid');
+    var $mod = $dis.attr('data-mod');
+    var $fld = $dis.attr('data-fld');
+    if ($mod == 'comment') {
+        header = 'follow-up';
+    } else {
+        header = $mod.replace(/_/g, ' ');;
+    }
+    if ($oid && $mod) {
       $.ajax({
         url: $manager,
         type: 'post',
-        data: {'aid':$aid,'action':'fetch','mod':'comment','oid':$oid},
+        data: {'aid':$aid,'action':'fetch','mod':$mod,'oid':$oid,'name':$fld},
         success: function(data){
           // Add response in Modal body
-          $('#id_fid').val(data['id']);
+          $('#id_oid').val(data['id']);
+          $('#id_fld').val($fld);
+          $('#id_mod').val($mod);
           $('#id_body').val(data['msg']);
           // Display Modal
           $('#id_body').trumbowyg('destroy');
-          $('#commentsForm').modal('show');
+          $('#textModalHeader').text('Update ' + header);
+          $('#textModal').modal('show');
           $('#id_body').trumbowyg($trumBowygDict);
         }
       });
     }
   });
-  $('#commentsForm').submit(function(e){
+  $('#textModal').submit(function(e){
     e.preventDefault();
     var $body = $('#id_body').val();
-    var $oid = $('#id_fid').val();
+    var $oid = $('#id_oid').val();
+    var $mod = $('#id_mod').val();
+    var $fld = $('#id_fld').val();
     $.ajax({
       type: 'POST',
       url: $manager,
-      data: {'aid':$aid,'body':$body,'mod':'comment','oid':$oid},
+      data: {'aid':$aid,'value':$body,'mod':$mod,'oid':$oid,'name':$fld},
       cache: false,
       beforeSend: function(){
-        $('#commentsModal').modal('hide');
+        $('#textModal').modal('hide');
       },
       success: function(data){
         if (data['id']) {
-          $('#fid_' + data['id']).replaceWith(data['msg']);
+          $id = ''
+          if ($fld) {
+            $id = $fld + '_'
+          }
+          $('#oid_' + $id + data['id']).replaceWith(data['msg']);
         } else {
           $('#comments-list').prepend(data['msg']);
         }
@@ -135,16 +148,17 @@ $(function() {
       },
       error: function(data){
         console.log(data);
-        $.growlUI("Comment Form", "Error");
+        $.growlUI($mod + " Form", "Error");
       }
     });
     return false;
   });
-  $('#commentsModal').on('shown.bs.modal', function () {
+  $('#textModal').on('shown.bs.modal', function () {
     $('#id_body').focus();
   })
-  $('#commentsModal').on('hidden.bs.modal', function () {
+  $('#textModal').on('hidden.bs.modal', function () {
     $('#id_body').trumbowyg('destroy');
+    $('#id_body').trumbowyg($trumBowygDict);
   });
   /* function to update a name/value pair for models */
   $('.set-val').on('change', function() {
@@ -352,8 +366,6 @@ $(function() {
           $('#team-members tr .dataTables_empty').hide();
           $data = evt['item']['firstElementChild']['dataset'];
           $uid = $data['uid'];
-          console.log($data);
-          console.log('$uid = ' + $uid);
           $lastName = $data['last_name'];
           $firstName = $data['first_name'];
           $uidDom = $('[data-uid="' + $uid + '"]');

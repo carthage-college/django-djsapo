@@ -266,7 +266,7 @@ def manager(request):
             oid = int(post.get('oid'))
             aid = int(post.get('aid'))
         except:
-            raise Http404("Invalid alert or object ID")
+            raise Http404("Invalid alert or object ID: '{}' '{}'".format(post.get('oid'),post.get('aid')))
         mod = post.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
         action = post.get('action')
@@ -326,20 +326,18 @@ def manager(request):
                     data['msg'] = "User not found"
         elif mod == "comment":
             note = None
-            body = post.get('body')
+            body = post.get('value')
             t = loader.get_template('alert/annotation.inc.html')
             if oid == 0:
                 if not alert.notes.all():
                     alert.status='In progress'
                     alert.save()
                 note = Annotation.objects.create(
-                    alert=alert, created_by=user, updated_by=user,
-                    body=post.get('body'), tags="Comments"
+                    alert=alert, created_by=user, updated_by=user, body=body,
+                    tags="Comments"
                 )
                 alert.notes.add(note)
-                context = {
-                    'obj':note,'bgcolor':'bg-warning'
-                }
+                context = {'obj':note,'bgcolor':'bg-warning'}
                 data['msg'] = t.render(context, request)
             else:
                 try:
@@ -350,18 +348,23 @@ def manager(request):
                         note.body=body
                         note.updated_by = user
                         note.save()
-                        context = {
-                            'obj':note,'bgcolor':'bg-warning'
-                        }
+                        context = {'obj':note,'bgcolor':'bg-warning'}
                         data['msg'] = t.render(context, request)
                     data['id'] = note.id
                 except:
                     data['msg'] = "Follow-up not found"
         elif mod == "alert":
-            value = post.get('value')
             name = post.get('name')
-            setattr(alert, name, value)
-            alert.save()
+            data['id'] = aid
+            if action == "fetch":
+                data['msg'] = getattr(alert, name)
+            else:
+                value = post.get('value')
+                setattr(alert, name, value)
+                alert.save()
+                data['msg'] = '<div class="card-text" id="oid_{}_{}">{}</div>'.format(
+                    name, aid, value
+                )
         else:
             data['msg'] = "Invalid Data Model"
     else:

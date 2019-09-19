@@ -164,7 +164,16 @@ var $updateAlert = true;
         <h4>Details about this concern</h4>
         <div class="card bg-light mb-3">
           <div class="card-body">
-            <div class="card-text">{{data.description|safe}}</div>
+            {% if perms.admin %}
+            <div class="float-right">
+              <a href="" data-toggle="modal" data-target="#textModal"
+                data-oid="{{data.id}}" data-mod="alert" data-fld="description"
+                class="text-update">
+                <i class="fa fa-pencil-square-o green blue-toolsip"
+                data-placement="top" title="Update this text" aria-hidden="true"></i></a>
+            </div>
+            {% endif %}
+            <div class="card-text" id="oid_description_{{data.id}}">{{data.description|safe}}</div>
           </div>
         </div>
         <h4>Interactions</h4>
@@ -179,14 +188,24 @@ var $updateAlert = true;
           <dd>{{data.interaction_date}}</dd>
           <dt>Details</dt>
           <dd>
-            <div class="card bg-light">
+            <div class="card bg-light float-left">
               <div class="card-body">
-                <div class="card-text">{{data.interaction_details|safe}}</div>
+                {% if perms.admin %}
+                <div class="float-right">
+                  <a href="" data-toggle="modal" data-target="#textModal"
+                    data-oid="{{data.id}}" data-mod="alert" data-fld="interaction_details"
+                    class="text-update">
+                    <i class="fa fa-pencil-square-o green blue-toolsip"
+                    data-placement="top" title="Update this text" aria-hidden="true"></i></a>
+                </div>
+                {% endif %}
+                <div class="card-text" id="oid_interaction_details_{{data.id}}">{{data.interaction_details|safe}}</div>
               </div>
             </div>
           </dd>
           </dl>
           </div>
+          <!-- /.card-body -->
         </div>
         <h4>Documents <i class="fa fa-floppy-o green" data-toggle="tooltip"
            data-placement="top" title="All documents uploaded for this concern"
@@ -284,7 +303,7 @@ var $updateAlert = true;
         {% endif %}
         <h4>
           Follow-up
-          <a href="" data-toggle="modal" data-target="#commentsModal">
+          <a href="" data-toggle="modal" data-target="#textModal">
             <i class="fa fa-comments-o green blue-tooltip" data-toggle="tooltip"
               data-placement="top" title="Submit follow-up notes" aria-hidden="true"></i></a>
         </h4>
@@ -320,15 +339,17 @@ var $updateAlert = true;
 <!-- /.row -->
 </div>
 <!-- /.container -->
-<!-- #commentsModal -->
-<div class="modal fade" id="commentsModal" tabindex="-1" aria-hidden="true"
+<!-- #textModal -->
+<div class="modal fade" id="textModal" tabindex="-1" aria-hidden="true"
   data-backdrop="static" data-keyboard="false" role="dialog"
-  aria-labelledby="commentsModalLabel">
+  aria-labelledby="textModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form id="commentsForm">
         <div class="header" style="padding:4px 8px 0 16px;">
-          <label for="id_body" style="margin-bottom:0;"><h5>New follow-up</h5></label>
+          <label for="id_body" style="margin-bottom:0;">
+              <h5 id="textModalHeader">New follow-up</h5>
+          </label>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -336,7 +357,9 @@ var $updateAlert = true;
         <div class="modal-body">
           <div class="form-group">
             <textarea class="form-control" name="body" id="id_body" rows="8" maxlength="1500" style="resize: none;height: 150px !important;width:95% !important;" placeholder="Limit: 250 words"></textarea>
-            <input type="hidden" name="fid" value="0" id="id_fid">
+            <input type="hidden" name="oid" value="0" id="id_oid">
+            <input type="hidden" name="mod" value="comment" id="id_mod">
+            <input type="hidden" name="fld" value="" id="id_fld">
           </div>
         </div>
         <div class="modal-footer">
@@ -347,31 +370,5 @@ var $updateAlert = true;
     </div>
   </div>
 </div>
-<!-- /#commentsModal -->
-<!-- #teamModal -->
-<div class="modal fade" id="teamModal" tabindex="-1" role="dialog" aria-labelledby="teamModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="header" style="padding:4px 8px 0 16px;">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        <h5>Add team members to this alert</h5>
-      </div>
-      <div class="modal-body">
-        <form id="teamForm">
-        <div class="form-group">
-          <textarea class="form-control" name="body" id="id_body" rows="8" style="resize: none;height: 150px !important;width:95% !important;"></textarea>
-        </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <input type="submit" class="btn btn-success" id="submit" value="Submit">
-      </div>
-    </div>
-  </div>
-</div>
-<div id="id_bounce">&nbsp;</div>
-<!-- /#teamModal -->
+<!-- /#textModal -->
 {% endblock content %}
