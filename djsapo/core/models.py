@@ -41,20 +41,20 @@ INTERACTION_CHOICES = (
         "I have reached out to the student and am awaiting a response."
     ),
     (
-        'I have reached out to the student several times, but was unsuccessful and/or did not get a response.',
-        "I have reached out to the student several times, but was unsuccessful and/or did not get a response."
+        'I have reached out to the student several times, but I have not received a response.',
+        "I have reached out to the student several times, but I have not received a response."
     ),
     (
-        'The student has acknowledged the issue, and next steps have been discussed.',
-        "The student has acknowledged the issue, and next steps have been discussed."
+        'The student has acknowledged the issue and next steps have been discussed.',
+        "The student has acknowledged the issue and next steps have been discussed."
     ),
     (
         'I have communicated my concern to the student, but they did not agree it was an issue.',
         "I have communicated my concern to the student, but they did not agree it was an issue."
     ),
     (
-        'I have not communicated my concern to the student, for reasons specified below.',
-        "I have not communicated my concern to the student, for reasons specified below."
+        'I have not communicated my concern to the student for reasons specified below.',
+        "I have not communicated my concern to the student for reasons specified below."
     ),
     ('Other', "Other")
 )
@@ -223,10 +223,10 @@ class Alert(models.Model):
     description = models.TextField(
         "Details about this concern",
         help_text = """
-            Please share any additional information you have about this concern
-            that can help us in our efforts to connect with the student and
-            meet their needs. Please focus on observed behaviors and statements,
-            avoiding speculation. Limit: 250 words.
+            Please share details about your concern that may help us
+            in our efforts to connect with the student and meet their
+            needs. Please focus on observed behaviors and statements
+            shared with you, avoiding speculation. Limit: 250 words.
         """,
     )
     interaction_type = models.CharField(
