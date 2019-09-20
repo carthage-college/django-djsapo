@@ -83,7 +83,7 @@ def home(request):
             else:
                 team_alerts = [member.alert for member in teams if member.alert.status == status]
         else:
-            team_alerts = [member.alert for member in teams]
+            team_alerts = [member.alert for member in teams if member.alert.status != 'Closed']
         alerts = sorted(
             chain(my_alerts, team_alerts), key=attrgetter('created_at')
         )
