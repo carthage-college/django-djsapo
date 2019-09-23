@@ -72,6 +72,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
+    search_fields = ('user__username','user__last_name','user__first_name')
     list_display = ('user_name','case_manager')
     raw_id_fields = ('user',)
     list_editable = ('case_manager',)
