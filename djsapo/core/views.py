@@ -12,6 +12,7 @@ from djsapo.core.forms import AlertForm, DocumentForm
 from djsapo.core.utils import get_peeps
 
 from djzbar.decorators.auth import portal_auth_required
+from djtools.utils.users import in_group
 
 from datetime import datetime
 

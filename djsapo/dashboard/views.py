@@ -10,7 +10,6 @@ from django.shortcuts import render, get_object_or_404
 from djsapo.core.models import Alert, Annotation, GenericChoice, Member
 from djsapo.core.utils import get_peeps
 
-from djtools.utils.users import in_group
 from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager
 from djzbar.decorators.auth import portal_auth_required
@@ -49,7 +48,7 @@ def _student(alert):
 )
 def home(request):
     user = request.user
-    css = in_group(user, settings.CSS_GROUP)
+    css = user.profile.css
     status = request.POST.get('status')
     # CSS or superuser can access all objects
     if css:
@@ -161,9 +160,8 @@ def list(request):
     """
 
     user = request.user
-    css = in_group(user, settings.CSS_GROUP)
     # CSS or superuser can access all objects
-    if css:
+    if user.profile.css:
         alerts = Alert.objects.all().order_by('-created_at')
     else:
         alerts = Alert.objects.filter(created_by=user)
