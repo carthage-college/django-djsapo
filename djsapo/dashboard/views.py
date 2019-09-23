@@ -64,6 +64,7 @@ def home(request):
             my_alerts = Alert.objects.exclude(status='Closed')
         alerts = [a for a in my_alerts]
     else:
+        # created by me
         if status:
             if status == 'All but closed':
                 my_alerts = Alert.objects.filter(created_by=user).exclude(status='Closed')
@@ -74,7 +75,8 @@ def home(request):
         else:
             my_alerts = Alert.objects.filter(created_by=user).exclude(status='Closed')
 
-        teams = Member.objects.filter(user__username=user.username)
+        # team of which i am a current member
+        teams = Member.objects.filter(user__username=user.username).exclude(status=False)
         if status:
             if status == 'All but closed':
                 team_alerts = [member.alert for member in teams if member.alert.status != 'Closed']
