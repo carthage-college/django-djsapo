@@ -48,7 +48,7 @@ def _student(alert):
 )
 def home(request):
     user = request.user
-    css = user.profile.css
+    css = user.profile.css()
     status = request.POST.get('status')
     # CSS or superuser can access all objects
     if css:
@@ -161,7 +161,7 @@ def list(request):
 
     user = request.user
     # CSS or superuser can access all objects
-    if user.profile.css:
+    if user.profile.css():
         alerts = Alert.objects.all().order_by('-created_at')
     else:
         alerts = Alert.objects.filter(created_by=user)
