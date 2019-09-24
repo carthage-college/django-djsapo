@@ -13,8 +13,8 @@ from djsapo.core.utils import get_peeps
 from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager
 from djzbar.decorators.auth import portal_auth_required
-from djimix.core.utils import get_connection
-from djimix.sql.students import VITALS
+from djimix.core.utils import xsql
+from djimix.sql.students import ADMISSIONS_REP, VITALS
 from djimix.constants import SPORTS
 
 from openpyxl import Workbook
@@ -29,9 +29,7 @@ def _student(alert):
     """
     move to core/utils if need be
     """
-    connection = get_connection()
-    cursor = connection.cursor()
-    student = cursor.execute(VITALS(cid=alert.student.id)).fetchone()
+    student = xsql(VITALS(cid=alert.student.id)).fetchone()
     sports = []
     if student and student.sports:
         athletics = student.sports.split(',')
@@ -66,25 +64,39 @@ def home(request):
         # created by me
         if status:
             if status == 'All but closed':
-                my_alerts = Alert.objects.filter(created_by=user).exclude(status='Closed')
+                my_alerts = Alert.objects.filter(created_by=user).exclude(
+                    status='Closed'
+                )
             elif status == 'All':
                 my_alerts = Alert.objects.filter(created_by=user)
             else:
-                my_alerts = Alert.objects.filter(created_by=user).filter(status=status)
+                my_alerts = Alert.objects.filter(created_by=user).filter(
+                    status=status
+                )
         else:
-            my_alerts = Alert.objects.filter(created_by=user).exclude(status='Closed')
+            my_alerts = Alert.objects.filter(created_by=user).exclude(
+                status='Closed'
+            )
 
         # team of which i am a current member
-        teams = Member.objects.filter(user__username=user.username).exclude(status=False)
+        teams = Member.objects.filter(user__username=user.username).exclude(
+            status=False
+        )
         if status:
             if status == 'All but closed':
-                team_alerts = [member.alert for member in teams if member.alert.status != 'Closed']
+                team_alerts = [
+                    member.alert for member in teams if member.alert.status != 'Closed'
+                ]
             elif status == 'All':
                 team_alerts = [member.alert for member in teams]
             else:
-                team_alerts = [member.alert for member in teams if member.alert.status == status]
+                team_alerts = [
+                    member.alert for member in teams if member.alert.status == status
+                ]
         else:
-            team_alerts = [member.alert for member in teams if member.alert.status != 'Closed']
+            team_alerts = [
+                member.alert for member in teams if member.alert.status != 'Closed'
+            ]
         alerts = sorted(
             chain(my_alerts, team_alerts), key=attrgetter('created_at')
         )
@@ -400,16 +412,33 @@ def team_manager(request, aid):
             if m.user not in matrix and m.user not in team:
                 matrix.append(m.user)
     advisor = None
+    l = LDAPManager()
     if vitals:
         try:
             advisor = User.objects.get(pk=vitals.adv_id)
         except:
-            l = LDAPManager()
             luser = l.search(vitals.adv_id)
             if luser:
                 advisor = l.dj_create(luser)
-    if advisor and advisor not in matrix and advisor not in team:
-        matrix.append(advisor)
+        if advisor and advisor not in matrix and advisor not in team:
+            matrix.append(advisor)
+
+    # admissions advisors
+    admish = None
+    group = Group.objects.get(name='Admissions Representative')
+    obj = xsql(ADMISSIONS_REP(cid=alert.student.id)).fetchone()
+    if obj:
+        try:
+            admish = User.objects.get(pk=obj.id)
+            group.user_set.add(admish)
+        except:
+            luser = l.search(obj.id)
+            if luser:
+                admish = l.dj_create(luser)
+        if admish and admish not in matrix and admish not in team:
+            group.user_set.add(admish)
+            matrix.append(admish)
+
     # obtain all users who are a member of "Coaches" group
     for c in User.objects.filter(groups__name='Coaches'):
         if c not in matrix and c not in team:

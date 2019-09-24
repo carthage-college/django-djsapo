@@ -72,15 +72,24 @@ class MessageAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    search_fields = ('user__username','user__last_name','user__first_name')
-    list_display = ('user_name','case_manager')
+    search_fields = (
+        'user__username','user__last_name','user__first_name'
+    )
+    list_display = ('user_name','get_categories','case_manager')
     raw_id_fields = ('user',)
     list_editable = ('case_manager',)
+    list_max_show_all   = 250
+    list_per_page       = 250
 
     def user_name(self, obj):
         return "{}, {}".format(obj.user.last_name, obj.user.first_name)
     user_name.admin_order_field  = 'user__last_name'
     user_name.short_description = "Profile"
+
+    def get_categories(self, obj):
+        return "; ".join([c.name for c in obj.category.all()])
+    get_categories.allow_tags = True
+    get_categories.short_description = "Categories"
 
 
 admin.site.register(GenericChoice, GenericChoiceAdmin)

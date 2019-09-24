@@ -136,6 +136,7 @@ class Profile(models.Model):
     def css(self):
         return in_group(self.user, settings.CSS_GROUP)
 
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created and not kwargs.get('raw', False):
