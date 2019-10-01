@@ -52,14 +52,14 @@ const autoCompletejs = new autoComplete({
         },
         element: "li"
     },
-    noResults: () => {
+    noResults: function() {
         const result = document.createElement("li");
         result.setAttribute("class", "no_result");
         result.setAttribute("tabindex", "1");
         result.innerHTML = "No students found";
         document.querySelector("#autoComplete_results_list").appendChild(result);
     },
-    onSelection: feedback => {
+    onSelection: function(feedback) {
         const selection = feedback.selection.value.lastname + ", " + feedback.selection.value.firstname;
         // Render selected choice to selection div
         document.querySelector(".selection").innerHTML = selection;
