@@ -7,6 +7,10 @@ from djsapo.dashboard import views
 urlpatterns = [
     # detailed view
     re_path('^alert/(?P<aid>\d+)/detail/$', views.detail, name='detail'),
+    # delete Annotation object
+    re_path(
+        '^annotation/(?P<oid>\d+)/delete/$', views.delete_note, name='delete_note'
+    ),
     # complete lising
     path('list/', views.list, name='list'),
     # search for alerts
