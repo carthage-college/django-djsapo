@@ -6,7 +6,7 @@
           Student
           <i class="fa fa-eye green blue-tooltip" data-toggle="tooltip"
             data-placement="top" aria-hidden="true"
-            title="View Alert"></i>
+            title="View Concern"></i>
         </th>
         <th>Course</th>
         <th nowrap>
@@ -21,13 +21,6 @@
         {% if css %}<th>Case Manager</th>{% endif %}
         <th>Status</th>
         <th>Latest Follow-Up</th>
-        {% if user.is_superuser %}
-        <th class="text-center">
-          <i class="fa fa-trash green blue-tooltip"  data-toggle="tooltip"
-            data-placement="top" aria-hidden="true"
-            title="Delete this Alert"></i>
-        </th>
-        {% endif %}
       </tr>
     </thead>
     <tbody>
@@ -36,7 +29,7 @@
       <tr>
         <td nowrap>
           <a href="{% url 'detail' a.id %}"
-            title="View Alert Submission: {{a.student.id}}">{{a}}</a>
+            title="View Concern Submission: {{a.student.id}}">{{a}}</a>
         </td>
         <td nowrap>{{a.course}}</td>
         <td nowrap title="Created at: {{a.created_at}}">
@@ -58,17 +51,6 @@
         {% endif %}
         <td nowrap{% if a.status == "Closure suggested" %} class="bg-warning"{% endif %}>{{a.status}}</td>
         <td class="text-center" nowrap>{{a.latest_note.created_at|date:'Y-m-d'}}</td>
-        {% if user.is_superuser %}
-        <td class="text-center">
-          <a href="#" data-href="{# url 'alert_delete' a.id #}"
-            data-title="Alert: {{a.subject}}" data-toggle="modal"
-            data-target="#confirm-delete">
-            <i class="fa fa-trash-o red blue-tooltip" data-toggle="tooltip"
-              data-placement="top" aria-hidden="true"
-              title="Delete Alert: {{a.subject}}"></i>
-          </a>
-        </td>
-        {% endif %}
       </tr>
       {% endifchanged %}
     {% endfor %}
@@ -79,7 +61,7 @@
           Student
           <i class="fa fa-eye green blue-tooltip" data-toggle="tooltip"
             data-placement="top" aria-hidden="true"
-            title="View Alert"></i>
+            title="View Concern"></i>
         </th>
         <th>Course</th>
         <th nowrap>
@@ -94,13 +76,6 @@
         {% if css %}<th>Case Manager</th>{% endif %}
         <th>Status</th>
         <th>Latest Follow-Up</th>
-        {% if user.is_superuser %}
-        <th class="text-center">
-          <i class="fa fa-trash green blue-tooltip"  data-toggle="tooltip"
-            data-placement="top" aria-hidden="true"
-            title="Delete this Alert"></i>
-        </th>
-        {% endif %}
       </tr>
     </tfoot>
   </table>
