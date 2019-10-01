@@ -18,7 +18,7 @@ def get_peeps(who):
     if not peeps and where:
         sql = """
             SELECT
-                lastname, firstname, username, id
+                id, lastname, firstname, username
             FROM
                 provisioning_vw
             WHERE
@@ -35,9 +35,9 @@ def get_peeps(who):
             peeps = []
             for obj in objects:
                 row = {
-                    'lastname': obj[0], 'firstname': obj[1],
-                    'email': '{}@carthage.edu'.format(obj[2]),
-                    'cid': obj[3]
+                    'cid': obj[0],
+                    'lastname': obj[1], 'firstname': obj[2],
+                    'email': '{}@carthage.edu'.format(obj[3])
                 }
                 peeps.append(row)
             cache.set(key, peeps, timeout=86400)
