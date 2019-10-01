@@ -23,6 +23,8 @@ from operator import attrgetter
 from itertools import chain
 
 import json
+import logging
+logger = logging.getLogger('debug_logger')
 
 
 def _student(alert):
@@ -320,11 +322,14 @@ def manager(request):
                         data['id'] = member.id
                         mail = True
                     if mail:
+                        to_list = [member.user.email]
+                        bcc = [settings.ADMINS[0][1],]
+                        if settings.DEBUG:
+                            to_list = bcc
                         send_mail(
-                            request, [member.user.email],
-                            "Assignment to Intervention Team",
+                            request, to_list, "Assignment to Intervention Team",
                             settings.CSS_FROM_EMAIL, 'alert/email_team_added.html',
-                            {'alert':alert,'user':member.user}, [settings.ADMINS[0][1],]
+                            {'alert':alert,'user':member.user}, bcc
                         )
 
                 elif action == 'remove':
