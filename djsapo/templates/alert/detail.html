@@ -24,7 +24,7 @@
 {% endblock %}
 {% block extra_javascript %}
 {{block.super}}
-{% if perms.admin %}
+{% if data.course and perms.admin %}
 <script src="/static/djsapo/js/courses.autocomplete.js"
   type="text/javascript" language="javascript"></script>
 {% endif %}
@@ -35,6 +35,7 @@ var $updateAlert = true;
 </script>
 {% endblock %}
 {% block content %}
+{{block.super}}
 {% include "alert/student.header.inc.html" %}
 <div class="row">
   <div class="col-lg-6">
@@ -168,7 +169,7 @@ var $updateAlert = true;
             {% if perms.admin %}
             <div class="float-right">
               <a href="" data-toggle="modal" data-target="#textModal"
-                data-oid="{{data.id}}" data-mod="alert" data-fld="description"
+                data-oid="{{data.id}}" data-mod="concern" data-fld="description"
                 class="text-update ml-1">
                 <i class="fa fa-pencil-square-o green blue-toolsip"
                 data-placement="top" title="Update this text" aria-hidden="true"></i></a>
@@ -194,7 +195,7 @@ var $updateAlert = true;
                 {% if perms.admin %}
                 <div class="float-right">
                   <a href="" data-toggle="modal" data-target="#textModal"
-                    data-oid="{{data.id}}" data-mod="alert" data-fld="interaction_details"
+                    data-oid="{{data.id}}" data-mod="concern" data-fld="interaction_details"
                     class="text-update ml-1">
                     <i class="fa fa-pencil-square-o green blue-toolsip"
                     data-placement="top" title="Update this text" aria-hidden="true"></i></a>
