@@ -284,7 +284,7 @@ def manager(request):
         mod = post.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
         action = post.get('action')
-        if mod == "category":
+        if mod == 'category':
             obj = get_object_or_404(GenericChoice, pk=oid)
             if action == 'add':
                 alert.category.add(obj)
@@ -292,7 +292,7 @@ def manager(request):
                 alert.category.remove(obj)
             else:
                 data['msg'] = "Options: add or remove"
-        elif mod == "team":
+        elif mod == 'team':
             try:
                 user = User.objects.get(pk=oid)
             except:
@@ -341,7 +341,7 @@ def manager(request):
                     data['msg'] = "Options: add or remove"
             else:
                     data['msg'] = "User not found"
-        elif mod == "comment":
+        elif mod == 'comment':
             note = None
             body = post.get('value')
             t = loader.get_template('alert/annotation.inc.html')
@@ -351,7 +351,7 @@ def manager(request):
                     alert.save()
                 note = Annotation.objects.create(
                     alert=alert, created_by=user, updated_by=user, body=body,
-                    tags="Comments"
+                    tags='Comments'
                 )
                 alert.notes.add(note)
                 context = {'obj':note,'bgcolor':'bg-warning'}
@@ -359,8 +359,10 @@ def manager(request):
             else:
                 try:
                     note = Annotation.objects.get(pk=oid)
-                    if action == "fetch":
+                    if action == 'fetch':
                         data['msg'] = note.body
+                    elif action == 'delete':
+                        note.delete()
                     else:
                         note.body=body
                         note.updated_by = user
@@ -370,10 +372,10 @@ def manager(request):
                     data['id'] = note.id
                 except:
                     data['msg'] = "Follow-up not found"
-        elif mod == "alert":
+        elif mod == 'concern':
             name = post.get('name')
             data['id'] = aid
-            if action == "fetch":
+            if action == 'fetch':
                 data['msg'] = getattr(alert, name)
             else:
                 value = post.get('value')
@@ -462,3 +464,18 @@ def team_manager(request, aid):
             'student':vitals,'sports':student['sports'],'peeps':peeps
         }
     )
+
+
+@portal_auth_required(
+    group = settings.CSS_GROUP,
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied')
+)
+def delete_note(request, oid):
+    obj = get_object_or_404(Annotation, pk=oid)
+    obj.delete()
+    messages.add_message(
+        request, messages.SUCCESS, "Follow-up was deleted",
+        extra_tags='alert-success'
+    )
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
