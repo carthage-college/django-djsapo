@@ -13,8 +13,8 @@ var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.r
 // Blink engine detection
 var isBlink = (isChrome || isOpera) && !!window.CSS;
 
-if (isFirefox==false && isChrome==false && isOpera==false) {
-    alert('Please use the FireFox, Chrome, or Opera Browser');
+if (isFirefox==false && isChrome==false && isOpera==false && isSafari==false) {
+    alert('Please use the FireFox, Chrome, Safari 12+, or Opera Browser');
 }
 
 /*

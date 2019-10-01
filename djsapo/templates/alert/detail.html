@@ -185,7 +185,7 @@ var $updateAlert = true;
           <dd>
             {{data.interaction_type}}
           </dd>
-          <dt>Date of interaction</dt>
+          <dt>Approximate date of interaction</dt>
           <dd>{{data.interaction_date}}</dd>
           <dt>Details</dt>
           <dd>
@@ -289,7 +289,7 @@ var $updateAlert = true;
             data-uid="{{m.user.id}}" data-mid="{{m.id}}"
             data-last_name="{{m.user.last_name}}" data-first_name="{{m.user.first_name}}">
             <i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top"
-              title="Remove {{m.user.first_name}} {{m.user.last_name}} from the alert team"
+              title="Remove {{m.user.first_name}} {{m.user.last_name}}"
               aria-hidden="true"></i></a>
           {% endif %}
           {% else %}

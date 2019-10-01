@@ -302,7 +302,7 @@ def manager(request):
             if user:
                 if action == 'add':
                     mail = False
-                    if not alert.team.all():
+                    if not alert.team.all() and alert.status != 'In progress':
                         alert.status='Assigned'
                         alert.save()
                     try:
