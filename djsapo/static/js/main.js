@@ -190,7 +190,7 @@ $(function() {
         $('.modal-backdrop').remove();
       },
       error: function(data){
-        console.log(data);
+        //console.log(data);
         $.growlUI($mod + " Form", "Error");
       }
     });
@@ -211,8 +211,6 @@ $(function() {
     var $name = $dis.attr('name');
     var $value = $dis.val();
     var $data = {'aid':$aid,'value':$value,'name':$name,'mod':'alert','oid':0};
-    console.log('data name = ' + $data['name']);
-    console.log('data value = ' + $data['value']);
     $.ajax({
       type: 'POST',
       url: $manager,
@@ -448,6 +446,10 @@ $(function() {
       animation: 150,
       sort: false,
       filter: '.dataTables_empty' // is not draggable
+  });
+  $('#confirm-delete').on('show.bs.modal', function(e) {
+    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+    $('.object-title').text( $(e.relatedTarget).data('title') );
   });
   /* override the submit event for the alert form to handle some things */
   $('form#alert-form').submit(function(){
