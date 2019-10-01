@@ -8,6 +8,11 @@
     </div>
     {% if perms.admin %}
     <div class="float-right">
+      <a href="#" data-toggle="modal" data-href="{% url 'delete_note' obj.id %}"
+        data-title="Follow-up" data-target="#confirm-delete">
+        <i class="fa fa-trash-o red blue-tooltip" data-toggle="tooltip"
+          data-placement="top" aria-hidden="true"
+          title="Delete follow-up"></i></a>
       <a href="" data-toggle="modal" data-target="#textModal"
         data-oid="{{obj.id}}" data-mod="comment" class="text-update">
         <i class="fa fa-pencil-square-o green blue-toolsip"
