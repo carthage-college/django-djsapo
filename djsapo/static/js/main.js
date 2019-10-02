@@ -210,7 +210,7 @@ $(function() {
     var $dis = $(this);
     var $name = $dis.attr('name');
     var $value = $dis.val();
-    var $data = {'aid':$aid,'value':$value,'name':$name,'mod':'alert','oid':0};
+    var $data = {'aid':$aid,'value':$value,'name':$name,'mod':'concern','oid':0};
     $.ajax({
       type: 'POST',
       url: $manager,
@@ -234,14 +234,14 @@ $(function() {
     $.ajax({
       type: "POST",
       url: $manager,
-      data: {'aid':$aid,'value':'Closure suggested','name':'status','mod':'alert','oid':0},
+      data: {'aid':$aid,'value':'Closure suggested','name':'status','mod':'concern','oid':0},
       cache: false,
       beforeSend: function(){
         spinner.spin(target);
       },
       success: function(data) {
         spinner.stop(target);
-        $.growlUI("Alert Status", data['msg']);
+        $.growlUI("Concern Status", data['msg']);
         $('#alertStatus').hide();
         $('#id_status option[value="Closure suggested"]').attr('selected','selected');
         $('#id_status').text('Closure suggested');
@@ -314,11 +314,11 @@ $(function() {
       data: {'aid':$aid,'oid':$uid,'action':'remove','mod':'team'},
       success: function(data) {
         $('.tooltip').remove();
-        $dis.html('<i class="fa fa-ban red" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team"></i>');
+        $dis.html('<i class="fa fa-ban red" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="'+$ln + ', '+ $fn + ' is no longer a member of the team"></i>');
         $('[data-toggle="tooltip"]').tooltip();
         $('#member_'+$mid).addClass('strike');
         $('#del_'+$uid).addClass('strike');
-        $('#member_'+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the alert team">'+$ln + ', '+ $fn + '</span>');
+        $('#member_'+$mid).html('<span data-toggle="tooltip" data-placement="top" title="'+$ln + ', '+ $fn + ' is no longer a member of the team">'+$ln + ', '+ $fn + '</span>');
         $.growlUI("Success", "Data saved");
       }
     });
@@ -427,7 +427,7 @@ $(function() {
             success: function(data) {
               spinner.stop(target);
               $mid=data['id']
-              $('#del_' + $uid).prepend('<td class="text-center"><a href="#" class="remove-member" data-uid="'+$uid+'" data-mid="'+$mid+'" data-last_name="'+$lastName+'" data-first_name="'+$firstName+'"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the alert team"></i></a></td>');
+              $('#del_' + $uid).prepend('<td class="text-center"><a href="#" class="remove-member" data-uid="'+$uid+'" data-mid="'+$mid+'" data-last_name="'+$lastName+'" data-first_name="'+$firstName+'"><i class="fa fa-times red blue-tooltip" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Remove from the team"></i></a></td>');
               $.growlUI("Member Status", data['msg']);
               return true;
             },
