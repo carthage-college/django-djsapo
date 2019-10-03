@@ -1,5 +1,5 @@
 from django.core.cache import cache
-from djimix.core.utils import get_connection
+from djimix.core.database import get_connection
 
 
 def get_peeps(who):

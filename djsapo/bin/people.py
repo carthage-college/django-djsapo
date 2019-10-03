@@ -7,7 +7,7 @@ import django
 django.setup()
 
 from django.conf import settings
-from djimix.core.utils import get_connection
+from djimix.core.database import get_connection
 
 import argparse
 import logging
