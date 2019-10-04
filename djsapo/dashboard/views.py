@@ -12,7 +12,7 @@ from djsapo.core.utils import get_peeps
 
 from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager
-from djzbar.decorators.auth import portal_auth_required
+from djimix.decorators.auth import portal_auth_required
 from djimix.core.database import get_connection, xsql
 from djimix.sql.students import ADMISSIONS_REP, VITALS
 from djimix.constants import SPORTS
