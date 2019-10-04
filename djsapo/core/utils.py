@@ -1,5 +1,5 @@
 from django.core.cache import cache
-from djimix.core.database import get_connection
+from djimix.core.database import get_connection, xsql
 
 
 def get_peeps(who):
@@ -28,18 +28,19 @@ def get_peeps(who):
         """.format(where)
 
         connection = get_connection()
-        cursor = connection.cursor()
-        objects = cursor.execute(sql)
+        # close connection when exiting with block
+        with connection:
+            objects = xsql(sql, connection)
 
-        if objects:
-            peeps = []
-            for obj in objects:
-                row = {
-                    'cid': obj[0],
-                    'lastname': obj[1], 'firstname': obj[2],
-                    'email': '{}@carthage.edu'.format(obj[3])
-                }
-                peeps.append(row)
-            cache.set(key, peeps, timeout=86400)
+            if objects:
+                peeps = []
+                for obj in objects:
+                    row = {
+                        'cid': obj[0],
+                        'lastname': obj[1], 'firstname': obj[2],
+                        'email': '{}@carthage.edu'.format(obj[3])
+                    }
+                    peeps.append(row)
+                cache.set(key, peeps, timeout=86400)
 
     return peeps

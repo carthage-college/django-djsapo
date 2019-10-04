@@ -13,7 +13,7 @@ from djsapo.core.utils import get_peeps
 from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager
 from djzbar.decorators.auth import portal_auth_required
-from djimix.core.database import xsql
+from djimix.core.database import get_connection, xsql
 from djimix.sql.students import ADMISSIONS_REP, VITALS
 from djimix.constants import SPORTS
 
@@ -31,14 +31,17 @@ def _student(alert):
     """
     move to core/utils if need be
     """
-    student = xsql(VITALS(cid=alert.student.id)).fetchone()
-    sports = []
-    if student and student.sports:
-        athletics = student.sports.split(',')
-        for s in SPORTS:
-            for a in athletics:
-                if a in s:
-                    sports.append(s[1])
+    connection = get_connection()
+    # close connection when exiting with block
+    with connection:
+        student = xsql(VITALS(cid=alert.student.id), connection).fetchone()
+        sports = []
+        if student and student.sports:
+            athletics = student.sports.split(',')
+            for s in SPORTS:
+                for a in athletics:
+                    if a in s:
+                        sports.append(s[1])
     return {'student':student, 'sports':sports}
 
 
@@ -433,18 +436,20 @@ def team_manager(request, aid):
     # admissions advisors
     admish = None
     group = Group.objects.get(name='Admissions Representative')
-    obj = xsql(ADMISSIONS_REP(cid=alert.student.id)).fetchone()
-    if obj:
-        try:
-            admish = User.objects.get(pk=obj.id)
-            group.user_set.add(admish)
-        except:
-            luser = l.search(obj.id)
-            if luser:
-                admish = l.dj_create(luser)
-        if admish and admish not in matrix and admish not in team:
-            group.user_set.add(admish)
-            matrix.append(admish)
+    # close connection when exiting with block
+    with connection:
+        obj = xsql(ADMISSIONS_REP(cid=alert.student.id), connection).fetchone()
+        if obj:
+            try:
+                admish = User.objects.get(pk=obj.id)
+                group.user_set.add(admish)
+            except:
+                luser = l.search(obj.id)
+                if luser:
+                    admish = l.dj_create(luser)
+            if admish and admish not in matrix and admish not in team:
+                group.user_set.add(admish)
+                matrix.append(admish)
 
     # obtain all users who are a member of "Coaches" group
     for c in User.objects.filter(groups__name='Coaches'):
