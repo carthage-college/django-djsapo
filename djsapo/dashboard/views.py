@@ -436,7 +436,7 @@ def team_manager(request, aid):
     # admissions advisors
     admish = None
     group = Group.objects.get(name='Admissions Representative')
-    # close connection when exiting with block
+    connection = get_connection()
     with connection:
         obj = xsql(ADMISSIONS_REP(cid=alert.student.id), connection).fetchone()
         if obj:
