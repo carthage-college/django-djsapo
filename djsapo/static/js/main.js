@@ -357,6 +357,15 @@ $(function() {
     stripeClasses: [],
     order: [[ 1, 'asc' ]]
   });
+  $('.history-table').DataTable({
+    dom: 'lfrBtip',
+    bFilter: false,
+    paging: false,
+    info: false,
+    buttons: [],
+    stripeClasses: [],
+    order: [[ 2, 'desc' ]]
+  });
   $('.sos-matrix').DataTable({
     'lengthMenu': [
       [15], [15]

@@ -230,21 +230,21 @@ var $updateAlert = true;
            aria-hidden="true"></i>
         </h4>
         <div class="table-responsive">
-        <table class="table table-bordered table-hover display compact data-table">
+        <table class="table table-bordered table-hover display compact history-table">
           <thead>
             <tr>
-              <th></th>
               <th>Submitted by</th>
+              <th>Status</th>
               <th>Date</th>
             </tr>
           </thead>
           <tbody>
             {% for a in history %}
             <tr>
-                <td>{{forloop.counter}}</td>
               <td nowrap>
                 <a href="{% url 'detail' a.id %}">{{a.created_by.last_name}}, {{a.created_by.first_name}}</a>
               </td>
+              <td>{{a.status}}</td>
               <td nowrap>{{a.created_at}}</td>
             </tr>
             {% endfor %}
