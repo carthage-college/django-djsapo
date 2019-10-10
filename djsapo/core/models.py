@@ -433,7 +433,7 @@ class Document(models.Model):
     def get_icon(self):
         ext = self.phile.path.rpartition(".")[-1]
         try:
-            icon = ICONS[ext]
+            icon = ICONS[ext.lower()]
         except:
             icon = ICONS['file']
         return icon
