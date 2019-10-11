@@ -14,8 +14,8 @@ from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager
 from djimix.decorators.auth import portal_auth_required
 from djimix.core.database import get_connection, xsql
-from djimix.sql.students import ADMISSIONS_REP, VITALS
-from djimix.constants import SPORTS
+from djimix.sql.students import ADMISSIONS_REP, VITALS, SPORTS
+from djimix.constants import SPORTS_ALL
 
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
@@ -35,10 +35,11 @@ def _student(alert):
     # close connection when exiting with block
     with connection:
         student = xsql(VITALS(cid=alert.student.id), connection).fetchone()
+        obj = xsql(SPORTS(cid=alert.student.id), connection).fetchone()
         sports = []
-        if student and student.sports:
-            athletics = student.sports.split(',')
-            for s in SPORTS:
+        if obj and obj.sports:
+            athletics = obj.sports.split(',')
+            for s in SPORTS_ALL:
                 for a in athletics:
                     if a in s:
                         sports.append(s[1])
