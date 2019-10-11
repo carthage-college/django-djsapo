@@ -340,6 +340,7 @@ class Member(models.Model):
     class Meta:
         # the team should not contain a member more than once for an alert
         unique_together = ['user', 'alert']
+        ordering = ['user__last_name']
 
     def __str__(self):
         """
