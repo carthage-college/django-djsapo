@@ -152,7 +152,7 @@ class Alert(models.Model):
         ('No resolution required', "No resolution required"),
         ('Next steps discussed', "Next steps discussed"),
         ('Resolved', "Resolved"),
-        ('Duplicate concern', "Duplicate concern"),
+        ('Related concern', "Related concern"),
         ('Unresponsive [term end]', "Unresponsive [term end]"),
         ('Withdrew', "Withdrew"),
     )
