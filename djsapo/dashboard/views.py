@@ -331,7 +331,7 @@ def manager(request):
                         if settings.DEBUG:
                             to_list = bcc
                         send_mail(
-                            request, to_list, "Assignment to Intervention Team",
+                            request, to_list, "Assignment to Outreach Team",
                             settings.CSS_FROM_EMAIL, 'alert/email_team_added.html',
                             {'alert':alert,'user':member.user}, bcc
                         )
