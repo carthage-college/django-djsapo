@@ -244,8 +244,10 @@ class Alert(models.Model):
     interaction_details = models.TextField(
         "Interaction details",
         help_text = """
-            Please share any additional information about your interaction
-            with the student. Limit: 250 words.
+            Please share additional details about how you have addressed
+            the concern with the student thus far, such as referrals
+            to specific resources, next steps they should complete,
+            etc. Limit: 250 words
         """
     )
     outcome = models.CharField(
