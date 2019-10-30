@@ -453,9 +453,18 @@ def team_manager(request, aid):
                 matrix.append(admish)
 
     # obtain all users who are a member of "Coaches" group
-    for c in User.objects.filter(groups__name='Coaches'):
-        if c not in matrix and c not in team:
-            matrix.append(c)
+    # if the coaches group is related to one of the alert concern types
+    coaches = False
+    for c in alert.category.all():
+        for g in c.group.all():
+            if g.name == 'Coaches':
+                coaches = True
+                break
+    if coaches:
+        for c in User.objects.filter(groups__name='Coaches'):
+            if c not in matrix and c not in team:
+                matrix.append(c)
+
     peeps = get_peeps('facstaff')
     folks = team + matrix
     # iterate over a copy of peeps and remove duplicates from original peeps

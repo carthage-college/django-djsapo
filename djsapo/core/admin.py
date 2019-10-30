@@ -1,4 +1,6 @@
+from django.db import models
 from django.contrib import admin
+from django.forms import CheckboxSelectMultiple
 
 from djsapo.core.models import (
     Alert,Annotation,Document,GenericChoice,Member,Message,Profile
@@ -8,6 +10,9 @@ from djsapo.core.models import (
 class GenericChoiceAdmin(admin.ModelAdmin):
     list_display = ('name','value','rank','active','admin')
     list_editable = ('active','admin')
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': CheckboxSelectMultiple},
+    }
 
 
 class AlertAdmin(admin.ModelAdmin):
