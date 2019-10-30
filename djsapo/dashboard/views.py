@@ -434,34 +434,41 @@ def team_manager(request, aid):
         if advisor and advisor not in matrix and advisor not in team:
             matrix.append(advisor)
 
-    # admissions advisors
-    admish = None
-    group = Group.objects.get(name='Admissions Representative')
-    connection = get_connection()
-    with connection:
-        obj = xsql(ADMISSIONS_REP(cid=alert.student.id), connection).fetchone()
-        if obj:
-            try:
-                admish = User.objects.get(pk=obj.id)
-                group.user_set.add(admish)
-            except:
-                luser = l.search(obj.id)
-                if luser:
-                    admish = l.dj_create(luser)
-            if admish and admish not in matrix and admish not in team:
-                group.user_set.add(admish)
-                matrix.append(admish)
-
-    # obtain all users who are a member of "Coaches" group
-    # if the coaches group is related to one of the alert concern types
+    # check if we should add admissions reps and coaches to the matrix
+    admissions = False
+    admissions_group = 'Admissions Representative'
     coaches = False
+    coaches_group = 'Coaches'
     for c in alert.category.all():
         for g in c.group.all():
-            if g.name == 'Coaches':
+            if g.name == admissions_group:
+                admissions = True
+            if g.name == coaches_group:
                 coaches = True
-                break
+
+    # add admissions reps to the matrix
+    if admissions:
+        rep = None
+        group = Group.objects.get(name=admissions_group)
+        connection = get_connection()
+        with connection:
+            obj = xsql(ADMISSIONS_REP(cid=alert.student.id), connection).fetchone()
+            if obj:
+                try:
+                    rep = User.objects.get(pk=obj.id)
+                except:
+                    luser = l.search(obj.id)
+                    if luser:
+                        rep = l.dj_create(luser)
+                if rep:
+                    if not rep.groups.filter(name=admissions_group).exists():
+                        group.user_set.add(rep)
+                    if rep not in matrix and rep not in team:
+                        matrix.append(rep)
+
+    # add coaches to the matrix
     if coaches:
-        for c in User.objects.filter(groups__name='Coaches'):
+        for c in User.objects.filter(groups__name=coaches_group):
             if c not in matrix and c not in team:
                 matrix.append(c)
 
