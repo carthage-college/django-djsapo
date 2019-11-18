@@ -76,7 +76,7 @@ $(function() {
   });
   /* datepicker */
   $('#id_interaction_date').datepicker({
-    firstDay:1,
+    firstDay:0,
     maxDate: new Date,
     changeFirstDay:false,
     dateFormat:'yy-mm-dd',
