@@ -274,6 +274,8 @@ var $updateAlert = true;
         <ul class="list-group mb-3">
         {% for m in data.team.all %}
         <li class="list-group-item {% cycle 'list-group-item-light' 'list-group-item-none' %}" style="color:#000;">
+          <i class="fa fa-info-circle green blue-tooltip" data-toggle="tooltip" data-placement="top"
+            title="{{m.user.profile.get_titles}}" aria-hidden="true"></i>
           <span id="member_{{m.id}}" {% if not m.status %} class="strike"{% endif %}>
             <span {% if not m.status %} data-toggle="tooltip" data-placement="top" title="{{m}} is no longer a member of the team"{% endif %}>
               {{m}}

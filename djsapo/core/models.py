@@ -13,6 +13,8 @@ from djtools.fields import BINARY_CHOICES
 
 from taggit.managers import TaggableManager
 
+import requests
+
 ALLOWED_EXTENSIONS = [
     'xls','xlsx','doc','docx','pdf','txt','png','jpg','jpeg'
 ]
@@ -135,6 +137,22 @@ class Profile(models.Model):
 
     def css(self):
         return in_group(self.user, settings.CSS_GROUP)
+
+    def get_titles(self):
+        titles = []
+        earl = 'https://www.carthage.edu/directory/api/job-titles/?api_key={}'.format(
+            settings.API_KEY
+        )
+        resp = requests.get(url=earl)
+        try:
+            jason = resp.json()
+        except:
+            jason = None
+        if jason:
+            for j in jason:
+                if j['id'] == self.user.id:
+                    titles.append(j['job_title'])
+        return ','.join(titles)
 
 
 @receiver(post_save, sender=User)

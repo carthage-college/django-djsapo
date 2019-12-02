@@ -51,6 +51,7 @@ FILE_CHARSET = 'utf-8'
 SERVER_URL = 'www.carthage.edu'
 API_URL = '{}/{}'.format(SERVER_URL, 'api')
 LIVEWHALE_API_URL = 'https://{}'.format(SERVER_URL)
+API_KEY = ''
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(__file__)
 ADMIN_MEDIA_PREFIX = '/static/admin/'
