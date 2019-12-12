@@ -150,7 +150,7 @@ class Profile(models.Model):
             jason = None
         if jason:
             for j in jason:
-                if j['id'] == self.user.id:
+                if j['id'] == self.user.id and j['job_title']:
                     titles.append(j['job_title'])
         return ','.join(titles)
 
