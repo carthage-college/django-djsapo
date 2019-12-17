@@ -291,7 +291,7 @@ class Alert(models.Model):
     def category_list(self, admin=True):
         """
         returns a query set of categories that are currently not associated
-        with the allert
+        with the alert
         """
         # current categories
         if admin:

@@ -21,6 +21,7 @@
         {% if css %}<th>Case Manager</th>{% endif %}
         <th>Status</th>
         <th>Latest Follow-Up</th>
+        <th>Follow-Up Count</th>
       </tr>
     </thead>
     <tbody>
@@ -51,6 +52,7 @@
         {% endif %}
         <td nowrap{% if a.status == "Closure suggested" %} class="bg-warning"{% endif %}>{{a.status}}</td>
         <td class="text-center" nowrap>{{a.latest_note.created_at|date:'Y-m-d'}}</td>
+        <td class="text-center" nowrap>{{a.notes.all.count}}</td>
       </tr>
       {% endifchanged %}
     {% endfor %}
@@ -76,6 +78,7 @@
         {% if css %}<th>Case Manager</th>{% endif %}
         <th>Status</th>
         <th>Latest Follow-Up</th>
+        <th>Follow-Up Count</th>
       </tr>
     </tfoot>
   </table>

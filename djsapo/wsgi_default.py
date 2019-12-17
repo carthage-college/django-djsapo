@@ -1,6 +1,9 @@
 import os
 import sys
 
+# python
+sys.path.append('/data2/python_venv/3.6/djsapo/lib/python3.6/')
+sys.path.append('/data2/python_venv/3.6/djsapo/lib/python3.6/site-packages/')
 # django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djsapo.settings.staging')
 os.environ.setdefault('PYTHON_EGG_CACHE', '/var/cache/python/.python-eggs')
