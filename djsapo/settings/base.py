@@ -113,8 +113,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     # the following should be uncommented unless you are
     # embedding your apps in iframes
-    #'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+X_FRAME_OPTIONS = 'DENY'
 # template stuff
 TEMPLATES = [
     {
@@ -206,6 +207,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_DOMAIN='.carthage.edu'
 SESSION_COOKIE_NAME ='django_djsapo_cookie'
 SESSION_COOKIE_AGE = 31536000 # 1 year
+# security
+CSRF_COOKIE_SECURE = True #to avoid transmitting the CSRF cookie over HTTP accidentally.
+SESSION_COOKIE_SECURE = True #to avoid transmitting the session cookie over HTTP accidentally.
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
 # SMTP settings
 EMAIL_HOST = ''
 EMAIL_HOST_USER = ''
