@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
 
 from djsapo.core.models import Alert, Annotation, GenericChoice, Member
-from djsapo.core.utils import get_peeps
+from djimix.people.utils import get_peeps
 
 from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager

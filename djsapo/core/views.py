@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 
 from djsapo.core.models import GenericChoice, Member
 from djsapo.core.forms import AlertForm, DocumentForm
-from djsapo.core.utils import get_peeps
+from djimix.people.utils import get_peeps
 
 from djimix.decorators.auth import portal_auth_required
 from djtools.utils.users import in_group

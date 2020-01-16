@@ -10,7 +10,7 @@ from django.conf import settings
 from django.urls import reverse
 from django.core.cache import cache
 
-from djsapo.core.utils import get_peeps
+from djimix.people.utils import get_peeps
 
 # informix environment
 os.environ['INFORMIXSERVER'] = settings.INFORMIXSERVER
