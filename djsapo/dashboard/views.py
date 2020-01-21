@@ -193,10 +193,7 @@ def list(request):
     redirect_url=reverse_lazy('access_denied')
 )
 def email_form(request, aid, action):
-    '''
-    send an email
-    '''
-
+    """Send an email."""
     form_data = None
     alert = get_object_or_404(Alert, pk=aid)
     if request.method=='POST':
@@ -284,7 +281,11 @@ def manager(request):
             oid = int(post.get('oid'))
             aid = int(post.get('aid'))
         except:
-            raise Http404("Invalid alert or object ID: '{}' '{}'".format(post.get('oid'),post.get('aid')))
+            raise Http404(
+                "Invalid alert or object ID: '{oid}' '{aid}'".format(
+                    post.get('oid'), post.get('aid')
+                )
+            )
         mod = post.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
         action = post.get('action')
