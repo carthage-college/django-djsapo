@@ -70,8 +70,12 @@ def alert_form(request, pid=None):
         form_doc3 = DocumentForm(use_required_attribute=REQ_ATTR, prefix='doc3')
     return render(
         request, 'alert/form.html', {
-            'form': form,'form_doc1':form_doc1,'form_doc2':form_doc2,
-            'form_doc3':form_doc3
+            'form': form,
+            'form_doc1':form_doc1,
+            'form_doc2':form_doc2,
+            'form_doc3':form_doc3,
+            'year': settings.YEAR,
+            'term': settings.TERM,
         }
     )
 

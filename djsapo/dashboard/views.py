@@ -135,8 +135,13 @@ def detail(request, aid):
 
     return render(
         request, 'alert/detail.html', {
-            'data':alert, 'history':history, 'perms':perms,
-            'student':student['student'], 'sports':student['sports']
+            'data':alert,
+            'history':history,
+            'perms':perms,
+            'student':student['student'],
+            'sports':student['sports'],
+            'year': settings.YEAR,
+            'term': settings.TERM,
         }
     )
 

@@ -46,7 +46,7 @@
   type="text/javascript" language="javascript"></script>
 <script type="text/javascript" charset="utf-8">
   var $manager = "{% url 'manager' %}";
-  var $courseApi = "https://www.carthage.edu/academics/schedule/R/RA/2019/json/";
+  var $courseApi = "https://www.carthage.edu/academics/schedule/R/{{term}}/{{year}}/json/";
   var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
   var $studentApi = "{% url 'people' 'student' %}";
 
