@@ -36,7 +36,11 @@ def main():
     headers = {'Cache-Control': 'no-cache'}
     for key in ['student','facstaff']:
         cache.delete('provisioning_vw_{}_api'.format(key))
-        peeps = get_peeps(key)
+        try:
+            peeps = get_peeps(key)
+        except Exception as error:
+            print(error)
+
 
 if __name__ == '__main__':
     sys.exit(main())
