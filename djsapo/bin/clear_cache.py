@@ -23,15 +23,10 @@ os.environ['LD_LIBRARY_PATH'] = settings.LD_LIBRARY_PATH
 os.environ['LD_RUN_PATH'] = settings.LD_RUN_PATH
 
 # set up command-line options
-desc = """
-    clear the cache and repopulate it for API data
-"""
 
 
 def main():
-    '''
-    main function
-    '''
+    """Clear the cache and repopulate it for API data."""
 
     headers = {'Cache-Control': 'no-cache'}
     for key in ['student','facstaff']:
