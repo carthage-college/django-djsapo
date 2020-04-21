@@ -6,16 +6,18 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.models import Group, User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
-
-from djsapo.core.models import Alert, Annotation, GenericChoice, Member
-from djimix.people.utils import get_peeps
-
-from djtools.utils.mail import send_mail
 from djauth.LDAPManager import LDAPManager
 from djimix.decorators.auth import portal_auth_required
-from djimix.core.database import get_connection, xsql
-from djimix.sql.students import ADMISSIONS_REP, VITALS, SPORTS
 from djimix.constants import SPORTS_ALL
+from djimix.core.database import get_connection, xsql
+from djimix.people.utils import get_peeps
+from djimix.sql.students import ADMISSIONS_REP, VITALS, SPORTS
+from djsapo.core.forms import CONCERN_CHOICES
+from djsapo.core.models import Alert
+from djsapo.core.models import Annotation
+from djsapo.core.models import GenericChoice
+from djsapo.core.models import Member
+from djtools.utils.mail import send_mail
 
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
@@ -136,6 +138,7 @@ def detail(request, aid):
     return render(
         request, 'alert/detail.html', {
             'data':alert,
+            'categories': CONCERN_CHOICES,
             'history':history,
             'perms':perms,
             'student':student['student'],
@@ -389,8 +392,17 @@ def manager(request):
                 data['msg'] = getattr(alert, name)
             else:
                 value = post.get('value')
-                setattr(alert, name, value)
-                alert.save()
+                # 'type of concern' / category is a list and m2m from alert
+                if name == 'category':
+                    # disassociate the related objects
+                    alert.category.clear()
+                    # set the current relationships
+                    for gid in post.getlist('value[]'):
+                        gc = GenericChoice.objects.get(pk=gid)
+                        alert.category.add(gc)
+                else:
+                    setattr(alert, name, value)
+                    alert.save()
                 if name in ['description','interaction_details']:
                     data['msg'] = '<div class="card-text" id="oid_{}_{}">{}</div>'.format(
                         name, aid, value

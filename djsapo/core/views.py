@@ -31,10 +31,31 @@ def alert_form(request, pid=None):
     if request.method=='POST':
         user = request.user
         form = AlertForm(request.POST, use_required_attribute=REQ_ATTR)
-        form_doc1 = DocumentForm(request.POST, request.FILES, use_required_attribute=REQ_ATTR, prefix='doc1')
-        form_doc2 = DocumentForm(request.POST, request.FILES, use_required_attribute=REQ_ATTR, prefix='doc2')
-        form_doc3 = DocumentForm(request.POST, request.FILES, use_required_attribute=REQ_ATTR, prefix='doc3')
-        if form.is_valid() and form_doc1.is_valid() and form_doc2.is_valid() and form_doc3.is_valid():
+        form_doc1 = DocumentForm(
+            request.POST,
+            request.FILES,
+            use_required_attribute=REQ_ATTR,
+            prefix='doc1',
+        )
+        form_doc2 = DocumentForm(
+            request.POST,
+            request.FILES,
+            use_required_attribute=REQ_ATTR,
+            prefix='doc2',
+        )
+        form_doc3 = DocumentForm(
+            request.POST,
+            request.FILES,
+            use_required_attribute=REQ_ATTR,
+            prefix='doc3',
+        )
+        status =  (
+            form.is_valid() and
+            form_doc1.is_valid() and
+            form_doc2.is_valid() and
+            form_doc3.is_valid()
+        )
+        if status:
             alert = form.save(commit=False)
             student = User.objects.get(email=request.POST.get('student'))
             alert.student = student

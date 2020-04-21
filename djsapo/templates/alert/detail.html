@@ -132,28 +132,13 @@ var $updateAlert = true;
           {% endif %}
         </h4>
         {% if perms.admin %}
-        <div class="row">
-          <div class="col-12">
-          <div class="float-left">
-          <select name="from[]" id="categories" class="form-control mb-2" size="10" multiple="multiple">
-            {% for c in data.category_list %}
-            <option value="{{c.id}}">{{c.name}}</option>
+          <select name="category" id="id_category" data-width="100%" class="selectpicker set-val m-2" multiple>
+            {% for c in categories %}
+            <option value="{{c.id}}"{% if c in data.category.all %} selected="selected"{% endif %}>
+            {{c.name}}
+            </option>
             {% endfor %}
           </select>
-          </div>
-          <div class="float-left" style="margin-left:4px;margin-right:4px;">
-            <button type="button" id="categories_rightSelected" class="btn btn-block"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-            <button type="button" id="categories_leftSelected" class="btn btn-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
-          </div>
-          <div class="float-right">
-          <select name="to[]" id="categories_to" class="form-control mb-2" size="10" multiple="multiple">
-            {% for c in data.category.all %}
-            <option value="{{c.id}}">{{c.name}}</option>
-            {% endfor %}
-          </select>
-          </div>
-          </div>
-        </div>
         {% else %}
         <ul class="list-group mb-3">
         {% for c in data.category.all %}
