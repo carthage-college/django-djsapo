@@ -61,14 +61,14 @@ const coursesAutoComplete = new autoComplete({
           $.ajax({
             type: "POST",
             url: $manager,
-            data: {"aid":$aid,"value":selection,"name":"course","mod":"alert","oid":0},
+            data: {"aid":$aid,"value":selection,"name":"course","mod":"concern","oid":0},
             cache: false,
             beforeSend: function(){
               spinner.spin(target);
             },
             success: function(data) {
               spinner.stop(target);
-              if (data == "Success") {
+              if (data == 'Success' || data['msg'] == 'Success') {
               $.growlUI("Success", "Data saved.");
               } else {
               $.growlUI("Error", data);
