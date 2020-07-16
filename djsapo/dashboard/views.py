@@ -277,9 +277,7 @@ def openxml(request):
     redirect_url=reverse_lazy('access_denied')
 )
 def manager(request):
-    """
-    manage object relationships for an alert and for alert values themselves
-    """
+    """Manage object relationships for an Alert and for Alert values."""
     user = request.user
     data =  {'msg': "Success", 'id':''}
     if request.is_ajax() and request.method == 'POST':
@@ -340,11 +338,14 @@ def manager(request):
                         if settings.DEBUG:
                             to_list = bcc
                         send_mail(
-                            request, to_list, "Assignment to Outreach Team",
-                            settings.CSS_FROM_EMAIL, 'alert/email_team_added.html',
-                            {'alert':alert,'user':member.user}, bcc
+                            request,
+                            to_list,
+                            "Assignment to Outreach Team",
+                            settings.CSS_FROM_EMAIL,
+                            'alert/email_team_added.html',
+                            {'alert': alert, 'user': member.user},
+                            bcc,
                         )
-
                 elif action == 'remove':
                     member = get_object_or_404(Member, user=user,alert=alert)
                     member.status = False
@@ -426,10 +427,7 @@ def manager(request):
     redirect_url=reverse_lazy('access_denied')
 )
 def team_manager(request, aid):
-    """
-    manage team members
-    """
-
+    """Manage team members."""
     alert = get_object_or_404(Alert, pk=aid)
     perms = alert.permissions(request.user)
     student = _student(alert)
