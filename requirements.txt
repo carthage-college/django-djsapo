@@ -9,4 +9,5 @@ pyodbc==4.0.26
 openpyxl==2.6.1
 requests==2.20.0
 pycryptodome==3.8.1
+cryptography==3.0
 python-memcached==1.59
