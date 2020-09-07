@@ -9,7 +9,6 @@ from django.dispatch import receiver
 
 from djtools.utils.users import in_group
 from djtools.fields.helpers import upload_to_path
-from djtools.fields import BINARY_CHOICES
 
 from taggit.managers import TaggableManager
 
