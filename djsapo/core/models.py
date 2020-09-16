@@ -170,7 +170,7 @@ class Alert(models.Model):
         ('Next steps discussed', "Next steps discussed"),
         ('Resolved', "Resolved"),
         ('Related concern', "Related concern"),
-        ('Unresponsive [term end]', "Unresponsive [term end]"),
+        ('Unresponsive [term end]', "Unresponsive"),
         ('Withdrew', "Withdrew"),
     )
     STATUS_CHOICES = [
