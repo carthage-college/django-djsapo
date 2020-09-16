@@ -396,6 +396,7 @@ $(function() {
       [25, 50, 100, 250, 500, 1000, 2000, 'All']
     ],
     dom: 'lfrBtip',
+    order: [[3, 'desc']],
     buttons: [
       'csv', 'excel'
     ]
