@@ -4,10 +4,11 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.widgets import DateTimeInput
 from django.contrib.admin.widgets import AdminDateWidget
-
-from djsapo.core.models import Alert, Annotation, Document, GenericChoice
-
-from djauth.LDAPManager import LDAPManager
+from djauth.managers import LDAPManager
+from djsapo.core.models import Alert
+from djsapo.core.models import Annotation
+from djsapo.core.models import Document
+from djsapo.core.models import GenericChoice
 from djtools.fields.time import KungfuTimeField
 
 CONCERN_CHOICES = GenericChoice.objects.filter(
@@ -41,7 +42,7 @@ class AlertForm(forms.ModelForm):
 
     class Meta:
         model = Alert
-        exclude = ('parent','status','created_by')
+        exclude = ('parent', 'status', 'created_by')
 
     def clean_student(self):
         cd = self.cleaned_data
@@ -49,16 +50,16 @@ class AlertForm(forms.ModelForm):
         if email:
             try:
                 user = User.objects.get(email=email)
-                cd['student'] = user
-            except:
+            except User.DoesNotExist:
                 try:
                     # initialise the LDAP manager
-                    l = LDAPManager()
-                    luser = l.search(email, field='mail')
-                    user = l.dj_create(luser)
-                    cd['student'] = user
+                    eldap = LDAPManager()
+                    result_data = eldap.search(email, field='mail')
+                    groups = eldap.get_groups(result_data)
+                    user = eldap.dj_create(result_data, groups=groups)
                 except:
                     self.add_error('student', "That is not a valid college ID")
+            cd['student'] = user
 
         return cd['student']
 

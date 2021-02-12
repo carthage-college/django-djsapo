@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.conf import settings
 from django.template import loader
 from django.contrib import messages
@@ -6,8 +8,8 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.models import Group, User
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, get_object_or_404
-from djauth.LDAPManager import LDAPManager
-from djimix.decorators.auth import portal_auth_required
+from djauth.managers import LDAPManager
+from djauth.decorators import portal_auth_required
 from djimix.constants import SPORTS_ALL
 from djimix.core.database import get_connection, xsql
 from djimix.people.utils import get_peeps
@@ -30,12 +32,8 @@ logger = logging.getLogger('debug_logger')
 
 
 def _student(alert):
-    """
-    move to core/utils if need be
-    """
-    connection = get_connection()
-    # close connection when exiting with block
-    with connection:
+    """Obtain the student data."""
+    with get_connection() as connection:
         student = xsql(VITALS(cid=alert.student.id), connection).fetchone()
         obj = xsql(SPORTS(cid=alert.student.id), connection).fetchone()
         sports = []
@@ -50,9 +48,10 @@ def _student(alert):
 
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def home(request):
+    """Home page view."""
     user = request.user
     css = user.profile.css()
     status = request.POST.get('status')
@@ -123,9 +122,10 @@ def home(request):
 
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def detail(request, aid):
+    """Display the Alert detail view."""
     alert = get_object_or_404(Alert, pk=aid)
     history = Alert.objects.filter(student=alert.student).exclude(pk=aid)
     user = request.user
@@ -151,9 +151,10 @@ def detail(request, aid):
 
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def search(request):
+    """Search for Alerts."""
     error = None
     form = None
     objects = None
@@ -168,23 +169,19 @@ def search(request):
     else:
         form = DateCreatedForm()
     '''
-
     return render(
-        request, 'search.html', {
-            'form':form, 'objects':objects, 'error':error
-        }
+        request,
+        'search.html',
+        {'form':form, 'objects':objects, 'error':error},
     )
 
 
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def list(request):
-    """
-    complete listing of all objects
-    """
-
+    """Complete listing of all objects."""
     user = request.user
     # CSS or superuser can access all objects
     if user.profile.css():
@@ -198,7 +195,7 @@ def list(request):
 
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def email_form(request, aid, action):
     """Send an email."""
@@ -238,15 +235,13 @@ def email_form(request, aid, action):
 
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def openxml(request):
-
+    """Export data in openxml format for download."""
     wb = Workbook()
     ws = wb.get_active_sheet()
-
-    data = serializers.serialize('python', Alert.objects.all() )
-
+    data = serializers.serialize('python', Alert.objects.all())
     head = False
     headers = []
     for d in data:
@@ -258,15 +253,10 @@ def openxml(request):
             ws.append(headers)
             head = True
         ws.append(row)
-
     response = HttpResponse(
-        save_virtual_workbook(wb), content_type='application/ms-excel'
+        save_virtual_workbook(wb), content_type='application/ms-excel',
     )
-
-    response['Content-Disposition'] = 'attachment;filename={}.xlsx'.format(
-        mod
-    )
-
+    response['Content-Disposition'] = 'attachment;filename={}.xlsx'.format(mod)
     return response
 
 
@@ -274,12 +264,12 @@ def openxml(request):
 @portal_auth_required(
     group = settings.CSS_GROUP,
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def manager(request):
     """Manage object relationships for an Alert and for Alert values."""
     user = request.user
-    data =  {'msg': "Success", 'id':''}
+    data =  {'msg': "Success", 'id': ''}
     if request.is_ajax() and request.method == 'POST':
         post = request.POST
         # simple error handling to prevent malicious values
@@ -289,7 +279,7 @@ def manager(request):
         except:
             raise Http404(
                 "Invalid alert or object ID: '{oid}' '{aid}'".format(
-                    post.get('oid'), post.get('aid')
+                    post.get('oid'), post.get('aid'),
                 )
             )
         mod = post.get('mod')
@@ -306,10 +296,20 @@ def manager(request):
         elif mod == 'team':
             try:
                 user = User.objects.get(pk=oid)
-            except:
-                l = LDAPManager()
-                luser = l.search(oid)
-                user = l.dj_create(luser)
+            except User.DoesNotExist:
+                # chapuza because the LDAP attribute for user ID has a space
+                # in the name and we cannot search on it.
+                sql = 'SELECT * FROM cvid_rec WHERE cx_id={0}'.format(oid)
+                with get_connection() as connection:
+                    cvid_rec = xsql(sql, connection).fetchone()
+                if cvid_rec:
+                    username = cvid_rec.ldap_name
+                    eldap = LDAPManager()
+                    result_data = eldap.search(username=username, field='cn')
+                    groups = eldap.get_groups(result_data)
+                    user = eldap.dj_create(result_data, groups=groups)
+                else:
+                    user = None
             if user:
                 if action == 'add':
                     mail = False
@@ -416,15 +416,14 @@ def manager(request):
         data['msg'] = "Requires AJAX POST"
 
     return HttpResponse(
-        json.dumps(data), content_type='application/json; charset=utf-8'
+        json.dumps(data), content_type='application/json; charset=utf-8',
     )
-
 
 
 @portal_auth_required(
     group = settings.CSS_GROUP,
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def team_manager(request, aid):
     """Manage team members."""
@@ -439,14 +438,15 @@ def team_manager(request, aid):
             if m.user not in matrix and m.user not in team:
                 matrix.append(m.user)
     advisor = None
-    l = LDAPManager()
+    eldap = LDAPManager()
     if vitals:
         try:
             advisor = User.objects.get(pk=vitals.adv_id)
-        except:
-            luser = l.search(vitals.adv_id)
-            if luser:
-                advisor = l.dj_create(luser)
+        except User.DoesNotExist:
+            result_data = eldap.search(vitals.ldap_name, field='cn')
+            if result_data:
+                groups = eldap.get_groups(result_data)
+                advisor = eldap.dj_create(result_data, groups=groups)
         if advisor and advisor not in matrix and advisor not in team:
             matrix.append(advisor)
 
@@ -497,23 +497,33 @@ def team_manager(request, aid):
                 peeps.remove(p)
 
     return render(
-        request, 'team.html', {
-            'data':alert,'perms':perms, 'matrix':matrix,'return':True,
-            'student':vitals,'sports':student['sports'],'peeps':peeps
-        }
+        request,
+        'team.html',
+        {
+            'data': alert,
+            'perms': perms,
+            'matrix': matrix,
+            'return': True,
+            'student': vitals,
+            'sports': student['sports'],
+            'peeps': peeps,
+        },
     )
 
 
 @portal_auth_required(
     group = settings.CSS_GROUP,
     session_var='DJSAPO_AUTH',
-    redirect_url=reverse_lazy('access_denied')
+    redirect_url=reverse_lazy('access_denied'),
 )
 def delete_note(request, oid):
-    obj = get_object_or_404(Annotation, pk=oid)
-    obj.delete()
+    """Delete a comment form an Alert."""
+    note = get_object_or_404(Annotation, pk=oid)
+    note.delete()
     messages.add_message(
-        request, messages.SUCCESS, "Follow-up was deleted",
-        extra_tags='alert-success'
+        request,
+        messages.SUCCESS,
+        "Follow-up was deleted",
+        extra_tags='alert-success',
     )
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

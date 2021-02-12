@@ -11,7 +11,7 @@ from djsapo.core.models import GenericChoice, Member
 from djsapo.core.forms import AlertForm, DocumentForm
 from djimix.people.utils import get_peeps
 
-from djimix.decorators.auth import portal_auth_required
+from djauth.decorators import portal_auth_required
 from djtools.utils.users import in_group
 
 from datetime import datetime
