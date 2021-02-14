@@ -211,25 +211,28 @@ def email_form(request, aid, action):
                 else:
                     to_list = []
                 send_mail (
-                    request, to_list,
-                    "[Student Outreach System] {}".format(form_data['subject']),
-                    request.user.email, 'email_form.html',
-                    {'content':form_data['content']}, [settings.ADMINS[0][1],]
+                    request,
+                    to_list,
+                    "[Student Outreach System] {0}".format(form_data['subject']),
+                    request.user.email,
+                    'email_form.html',
+                    {'content': form_data['content']},
+                    [settings.ADMINS[0][1]],
                 )
-                return HttpResponseRedirect(
-                    reverse_lazy('email_done')
-                )
+                return HttpResponseRedirect(reverse_lazy('email_done'))
             else:
                 return render (
-                    request, 'email_form.html',
-                    {'form':form,'data':form_data,'p':proposal}
+                    request,
+                    'email_form.html',
+                    {'form': form, 'data': form_data, 'p': proposal},
                 )
     else:
         form = EmailForm()
 
     return render(
-        request, 'email_form.html',
-        {'form': form,'data':form_data,'alert':alert,'action':action}
+        request,
+        'email_form.html',
+        {'form': form, 'data': form_data, 'alert': alert, 'action': action},
     )
 
 
@@ -303,9 +306,9 @@ def manager(request):
                 with get_connection() as connection:
                     cvid_rec = xsql(sql, connection).fetchone()
                 if cvid_rec:
-                    username = cvid_rec.ldap_name
+                    username = cvid_rec.ldap_name.strip()
                     eldap = LDAPManager()
-                    result_data = eldap.search(username=username, field='cn')
+                    result_data = eldap.search(username, field='cn')
                     groups = eldap.get_groups(result_data)
                     user = eldap.dj_create(result_data, groups=groups)
                 else:
@@ -326,7 +329,7 @@ def manager(request):
                             data['msg'] = "User has been reactivated"
                             data['id'] = member.id
                             mail = True
-                    except:
+                    except Exception:
                         member = Member.objects.create(user=user,alert=alert)
                         alert.team.add(member)
                         data['msg'] = "User added to team"
@@ -443,7 +446,7 @@ def team_manager(request, aid):
         try:
             advisor = User.objects.get(pk=vitals.adv_id)
         except User.DoesNotExist:
-            result_data = eldap.search(vitals.ldap_name, field='cn')
+            result_data = eldap.search(vitals.ldap_name.strip(), field='cn')
             if result_data:
                 groups = eldap.get_groups(result_data)
                 advisor = eldap.dj_create(result_data, groups=groups)
