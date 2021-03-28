@@ -392,13 +392,91 @@ $(function() {
   });
   var alertTable = $('#data-table').DataTable({
     'lengthMenu': [
-      [25, 50, 100, 250, 500, 1000, 2000, -1],
-      [25, 50, 100, 250, 500, 1000, 2000, 'All']
+      [25, 50, 100, 250, 500, 1000, 2000, 5000, 10000],
+      [25, 50, 100, 250, 500, 1000, 2000, 5000, 10000]
     ],
-    dom: 'lfrBtip',
+    'language': {
+      'search': 'Filter records:',
+      'processing': '<i class="fa fa-spinner fa-spin fa-4x fa-fw"></i><span class="sr-only">Loading...</span>',
+      'lengthMenu': 'Display _MENU_'
+    },
     order: [[3, 'desc']],
+    dom: 'lfrBtip',
     buttons: [
-      'csv', 'excel'
+      {
+        extend: 'excelHtml5',
+        exportOptions: {
+          columns: ':visible'
+        }
+      }
+    ],
+    //destroy: true,
+    responsive: true,
+    serverSide: true,
+    processing: true,
+    paging: true,
+    pageLength: 25,
+    ajax: {
+       'url': $homeAjaxUrl,
+       'type': 'post',
+       'processData': true,
+       'dataType': 'json',
+       // debugging
+       //dataFilter: function(reps) {
+         //console.log(reps);
+         //return reps;
+       //},
+       //error: function(err){
+         //console.log(err);
+       //},
+       'data': {
+            'date_start': $dateStart,
+            'date_end': $dateEnd,
+            'csrfmiddlewaretoken': $csrfToken
+       }
+    },
+    'columns': [
+        {
+            'data': 'student'
+        },
+        {
+            'data': 'course'
+        },
+        {
+            'data': 'creator'
+        },
+        {
+            'data': 'created_at',
+            'searchable': false
+        },
+        {
+            'data': 'relationship',
+            'searchable': false
+        },
+        {
+            'data': 'category',
+            'searchable': false,
+            'orderable': false
+        },
+        {
+            'data': 'case_manager',
+            'searchable': false,
+            'orderable': false
+        },
+        {
+            'data': 'status',
+            'searchable': false
+        },
+        {
+            'data': 'note_latest',
+            'searchable': false,
+            'orderable': false
+        },
+        {
+            'data': 'note_count',
+            'searchable': false,
+            'orderable': false
+        }
     ]
   });
   /* team manager sortables */

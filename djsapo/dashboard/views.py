@@ -1,19 +1,30 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.template import loader
 from django.contrib import messages
-from django.urls import reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.db.models.query import Q
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.http import Http404
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
+from django.urls import reverse_lazy
 from djauth.managers import LDAPManager
 from djauth.decorators import portal_auth_required
 from djimix.constants import SPORTS_ALL
-from djimix.core.database import get_connection, xsql
+from djimix.core.database import get_connection
+from djimix.core.database import xsql
 from djimix.people.utils import get_peeps
-from djimix.sql.students import ADMISSIONS_REP, VITALS, SPORTS
+from djimix.sql.students import ADMISSIONS_REP
+from djimix.sql.students import SPORTS
+from djimix.sql.students import VITALS
 from djsapo.core.forms import CONCERN_CHOICES
 from djsapo.core.models import Alert
 from djsapo.core.models import Annotation
@@ -45,7 +56,6 @@ def _student(alert):
                         sports.append(s[1])
     return {'student':student, 'sports':sports}
 
-
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied'),
@@ -54,7 +64,39 @@ def home(request):
     """Home page view."""
     user = request.user
     css = user.profile.css()
-    status = request.POST.get('status')
+    status_choices = Alert.STATUS_CHOICES.copy()
+    status_choices.append(('All but closed',"All but closed"))
+    status_choices.append(('All',"All"))
+
+    return render(
+        request,
+        'list.html',
+        {'css': css, 'status_choices': status_choices},
+    )
+
+@csrf_exempt
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied'),
+)
+def home_ajax(request):
+    """AJAX response for dashboard home for admins."""
+    user = request.user
+    css = user.profile.css()
+    post = request.POST
+    status = post.get('status')
+    # order by
+    col = 'created_at'
+    dirx = '-'
+    order = post.get('order[0][column]')
+    if order:
+        order = int(order)
+        # column names
+        columns = Alert.COLUMNS
+        # direction
+        dirx = post.get('order[0][dir]')
+        col = columns.get(order)
+    order_by = col if dirx == 'asc' else '-' + col
     # CSS or superuser can access all objects
     if css:
         if status:
@@ -66,7 +108,6 @@ def home(request):
                 my_alerts = Alert.objects.filter(status=status)
         else:
             my_alerts = Alert.objects.exclude(status='Closed')
-        alerts = [a for a in my_alerts]
     else:
         # created by me
         if status:
@@ -87,7 +128,7 @@ def home(request):
 
         # team of which i am a current member
         teams = Member.objects.filter(user__username=user.username).exclude(
-            status=False
+            status=False,
         )
         if status:
             if status == 'All but closed':
@@ -104,19 +145,77 @@ def home(request):
             team_alerts = [
                 member.alert for member in teams if member.alert.status != 'Closed'
             ]
-        alerts = sorted(
+        my_alerts = sorted(
             chain(my_alerts, team_alerts), key=attrgetter('created_at')
         )
 
-    status_choices = Alert.STATUS_CHOICES.copy()
-    status_choices.append(('All but closed',"All but closed"))
-    status_choices.append(('All',"All"))
+    post = request.POST
+    # draw counter
+    draw = int(post.get('draw', 0))
+    # paging first record indicator.
+    start = int(post.get('start', 0))
+    # number of records that the table can display in the current draw
+    length = int(post.get('length', 25))
+    # page number, 1-based index
+    page = int((start / length) + 1)
+    # search box data
+    search = post.get('search[value]')
+    #date_start, date_end = _get_dates(request)
 
-    return render(
-        request, 'list.html', {
-            'alerts':alerts,'css':css,'status_choices':status_choices,
-            'status':status
-        }
+    #        created_at__range=(date_start, date_end)
+    #    ).filter(
+    if search:
+        my_alerts = my_alerts.filter(
+            Q(created_by__last_name__icontains=search)|
+            Q(created_by__first_name__icontains=search)|
+            Q(course__icontains=search)|
+            Q(relationship__icontains=search)
+        )
+
+    records_total = len(my_alerts)
+    records_filtered = records_total
+    paginator = Paginator(my_alerts.order_by(order_by), length)
+    object_list = paginator.get_page(page).object_list
+    alerts = []
+    for alert in object_list:
+        name_student = '<a href="{0}" title="{1}">{2}, {3}</a>'.format(
+            reverse('detail', args=[alert.id]),
+            alert.student.id,
+            alert.student.last_name,
+            alert.student.first_name,
+        )
+        name_creator = '<a href="mailto:{0}">{1}, {2}</a>'.format(
+            alert.created_by.email,
+            alert.created_by.last_name,
+            alert.created_by.first_name,
+        )
+        team = []
+        for member in alert.team.all():
+            if member.status and member.user.profile.case_manager:
+                team.append('{0}, {1}'.format(
+                    member.user.last_name, member.user.first_name,
+                ))
+        alerts.append({
+            'student': name_student,
+            'course': alert.course,
+            'creator': name_creator,
+            'created_at': alert.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'relationship': alert.relationship,
+            'category': [cat.name for cat in alert.category.all()],
+            'case_manager': team,
+            'status': alert.status or '',
+            'note_latest': alert.latest_note(),
+            'note_count': alert.notes.all().count(),
+        })
+
+    return JsonResponse(
+        {
+            'draw': draw,
+            'recordsTotal': records_total,
+            'recordsFiltered': records_filtered,
+            'data': alerts,
+        },
+        safe=False,
     )
 
 

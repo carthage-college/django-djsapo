@@ -165,6 +165,15 @@ class Alert(models.Model):
     Data model for the early alert object
     """
 
+    # data-tables order_by dictionary
+    COLUMNS = {
+        0: 'student__last_name',
+        1: 'course',
+        2: 'created_by__last_name',
+        3: 'created_at',
+        4: 'relationship',
+        7: 'status',
+    }
     OUTCOME_CHOICES = (
         ('No resolution required', "No resolution required"),
         ('Next steps discussed', "Next steps discussed"),
@@ -308,7 +317,11 @@ class Alert(models.Model):
         kats = self.category.all()
 
     def latest_note(self):
-        return self.notes.latest('created_at')
+        latest = None
+        notes = self.notes.all()
+        if notes:
+            latest = notes.first().created_at.strftime('%Y-%m-%d %H:%M:%S')
+        return latest
 
     def get_absolute_url(self):
         return 'https://{}{}'.format(

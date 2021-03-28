@@ -35,5 +35,6 @@ urlpatterns = [
     path('manager/', views.manager, name='manager'),
     # export to openxml
     path('openxml/', views.openxml, name='openxml'),
+    path('ajax-alerts/', views.home_ajax, name='home_ajax'),
     path('', views.home, name='home'),
 ]
