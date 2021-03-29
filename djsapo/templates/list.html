@@ -5,18 +5,30 @@
   <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
     <div class="float-left"><h4>My Student Concerns</h4></div>
     <div class="float-right">
-      <form class="form-inline" method="post" action="." role="form">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <form class="form-inline" method="post" action="." role="form">
           {% csrf_token %}
-          <div class="form-group">
-            <label style="margin-right:10px;">Show</label>
-            <select name="status" class="form-control" id="students-toggle">
-              <option value="">--select--</option>
-              {% for value, text in status_choices %}
-              <option value="{{value}}"{% if status == value %} selected{% else %}{% if not status and value == 'All but closed' %}selected {% endif %}{% endif %}>{{text}}</option>
-              {% endfor %}
-            </select>
-          </div>
-      </form>
+            <div class="form-group">
+              <label>Show date range</label>
+              <input type="text" name="date_start" autocomplete="off"
+                value="{{date_start|date:'Y-m-d'}}" placeholder="From..."
+                class="form-control" id="id_date_start">
+              <input type="text" name="date_end" autocomplete="off"
+                value="{{date_end|date:'Y-m-d'}}" placeholder="To..."
+                class="form-control" id="id_date_end">
+              <select name="status" class="form-control" id="students-toggle">
+                <option value="">--select--</option>
+                {% for value, text in status_choices %}
+                <option value="{{value}}"{% if status == value %} selected{% else %}{% if not status and value == 'All but closed' %}selected {% endif %}{% endif %}>{{text}}</option>
+                {% endfor %}
+              </select>
+              <input type="submit" name="submit" value="submit" id="submit-toggle" style="margin:0 10px;" class="btn btn-primary">
+            </div>
+          </form>
+        </div>
+        <!-- /.panel-heading -->
+      </div>
     </div>
     <div class="panel panel-default">
       <div class="panel-body" id="students-data-panel">

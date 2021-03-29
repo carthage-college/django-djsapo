@@ -82,28 +82,23 @@ class GenericChoice(models.Model):
     """
     Choices for model and form fields that accept for multiple values
     """
-    name = models.CharField(
-        max_length=255
-    )
-    value = models.CharField(
-        unique=True, max_length=255
-    )
+    name = models.CharField(max_length=255)
+    value = models.CharField(unique=True, max_length=255)
     rank = models.IntegerField(
         verbose_name="Ranking",
-        null=True, blank=True, default=0,
-        help_text="""
-            A number that determines this object's position in a list.
-        """
+        null=True,
+        blank=True,
+        default=0,
+        help_text="A number that determines this object's position in a list.",
     )
     active = models.BooleanField(
         help_text="""
             Do you want the field to be visable on the public submission form?
         """,
-        verbose_name="Is active?", default=True
+        verbose_name="Is active?",
+        default=True,
     )
-    admin = models.BooleanField(
-        verbose_name="Administrative only", default=False
-    )
+    admin = models.BooleanField(verbose_name="Administrative only", default=False)
     group = models.ManyToManyField(Group, blank=True)
     tags = TaggableManager(blank=True)
 
@@ -111,26 +106,26 @@ class GenericChoice(models.Model):
         ordering = ['rank']
 
     def __str__(self):
-        """
-        Default data for display
-        """
+        """Default data for display."""
         return self.name
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(
-        User, on_delete=models.CASCADE
-    )
+    """User profile data model."""
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     category = models.ManyToManyField(
-        GenericChoice, verbose_name="Type of concern",
-        limit_choices_to=limit_category, blank=True,
+        GenericChoice,
+        verbose_name="Type of concern",
+        limit_choices_to=limit_category,
+        blank=True,
         related_name="matrix",
-        help_text = "Check all that apply"
+        help_text="Check all that apply",
     )
     case_manager = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{}, {}".format(
+        return "{0}, {1}".format(
             self.user.last_name, self.user.first_name
         )
 
@@ -156,14 +151,13 @@ class Profile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
+    """Create a user profile when a user data model is saved."""
     if created and not kwargs.get('raw', False):
         Profile.objects.create(user=instance)
 
 
 class Alert(models.Model):
-    """
-    Data model for the early alert object
-    """
+    """Data model for the early alert object."""
 
     # data-tables order_by dictionary
     COLUMNS = {
@@ -358,9 +352,8 @@ class Alert(models.Model):
 
 
 class Member(models.Model):
-    """
-    Alert team member
-    """
+    """Alert team member. """
+
     user = models.ForeignKey(
         User, verbose_name="Team member", on_delete=models.CASCADE
     )
@@ -375,15 +368,14 @@ class Member(models.Model):
         ordering = ['user__last_name']
 
     def __str__(self):
-        """
-        Default data for display
-        """
+        """Default data for display."""
         return "{}, {}".format(
             self.user.last_name, self.user.first_name
         )
 
 
 class Annotation(models.Model):
+    """Notes related to an Alert."""
 
     alert = models.ForeignKey(
         Alert, related_name='notes', on_delete=models.CASCADE
@@ -415,18 +407,15 @@ class Annotation(models.Model):
         #ordering = ('created_at',)
 
     def __str__(self):
-        """
-        Default data for display
-        """
-        return "{}, {}".format(
+        """Default data for display."""
+        return "{0}, {1}".format(
             self.created_by.last_name, self.created_by.first_name
         )
 
 
 class Document(models.Model):
-    """
-    supporting documents
-    """
+    """Supporting documents for an Alert."""
+
     created_by = models.ForeignKey(
         User, verbose_name="Created by",
         related_name='doc_creator', on_delete=models.CASCADE
@@ -461,9 +450,11 @@ class Document(models.Model):
         get_latest_by = 'created_at'
 
     def get_slug(self):
+        """Return the slug value for this data model class."""
         return 'alert-document'
 
     def get_icon(self):
+        """Obtain the icon for a field."""
         ext = self.phile.path.rpartition(".")[-1]
         try:
             icon = ICONS[ext.lower()]
@@ -472,16 +463,13 @@ class Document(models.Model):
         return icon
 
     def __str__(self):
-        """
-        Default data for display
-        """
+        """Default data for display."""
         return str(self.alert)
 
 
 class Message(models.Model):
-    """
-    automated message content sent from the system]
-    """
+    """Automated message content sent from the system."""
+
     name = models.CharField(
         max_length=255,
     )

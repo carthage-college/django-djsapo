@@ -75,7 +75,7 @@ $(function() {
     return false;
   });
   /* datepicker */
-  $('#id_interaction_date').datepicker({
+  $('input[id*="date"]').datepicker({
     firstDay:0,
     maxDate: new Date,
     changeFirstDay:false,
@@ -430,9 +430,10 @@ $(function() {
          //console.log(err);
        //},
        'data': {
-            'date_start': $dateStart,
-            'date_end': $dateEnd,
-            'csrfmiddlewaretoken': $csrfToken
+           'date_start': $dateStart,
+           'date_end': $dateEnd,
+           'status': $status,
+           'csrfmiddlewaretoken': $csrfToken
        }
     },
     'columns': [

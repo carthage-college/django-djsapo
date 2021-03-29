@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+from datetime import date
+from datetime import timedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group
@@ -42,6 +45,23 @@ import logging
 logger = logging.getLogger('debug_logger')
 
 
+def _get_dates(request):
+    """Obtain the start and end dates."""
+    today = date.today()
+    date_start = request.POST.get('date_start')
+    if not date_start:
+        date_start = today - timedelta(days=1)
+    else:
+        date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+    date_end = request.POST.get('date_end')
+    if not date_end:
+        date_end = today + timedelta(days=1)
+    else:
+        date_end = datetime.strptime(date_end, '%Y-%m-%d').date() + timedelta(days=1)
+
+    return (date_start, date_end)
+
+
 def _student(alert):
     """Obtain the student data."""
     with get_connection() as connection:
@@ -67,14 +87,24 @@ def home(request):
     status_choices = Alert.STATUS_CHOICES.copy()
     status_choices.append(('All but closed',"All but closed"))
     status_choices.append(('All',"All"))
-
+    date_start = None
+    date_end = None
+    status = 'All but closed'
+    if request.method == 'POST':
+        date_start, date_end = _get_dates(request)
+        status = str(request.POST.get('status', 'All but closed'))
     return render(
         request,
         'list.html',
-        {'css': css, 'status_choices': status_choices},
+        {
+            'css': css,
+            'status': status,
+            'status_choices': status_choices,
+            'date_start': date_start,
+            'date_end': date_end,
+        },
     )
 
-@csrf_exempt
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied'),
@@ -84,11 +114,17 @@ def home_ajax(request):
     user = request.user
     css = user.profile.css()
     post = request.POST
-    status = post.get('status')
+    status = post.get('status', 'All but closed')
     # order by
     col = 'created_at'
     dirx = '-'
     order = post.get('order[0][column]')
+    search = post.get('search[value]')
+
+    date_start = None
+    date_end = None
+    if request.POST.get('date_start'):
+        date_start, date_end = _get_dates(request)
     if order:
         order = int(order)
         # column names
@@ -99,55 +135,46 @@ def home_ajax(request):
     order_by = col if dirx == 'asc' else '-' + col
     # CSS or superuser can access all objects
     if css:
-        if status:
-            if status == 'All but closed':
-                my_alerts = Alert.objects.exclude(status='Closed')
-            elif status == 'All':
-                my_alerts = Alert.objects.all()
-            else:
-                my_alerts = Alert.objects.filter(status=status)
-        else:
+        if status == 'All but closed':
             my_alerts = Alert.objects.exclude(status='Closed')
+        elif status == 'All':
+            my_alerts = Alert.objects.all()
+        else:
+            my_alerts = Alert.objects.filter(status=status)
+        if date_start and date_end:
+            my_alerts = my_alerts.filter(created_at__range=(date_start, date_end))
     else:
         # created by me
-        if status:
-            if status == 'All but closed':
-                my_alerts = Alert.objects.filter(created_by=user).exclude(
-                    status='Closed'
-                )
-            elif status == 'All':
-                my_alerts = Alert.objects.filter(created_by=user)
-            else:
-                my_alerts = Alert.objects.filter(created_by=user).filter(
-                    status=status
-                )
-        else:
+        if status == 'All but closed':
             my_alerts = Alert.objects.filter(created_by=user).exclude(
                 status='Closed'
+            )
+        elif status == 'All':
+            my_alerts = Alert.objects.filter(created_by=user)
+        else:
+            my_alerts = Alert.objects.filter(created_by=user).filter(
+                status=status
             )
 
         # team of which i am a current member
         teams = Member.objects.filter(user__username=user.username).exclude(
             status=False,
         )
-        if status:
+        if teams:
             if status == 'All but closed':
-                team_alerts = [
-                    member.alert for member in teams if member.alert.status != 'Closed'
-                ]
+                team_alerts = Alert.objects.filter(team__user=user).exclude(
+                    team__status=False,
+                ).exclude(status='Closed')
             elif status == 'All':
-                team_alerts = [member.alert for member in teams]
+                team_alerts = Alert.objects.filter(team__user=user).exclude(
+                    team__status=False,
+                )
             else:
-                team_alerts = [
-                    member.alert for member in teams if member.alert.status == status
-                ]
-        else:
-            team_alerts = [
-                member.alert for member in teams if member.alert.status != 'Closed'
-            ]
-        my_alerts = sorted(
-            chain(my_alerts, team_alerts), key=attrgetter('created_at')
-        )
+                team_alerts = Alert.objects.filter(team__user=user).exclude(
+                    team__status=False,
+                ).filter(status=status)
+
+            my_alerts = my_alerts | team_alerts
 
     post = request.POST
     # draw counter
@@ -158,16 +185,11 @@ def home_ajax(request):
     length = int(post.get('length', 25))
     # page number, 1-based index
     page = int((start / length) + 1)
-    # search box data
-    search = post.get('search[value]')
-    #date_start, date_end = _get_dates(request)
 
-    #        created_at__range=(date_start, date_end)
-    #    ).filter(
     if search:
         my_alerts = my_alerts.filter(
             Q(created_by__last_name__icontains=search)|
-            Q(created_by__first_name__icontains=search)|
+            Q(student__last_name__icontains=search)|
             Q(course__icontains=search)|
             Q(relationship__icontains=search)
         )
@@ -189,24 +211,26 @@ def home_ajax(request):
             alert.created_by.last_name,
             alert.created_by.first_name,
         )
-        team = []
-        for member in alert.team.all():
-            if member.status and member.user.profile.case_manager:
-                team.append('{0}, {1}'.format(
-                    member.user.last_name, member.user.first_name,
-                ))
-        alerts.append({
+        alert_dict = {
             'student': name_student,
             'course': alert.course,
             'creator': name_creator,
             'created_at': alert.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'relationship': alert.relationship,
             'category': [cat.name for cat in alert.category.all()],
-            'case_manager': team,
             'status': alert.status or '',
             'note_latest': alert.latest_note(),
             'note_count': alert.notes.all().count(),
-        })
+        }
+        team = ''
+        if css:
+            for member in alert.team.all():
+                if member.status and member.user.profile.case_manager:
+                    team += ('{0}, {1}; '.format(
+                        member.user.last_name, member.user.first_name,
+                    ))
+        alert_dict['case_manager'] = team
+        alerts.append(alert_dict)
 
     return JsonResponse(
         {
