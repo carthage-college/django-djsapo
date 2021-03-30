@@ -12,11 +12,11 @@
             <div class="form-group">
               <label>Show date range</label>
               <input type="text" name="date_start" autocomplete="off"
-                value="{{date_start|date:'Y-m-d'}}" placeholder="From..."
-                class="form-control" id="id_date_start">
+                value="{{date_start|date:'Y-m-d'}}" placeholder="From...YYYY-MM-DD"
+                class="form-control date-filter" id="id_date_start">
               <input type="text" name="date_end" autocomplete="off"
-                value="{{date_end|date:'Y-m-d'}}" placeholder="To..."
-                class="form-control" id="id_date_end">
+                value="{{date_end|date:'Y-m-d'}}" placeholder="To...YYYY-MM-DD"
+                class="form-control date-filter" id="id_date_end">
               <select name="status" class="form-control" id="students-toggle">
                 <option value="">--select--</option>
                 {% for value, text in status_choices %}
