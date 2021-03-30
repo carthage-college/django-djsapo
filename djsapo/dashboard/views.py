@@ -280,11 +280,7 @@ def manager(request):
             oid = int(post.get('oid'))
             aid = int(post.get('aid'))
         except:
-            raise Http404(
-                "Invalid alert or object ID: '{oid}' '{aid}'".format(
-                    post.get('oid'), post.get('aid'),
-                )
-            )
+            raise Http404("Invalid alert or object ID")
         mod = post.get('mod')
         alert = get_object_or_404(Alert, pk=aid)
         action = post.get('action')
