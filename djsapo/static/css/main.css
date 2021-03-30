@@ -21,6 +21,9 @@ table.dataTable thead span.sort-icon {
   width: 16px;
   height: 16px;
 }
+table.dataTable.display tbody tr td {
+    white-space: nowrap;
+}
 .table-responsive .container-fluid {padding-left:0;}
 .dataTables_wrapper{margin-bottom:20px;}
 .dataTables_length{margin-right:50px;}
@@ -31,6 +34,14 @@ table.dataTable thead span.sort-icon {
 #DataTables_Table_2_wrapper .dataTables_paginate .paginate_button {display:none;}
 .dataTables_wrapper .dataTables_paginate #DataTables_Table_2_next {display:inherit;}
 .dataTables_wrapper .dataTables_paginate #DataTables_Table_2_previous {display:inherit;}
+.dataTables_wrapper .dataTables_processing {
+top: 0 !important;
+height:100% !important;
+width: 100%
+background-color: rgba(33, 33,33,0.5);
+}
+div.dt-buttons{margin-top: 18px;}
+white-space: nowrap;
 .dataTables_empty{text-indent: -9999px;}
 .card-header { margin-bottom: 12px; }
 .card-title { margin: 4px 0 2px 0;; }

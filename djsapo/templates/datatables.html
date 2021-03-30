@@ -18,4 +18,11 @@
   type="text/javascript" charset="utf-8" language="javascript"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"
   type="text/javascript" charset="utf-8" language="javascript"></script>
+<script type="text/javascript" charset="utf-8">
+var $homeAjaxUrl = '{% url "home_ajax" %}';
+var $dateStart = '{{date_start|date:'Y-m-d'}}';
+var $dateEnd = '{{date_end|date:'Y-m-d'}}';
+var $csrfToken = '{{csrf_token}}';
+var $status = '{{status}}';
+</script>
 {% endblock %}

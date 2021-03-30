@@ -1,19 +1,33 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+from datetime import date
+from datetime import timedelta
 from django.conf import settings
-from django.template import loader
 from django.contrib import messages
-from django.urls import reverse_lazy
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.db.models.query import Q
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.http import Http404
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
+from django.urls import reverse_lazy
 from djauth.managers import LDAPManager
 from djauth.decorators import portal_auth_required
 from djimix.constants import SPORTS_ALL
-from djimix.core.database import get_connection, xsql
+from djimix.core.database import get_connection
+from djimix.core.database import xsql
 from djimix.people.utils import get_peeps
-from djimix.sql.students import ADMISSIONS_REP, VITALS, SPORTS
+from djimix.sql.students import ADMISSIONS_REP
+from djimix.sql.students import SPORTS
+from djimix.sql.students import VITALS
 from djsapo.core.forms import CONCERN_CHOICES
 from djsapo.core.models import Alert
 from djsapo.core.models import Annotation
@@ -31,6 +45,23 @@ import logging
 logger = logging.getLogger('debug_logger')
 
 
+def _get_dates(request):
+    """Obtain the start and end dates."""
+    today = date.today()
+    date_start = request.POST.get('date_start')
+    if not date_start:
+        date_start = today - timedelta(days=1)
+    else:
+        date_start = datetime.strptime(date_start, '%Y-%m-%d').date()
+    date_end = request.POST.get('date_end')
+    if not date_end:
+        date_end = today + timedelta(days=1)
+    else:
+        date_end = datetime.strptime(date_end, '%Y-%m-%d').date() + timedelta(days=1)
+
+    return (date_start, date_end)
+
+
 def _student(alert):
     """Obtain the student data."""
     with get_connection() as connection:
@@ -45,7 +76,6 @@ def _student(alert):
                         sports.append(s[1])
     return {'student':student, 'sports':sports}
 
-
 @portal_auth_required(
     session_var='DJSAPO_AUTH',
     redirect_url=reverse_lazy('access_denied'),
@@ -54,69 +84,162 @@ def home(request):
     """Home page view."""
     user = request.user
     css = user.profile.css()
-    status = request.POST.get('status')
+    status_choices = Alert.STATUS_CHOICES.copy()
+    status_choices.append(('All but closed',"All but closed"))
+    status_choices.append(('All',"All"))
+    date_start = None
+    date_end = None
+    status = 'All but closed'
+    if request.method == 'POST':
+        date_start, date_end = _get_dates(request)
+        status = str(request.POST.get('status', 'All but closed'))
+    return render(
+        request,
+        'list.html',
+        {
+            'css': css,
+            'status': status,
+            'status_choices': status_choices,
+            'date_start': date_start,
+            'date_end': date_end,
+        },
+    )
+
+@portal_auth_required(
+    session_var='DJSAPO_AUTH',
+    redirect_url=reverse_lazy('access_denied'),
+)
+def home_ajax(request):
+    """AJAX response for dashboard home for admins."""
+    user = request.user
+    css = user.profile.css()
+    post = request.POST
+    status = post.get('status', 'All but closed')
+    # order by
+    col = 'created_at'
+    dirx = '-'
+    order = post.get('order[0][column]')
+    search = post.get('search[value]')
+
+    date_start = None
+    date_end = None
+    if request.POST.get('date_start'):
+        date_start, date_end = _get_dates(request)
+    if order:
+        order = int(order)
+        # column names
+        columns = Alert.COLUMNS
+        # direction
+        dirx = post.get('order[0][dir]')
+        col = columns.get(order)
+    order_by = col if dirx == 'asc' else '-' + col
     # CSS or superuser can access all objects
     if css:
-        if status:
-            if status == 'All but closed':
-                my_alerts = Alert.objects.exclude(status='Closed')
-            elif status == 'All':
-                my_alerts = Alert.objects.all()
-            else:
-                my_alerts = Alert.objects.filter(status=status)
-        else:
+        if status == 'All but closed':
             my_alerts = Alert.objects.exclude(status='Closed')
-        alerts = [a for a in my_alerts]
+        elif status == 'All':
+            my_alerts = Alert.objects.all()
+        else:
+            my_alerts = Alert.objects.filter(status=status)
+        if date_start and date_end:
+            my_alerts = my_alerts.filter(created_at__range=(date_start, date_end))
     else:
         # created by me
-        if status:
-            if status == 'All but closed':
-                my_alerts = Alert.objects.filter(created_by=user).exclude(
-                    status='Closed'
-                )
-            elif status == 'All':
-                my_alerts = Alert.objects.filter(created_by=user)
-            else:
-                my_alerts = Alert.objects.filter(created_by=user).filter(
-                    status=status
-                )
-        else:
+        if status == 'All but closed':
             my_alerts = Alert.objects.filter(created_by=user).exclude(
                 status='Closed'
+            )
+        elif status == 'All':
+            my_alerts = Alert.objects.filter(created_by=user)
+        else:
+            my_alerts = Alert.objects.filter(created_by=user).filter(
+                status=status
             )
 
         # team of which i am a current member
         teams = Member.objects.filter(user__username=user.username).exclude(
-            status=False
+            status=False,
         )
-        if status:
+        if teams:
             if status == 'All but closed':
-                team_alerts = [
-                    member.alert for member in teams if member.alert.status != 'Closed'
-                ]
+                team_alerts = Alert.objects.filter(team__user=user).exclude(
+                    team__status=False,
+                ).exclude(status='Closed')
             elif status == 'All':
-                team_alerts = [member.alert for member in teams]
+                team_alerts = Alert.objects.filter(team__user=user).exclude(
+                    team__status=False,
+                )
             else:
-                team_alerts = [
-                    member.alert for member in teams if member.alert.status == status
-                ]
-        else:
-            team_alerts = [
-                member.alert for member in teams if member.alert.status != 'Closed'
-            ]
-        alerts = sorted(
-            chain(my_alerts, team_alerts), key=attrgetter('created_at')
+                team_alerts = Alert.objects.filter(team__user=user).exclude(
+                    team__status=False,
+                ).filter(status=status)
+
+            my_alerts = my_alerts | team_alerts
+
+    post = request.POST
+    # draw counter
+    draw = int(post.get('draw', 0))
+    # paging first record indicator.
+    start = int(post.get('start', 0))
+    # number of records that the table can display in the current draw
+    length = int(post.get('length', 25))
+    # page number, 1-based index
+    page = int((start / length) + 1)
+
+    if search:
+        my_alerts = my_alerts.filter(
+            Q(created_by__last_name__icontains=search)|
+            Q(student__last_name__icontains=search)|
+            Q(course__icontains=search)|
+            Q(relationship__icontains=search)
         )
 
-    status_choices = Alert.STATUS_CHOICES.copy()
-    status_choices.append(('All but closed',"All but closed"))
-    status_choices.append(('All',"All"))
-
-    return render(
-        request, 'list.html', {
-            'alerts':alerts,'css':css,'status_choices':status_choices,
-            'status':status
+    records_total = len(my_alerts)
+    records_filtered = records_total
+    paginator = Paginator(my_alerts.order_by(order_by), length)
+    object_list = paginator.get_page(page).object_list
+    alerts = []
+    for alert in object_list:
+        name_student = '<a href="{0}" title="{1}">{2}, {3}</a>'.format(
+            reverse('detail', args=[alert.id]),
+            alert.student.id,
+            alert.student.last_name,
+            alert.student.first_name,
+        )
+        name_creator = '<a href="mailto:{0}">{1}, {2}</a>'.format(
+            alert.created_by.email,
+            alert.created_by.last_name,
+            alert.created_by.first_name,
+        )
+        alert_dict = {
+            'student': name_student,
+            'course': alert.course,
+            'creator': name_creator,
+            'created_at': alert.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'relationship': alert.relationship,
+            'category': [cat.name for cat in alert.category.all()],
+            'status': alert.status or '',
+            'note_latest': alert.latest_note(),
+            'note_count': alert.notes.all().count(),
         }
+        team = ''
+        if css:
+            for member in alert.team.all():
+                if member.status and member.user.profile.case_manager:
+                    team += ('{0}, {1}; '.format(
+                        member.user.last_name, member.user.first_name,
+                    ))
+        alert_dict['case_manager'] = team
+        alerts.append(alert_dict)
+
+    return JsonResponse(
+        {
+            'draw': draw,
+            'recordsTotal': records_total,
+            'recordsFiltered': records_filtered,
+            'data': alerts,
+        },
+        safe=False,
     )
 
 
