@@ -53,6 +53,12 @@ var target = document.getElementById('alert-container');
 var spinner = new Spinner(opts).spin(target);
 spinner.stop(target);
 
+var cleave = new Cleave('.date-filter', {
+    date: true,
+    delimiter: '-',
+    datePattern: ['Y', 'm', 'd']
+});
+
 /**
 * simple function to show/hide an element based on the value
 * of another dom object
