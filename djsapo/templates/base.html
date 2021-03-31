@@ -44,7 +44,11 @@
   var $courseApi = "https://www.carthage.edu/academics/schedule/R/{{term}}/{{year}}/json/";
   var $clearCacheUrl = "{% url 'clear_cache' 'blurbs' %}";
   var $studentApi = "{% url 'people' 'student' %}";
-
+  var $homeAjaxUrl = '{% url "home_ajax" %}';
+  var $dateStart = '';
+  var $dateEnd = '';
+  var $status = '';
+  var $csrfToken = '';
   $(function() {
     $("body").toggleClass("sidenav-toggled");
   });
