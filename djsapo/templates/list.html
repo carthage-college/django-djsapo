@@ -1,4 +1,18 @@
 {% extends "datatables.html" %}
+{% block extra_style %}
+{{block.super}}
+<script src="https://www.carthage.edu/static/vendor/cleave.js/cleave.min.js"
+  type="text/javascript" language="javascript"></script>
+<script type="text/javascript" charset="utf-8">
+document.addEventListener('DOMContentLoaded', () => {
+    const cleave = new Cleave('.date-filter', {
+        date: true,
+        delimiter: '-',
+        datePattern: ['Y', 'm', 'd']
+    });
+});
+</script>
+{% endblock %}
 {% block content %}
 {{block.super}}
 <div class="row">
